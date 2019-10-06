@@ -1,0 +1,6 @@
+lexicaler.cpp
+lexicaler.h
+main.cpp
+sictable
+table.cpp
+table.h
