@@ -15,7 +15,18 @@ int main(int argc, char *argv[]) {
       lexicaler.loadFile(filename);
 
     } catch (Lexicaler::Error e) {
-      if (e == Lexicaler::loading_failure) return 1;
+      if (e == Lexicaler::loading_failure)
+        ;
+      else
+        cout << "Unknown Error!" << endl;
+      return 1;
+
+    } catch (LoadingTable::Error e) {
+      if (e == LoadingTable::loading_failure)
+        ;
+      else
+        cout << "Unknown Error!" << endl;
+      return 1;
     }
 
   } else

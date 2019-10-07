@@ -4,9 +4,15 @@
 #ifndef _LEXICALER_H_
 #define _LEXICALER_H_
 
+#include <vector>
+#include "table.h"
+
 using namespace std;
 
 class Lexicaler {
+  vector<Table> tables;
+  Table &getTable(int index);
+
  public:
   Lexicaler();
   void loadFile(const string &);
