@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     try {
       string filename = argv[1];
       lexicaler.loadFile(filename);
-
+      lexicaler.lexing();
     } catch (Lexicaler::Error e) {
       if (e == Lexicaler::loading_failure)
         ;

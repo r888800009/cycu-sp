@@ -3,8 +3,11 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "lexicaler.h"
+
+using namespace std;
 
 Lexicaler::Lexicaler() {
   tables.push_back(Table());                       // null table
@@ -19,7 +22,6 @@ Lexicaler::Lexicaler() {
 
 void Lexicaler::loadFile(const string& filename) {
   cout << "Loading file: \"" << filename << '"' << endl;
-  fstream fin;
 
   fin.open(filename, ios::in | ios::binary);
   if (!fin) {
@@ -29,4 +31,19 @@ void Lexicaler::loadFile(const string& filename) {
 }
 
 Table& Lexicaler::getTable(int index) { assert(index >= 1); }
+
+void Lexicaler::lexing() {
+  // loading file
+  string line, token;
+  while (getline(fin, line)) {
+    stringstream spliter;
+    // get line
+    spliter << line;
+    cout << line << endl;
+
+    // split
+    while (spliter >> token) cout << " " << token;
+    cout << endl;
+  }
+}
 

@@ -2,6 +2,7 @@
 // must to use -std=c++11 or higher version
 #include "table.h"
 #include <cassert>
+#include <string>
 
 using namespace std;
 
@@ -21,6 +22,11 @@ void LoadingTable::loadtable(const string& filename) {
   }
 
   // loading file
+  while (!fin.eof()) {
+    string line;
+    fin >> line;  // loading and trim
+    tableData.push_back(line);
+  }
 }
 
 int LoadingTable::get(const string&) {

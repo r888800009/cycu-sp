@@ -12,9 +12,11 @@ using namespace std;
 class Lexicaler {
   vector<Table> tables;
   Table &getTable(int index);
+  fstream fin;
 
  public:
   Lexicaler();
+  void lexing();
   void loadFile(const string &);
   void writeFile(const string &);
   enum Error { loading_failure };
