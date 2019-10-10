@@ -50,7 +50,23 @@ void Lexicaler::lexing() {
     cout << line << endl;
 
     // split
+    Mode mode = mode_normal;
+    string curStr = "";
     while (spliter >> token) {
+      switch (mode) {
+        case mode_normal:
+          // into string mode or comment mode
+          break;
+        case mode_string:
+          // until ' back to normal mode
+          break;
+        case mode_comment:
+          // until next line
+          break;
+        default:
+          assert(false);
+      }
+
       TokenData tokenData = {-1, -1};
 
       if (checkTokenData(tokenData = instructionTable.get(token)))
