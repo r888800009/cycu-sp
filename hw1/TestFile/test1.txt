@@ -1,3 +1,4 @@
+;happy white space
 MOV AH,9
 MOV AH, 9 ; MOV AH, 9
 MOV AH ,9
@@ -9,3 +10,30 @@ MOV AH , 9
      MESSAGE DB 'Hello,_World!$'
   MESSAGE DB 'Hello,_World!$  '   
  MESSAGE DB '  Hello,_World!$  '  
+
+; play Delimiter
+asduw mov AH, '[],+_*/\'\'   '
+
+; string and comment has some problem
+ MESSAGE DB '  Hello,_World!$ ; ';a 
+ MESSAGE DB '  Hello,_World!$ ; ' ;11a 
+ MESSAGE DB '  Hello,_World!$ ; ' ; 11a ; ; ; ;
+ MESSAGE DB '  Hello,_World!$ ; ' ; ' 
+ MESSAGE DB '  Hello , _World!$ ; ' ; ' 
+
+; Mommy syntax error
+ MESSAGE   Hello , _World!$ ; ' ; ' 
+ STRrIGN asiouw 'MOV AH , 9' ; 'MOV AH , 9'
+
+;my label is my string '
+MESSAGE DB 'MESSAGE'
+MESSAGE DB MESSAGE'
+MESSAGE DB 'MESSAGE'
+
+
+; 'multiple' 'string'
+INT 'MESSAGE', 'MQWE',, 'qweqweqw'
+
+; Multi-line string
+ MESSAGE DB '
+   Hello , _World!$ ' ; ' ; ' 
