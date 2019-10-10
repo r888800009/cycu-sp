@@ -1,0 +1,11 @@
+MOV AH,9
+MOV AH, 9 ; MOV AH, 9
+MOV AH ,9
+MOV AH , 9
+
+  MOV   DX, OFFSET(MESSAGE)
+ INT 21H   ;call
+
+     MESSAGE DB 'Hello,_World!$'
+  MESSAGE DB 'Hello,_World!$  '   
+ MESSAGE DB '  Hello,_World!$  '  
