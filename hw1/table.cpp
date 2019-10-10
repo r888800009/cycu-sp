@@ -1,18 +1,22 @@
 // 資工三甲 林詠翔
 // must to use -std=c++11 or higher version
 #include "table.h"
+#include <algorithm>
 #include <cassert>
 #include <string>
 
 using namespace std;
 
-LoadingTable::LoadingTable(const string& filename) {
-  this->filename = filename;
-  loadtable(filename);
+int Table::getTableID() {
+  assert(tableID >= 1);
+  return tableID;
 }
 
-void LoadingTable::loadtable(const string& filename) {
+LoadingTable::LoadingTable(int tableID) { this->tableID = tableID; }
+
+void LoadingTable::loadTable(const string& filename) {
   cout << "Loading table: " << filename << endl;
+  this->filename = filename;
 
   // open file
   fin.open(filename, ios::in | ios::binary);
@@ -22,16 +26,29 @@ void LoadingTable::loadtable(const string& filename) {
   }
 
   // loading file
+  int counter = 1;
   while (!fin.eof()) {
     string line;
     fin >> line;  // loading and trim
-    tableData.push_back(line);
+    transform(line.begin(), line.end(), line.begin(), ::toupper);
+    tableData[line] = counter;
+    counter++;
   }
 }
 
-int LoadingTable::get(const string&) {
+TokenData LoadingTable::get(const string& token) {
   int result;
+  map<string, int>::iterator it;
+  string upper = token;
 
-  assert(result >= 1);
-  return result;
+  transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+  it = tableData.find(upper);
+
+  if (it != tableData.end()) {
+    result = it->second;
+    assert(tableData.size() >= result && result >= 1);
+    return {this->tableID, result};
+  }
+
+  return {-1, -1};
 }

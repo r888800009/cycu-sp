@@ -10,11 +10,10 @@
 using namespace std;
 
 Lexicaler::Lexicaler() {
-  tables.push_back(Table());                       // null table
-  tables.push_back(LoadingTable("Table1.table"));  // Instruction Table 1
-  tables.push_back(LoadingTable("Table2.table"));  // Pseudo and Extra Table 2
-  tables.push_back(LoadingTable("Table3.table"));  // Register table 3
-  tables.push_back(LoadingTable("Table4.table"));  // Delimiter Table 4
+  instructionTable.loadTable("Table1.table");
+  pseudoExtraTable.loadTable("Table2.table");
+  registerTable.loadTable("Table3.table");
+  delimiterTable.loadTable("Table4.table");
   // Symbol Table 5
   // Integer/Real Table 6
   // String Table 7
@@ -32,6 +31,15 @@ void Lexicaler::loadFile(const string& filename) {
 
 Table& Lexicaler::getTable(int index) { assert(index >= 1); }
 
+void Lexicaler::printTableValue(TokenData token) {
+  cout << "(" << token.type << "," << token.value << ")";
+}
+
+bool Lexicaler::checkTokenData(const TokenData token) {
+  if (token.type == -1 || token.value == -1) return false;
+  return true;
+}
+
 void Lexicaler::lexing() {
   // loading file
   string line, token;
@@ -42,7 +50,24 @@ void Lexicaler::lexing() {
     cout << line << endl;
 
     // split
-    while (spliter >> token) cout << " " << token;
+    while (spliter >> token) {
+      TokenData tokenData = {-1, -1};
+
+      if (checkTokenData(tokenData = instructionTable.get(token)))
+        printTableValue(tokenData);
+      else if (checkTokenData(tokenData = pseudoExtraTable.get(token)))
+        printTableValue(tokenData);
+      else if (checkTokenData(tokenData = registerTable.get(token)))
+        printTableValue(tokenData);
+      else if (checkTokenData(tokenData = delimiterTable.get(token))) {
+        // check next token
+        // throw
+        // print token
+        printTableValue(tokenData);
+      } else {
+        cout << " " << token << " ";
+      }
+    }
     cout << endl;
   }
 }

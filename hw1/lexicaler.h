@@ -4,15 +4,21 @@
 #ifndef _LEXICALER_H_
 #define _LEXICALER_H_
 
-#include <vector>
 #include "table.h"
 
 using namespace std;
 
 class Lexicaler {
-  vector<Table> tables;
   Table &getTable(int index);
   fstream fin;
+
+  LoadingTable instructionTable = LoadingTable(INSTRUCTION_TABLE);
+  LoadingTable pseudoExtraTable = LoadingTable(PSEUDO_EXTRA_TABLE);
+  LoadingTable registerTable = LoadingTable(REGISTER_TABLE);
+  LoadingTable delimiterTable = LoadingTable(DELIMITER_TABLE);
+
+  void printTableValue(TokenData);
+  bool checkTokenData(const TokenData token);
 
  public:
   Lexicaler();
