@@ -4,9 +4,17 @@
 #include <iostream>
 #include "lexicaler.h"
 
+#ifdef DEBUGING
+#include "test.h"
+#endif
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
+#ifdef DEBUGING
+  test();
+#endif
+
   if (argc == 2) {
     Lexicaler lexicaler;
 

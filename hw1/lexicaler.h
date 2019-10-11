@@ -3,7 +3,6 @@
 
 #ifndef _LEXICALER_H_
 #define _LEXICALER_H_
-
 #include "table.h"
 
 using namespace std;
@@ -26,6 +25,7 @@ class Lexicaler {
   void loadFile(const string &);
   void writeFile(const string &);
   enum Error { loading_failure };
+  enum Mode { mode_normal, mode_string, mode_comment };
 };
 
 #endif

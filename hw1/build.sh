@@ -2,7 +2,7 @@
 
 if [ -z $1]; then
   echo debug mode
-  g++ *.cpp -D DEBUGING
+  g++ *.cpp -D DEBUGING -g
 else
   echo Release mode
   g++ *.cpp -D NDEBUG

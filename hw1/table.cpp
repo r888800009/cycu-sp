@@ -12,6 +12,18 @@ int Table::getTableID() {
   return tableID;
 }
 
+HashTable::HashTable(int tableID) {
+  this->tableID = tableID;
+  reset();
+}
+
+void HashTable::reset() {
+  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+    tableData[i].empty = true;
+    tableData[i].value = "";
+  }
+}
+
 LoadingTable::LoadingTable(int tableID) { this->tableID = tableID; }
 
 void LoadingTable::loadTable(const string& filename) {
@@ -50,5 +62,46 @@ TokenData LoadingTable::get(const string& token) {
     return {this->tableID, result};
   }
 
+  return {-1, -1};
+}
+
+int HashTable::hash_fucntion(const string& str) {
+  int result = 0;
+
+  for (int i = 0; i < str.length(); i++)
+    result = (result + str.at(i)) % HASHTABLE_SIZE;
+
+  return result;
+}
+
+int HashTable::indexStep(int index, int step) {
+  return (index + step) % HASHTABLE_SIZE;
+}
+
+TokenData HashTable::put(const string& token) {
+  int index = hash_fucntion(token), step = 0;
+
+  while (tableData[indexStep(index, step)].empty == false) {
+    if (step >= HASHTABLE_SIZE) throw "Full table";
+    if (tableData[indexStep(index, step)].value == token)
+      return {this->tableID, indexStep(index, step) + 1};
+    step++;
+  }
+
+  tableData[indexStep(index, step)].empty = false;
+  tableData[indexStep(index, step)].value = token;
+
+  return {this->tableID, indexStep(index, step) + 1};
+}
+
+TokenData HashTable::get(const string& token) {
+  int index = hash_fucntion(token), step = 0;
+
+  while (tableData[indexStep(index, step)].empty == false) {
+    if (step >= HASHTABLE_SIZE) break;
+    if (tableData[indexStep(index, step)].value == token)
+      return {this->tableID, indexStep(index, step) + 1};
+    step++;
+  }
   return {-1, -1};
 }

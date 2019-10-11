@@ -7,3 +7,5 @@ Table1.table
 Table2.table
 Table3.table
 Table4.table
+test.cpp
+test.h
