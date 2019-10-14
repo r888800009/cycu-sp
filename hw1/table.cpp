@@ -48,6 +48,11 @@ void LoadingTable::loadTable(const string& filename) {
   }
 }
 
+TokenData LoadingTable::get(char delimiter) {
+  string token(1, delimiter);
+  return get(token);
+}
+
 TokenData LoadingTable::get(const string& token) {
   int result;
   map<string, int>::iterator it;
@@ -63,6 +68,17 @@ TokenData LoadingTable::get(const string& token) {
   }
 
   return {-1, -1};
+}
+
+bool LoadingTable::exist(const string& token) {
+  TokenData tokenData = get(token);
+  if (tokenData.value != -1) return true;
+  return false;
+}
+
+bool LoadingTable::exist(char delimiter) {
+  string token(1, delimiter);
+  return exist(token);
 }
 
 int HashTable::hash_fucntion(const string& str) {
