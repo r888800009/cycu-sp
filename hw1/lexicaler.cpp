@@ -61,6 +61,12 @@ TokenData Lexicaler::checkToken(const string& token) {
   return {-1, -1};
 }
 
+void Lexicaler::reset() {
+  symbolTable.reset();
+  integerTable.reset();
+  stringTable.reset();
+}
+
 void Lexicaler::lexing() {
   // loading file
   string line, token;

@@ -29,6 +29,7 @@ class Lexicaler {
 
   Lexicaler();
   void lexing();
+  void reset();
   void loadFile(const string &);
   void writeFile(const string &);
   enum Error { loading_failure };
