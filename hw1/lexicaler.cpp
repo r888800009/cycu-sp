@@ -3,6 +3,7 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
 
 #include "lexicaler.h"
@@ -38,6 +39,20 @@ void Lexicaler::printTableValue(TokenData token) {
 bool Lexicaler::checkTokenData(const TokenData token) {
   if (token.type == -1 || token.value == -1) return false;
   return true;
+}
+
+TokenData Lexicaler::checkToken(const string& token) {
+  if (instructionTable.exist(token))
+    return instructionTable.get(token);
+  else if (pseudoExtraTable.exist(token))
+    return pseudoExtraTable.get(token);
+  else if (registerTable.exist(token))
+    return registerTable.get(token);
+  else if (regex_match(token, regex("[0-9]+")))
+    return integerTable.put(token);
+  else
+    return symbolTable.put(token);
+  return {-1, -1};
 }
 
 void Lexicaler::lexing() {

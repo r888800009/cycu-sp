@@ -15,11 +15,16 @@ class Lexicaler {
   LoadingTable pseudoExtraTable = LoadingTable(PSEUDO_EXTRA_TABLE);
   LoadingTable registerTable = LoadingTable(REGISTER_TABLE);
   LoadingTable delimiterTable = LoadingTable(DELIMITER_TABLE);
+  HashTable symbolTable = HashTable(SYMBOL_TABLE);
+  HashTable integerTable = HashTable(INTEGER_REAL_TABLE);
+  HashTable stringTable = HashTable(STRING_TABLE);
 
   void printTableValue(TokenData);
   bool checkTokenData(const TokenData token);
 
  public:
+  TokenData checkToken(const string &token);
+
   Lexicaler();
   void lexing();
   void loadFile(const string &);
