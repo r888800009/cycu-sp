@@ -36,6 +36,12 @@ void Lexicaler::printTableValue(TokenData token) {
   cout << "(" << token.type << "," << token.value << ")";
 }
 
+string Lexicaler::tableValueToString(TokenData token) {
+  stringstream result;
+  result << "(" << token.type << "," << token.value << ")";
+  return result.str();
+}
+
 bool Lexicaler::checkTokenData(const TokenData token) {
   if (token.type == -1 || token.value == -1) return false;
   return true;

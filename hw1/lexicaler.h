@@ -24,6 +24,7 @@ class Lexicaler {
 
  public:
   TokenData checkToken(const string &token);
+  string tableValueToString(TokenData token);
 
   Lexicaler();
   void lexing();
