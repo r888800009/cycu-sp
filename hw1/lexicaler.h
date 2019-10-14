@@ -23,6 +23,7 @@ class Lexicaler {
   bool checkTokenData(const TokenData token);
 
  public:
+  string lexingLine(const string &line);
   TokenData checkToken(const string &token);
   string tableValueToString(TokenData token);
 
