@@ -3,6 +3,8 @@
 #include "test.h"
 #include <cassert>
 #include <iostream>
+#include <vector>
+#include "lexicaler.h"
 #include "table.h"
 
 using namespace std;
@@ -86,7 +88,48 @@ void testHashTable() {
   }
 }
 
+void testLexer() {
+  Lexicaler lexicaler;
+  string result;
+
+  vector<string> testcase;
+
+  // test white space and upper lower case
+  testcase.push_back("ADD A,92");
+  testcase.push_back("ADD        A, 92");
+  testcase.push_back(" ADD    A ,92");
+  testcase.push_back(" ADD      A , 92   ");
+
+  for (int i = 0; i < testcase.size(); i++)
+    assert(lexicaler.lexingLine(testcase[i]) == "(1,1)(3,1)(4,1)(6,7)");
+
+  // string write space
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("MESSAGE DB c'Hello,_World!$  '") ==
+         "(5,17)(5,34)(4,9)(7,92)(4,9)");
+  assert(lexicaler.getData({7, 56}) == "Hello,_World!$  ");
+
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("MESSAGE DB C'  Hello,_World!$'") ==
+         "(5,17)(5,34)(4,9)(7,92)(4,9)");
+  assert(lexicaler.getData({7, 56}) == "  Hello,_World!$");
+
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("MESSAGE DB c'  Hello,_World!$  '") ==
+         "(5,17)(5,34)(4,9)(7,56)(4,9)");
+  assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
+
+  // other
+  assert(lexicaler.lexingLine("    ") == "");
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("ADD A,9") == "(1,1)(3,1)(4,1)(6,57)");
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("   aDd a, 92 ; ADD AH, 92") ==
+         "(1,1)(3,1)(4,1)(6,7)(4,7)");
+}
+
 void test() {
   testHashTable();
   testLoadingTable();
+  testLexer();
 }
