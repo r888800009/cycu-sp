@@ -100,14 +100,14 @@ TokenData HashTable::put(const string& token) {
   while (tableData[indexStep(index, step)].empty == false) {
     if (step >= HASHTABLE_SIZE) throw "Full table";
     if (tableData[indexStep(index, step)].value == token)
-      return {this->tableID, indexStep(index, step) + 1};
+      return {this->tableID, indexStep(index, step)};
     step++;
   }
 
   tableData[indexStep(index, step)].empty = false;
   tableData[indexStep(index, step)].value = token;
 
-  return {this->tableID, indexStep(index, step) + 1};
+  return {this->tableID, indexStep(index, step)};
 }
 
 TokenData HashTable::get(const string& token) {
@@ -116,7 +116,7 @@ TokenData HashTable::get(const string& token) {
   while (tableData[indexStep(index, step)].empty == false) {
     if (step >= HASHTABLE_SIZE) break;
     if (tableData[indexStep(index, step)].value == token)
-      return {this->tableID, indexStep(index, step) + 1};
+      return {this->tableID, indexStep(index, step)};
     step++;
   }
   return {-1, -1};

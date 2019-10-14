@@ -56,17 +56,17 @@ void testHashTable() {
   data = table1.put("test");
   // cout << data.type << ":" << data.value << endl;
   assert(data.type == 1);
-  assert(data.value == ('t' + 'e' + 's' + 't') % 100 + 1);
+  assert(data.value == ('t' + 'e' + 's' + 't') % 100);
 
   data = table1.get("test");
   // cout << data.type << ":" << data.value << endl;
   assert(data.type == 1);
-  assert(data.value == ('t' + 'e' + 's' + 't') % 100 + 1);
+  assert(data.value == ('t' + 'e' + 's' + 't') % 100);
 
   // collision
   table1.put("ttse");
   data = table1.get("ttse");
-  assert(data.type == 1 && data.value == ('t' + 'e' + 's' + 't' + 1) % 100 + 1);
+  assert(data.type == 1 && data.value == ('t' + 'e' + 's' + 't' + 1) % 100);
 
   // some value
   data = table1.get("test");
