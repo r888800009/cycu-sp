@@ -86,6 +86,11 @@ void testHashTable() {
     assert(false);
   } catch (char const *e) {
   }
+
+  // get data
+  table1.reset();
+  data = table1.put("  t  es t");
+  assert(table1.get(data) == "  t  es t");
 }
 
 void testLexer() {

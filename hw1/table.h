@@ -62,6 +62,7 @@ class HashTable : public Table {
   void reset();
   TokenData put(const string& token);
   TokenData get(const string& token);
+  string get(TokenData);
 };
 
 #endif

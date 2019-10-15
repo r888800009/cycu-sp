@@ -110,6 +110,11 @@ TokenData HashTable::put(const string& token) {
   return {this->tableID, indexStep(index, step)};
 }
 
+string HashTable::get(TokenData data) {
+  if (data.type == tableID) return tableData[data.value].value;
+  return "";
+}
+
 TokenData HashTable::get(const string& token) {
   int index = hash_fucntion(token), step = 0;
 
