@@ -36,11 +36,13 @@ class LoadingTable : public Table {
   string filename;
   fstream fin;
   map<string, int> tableData;
+  map<int, string> revTableData;
 
  public:
   LoadingTable(int);
   void loadTable(const string&);
   TokenData get(const string& token);
+  string get(TokenData);
 
   enum Error { loading_failure };
 };

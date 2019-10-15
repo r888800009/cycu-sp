@@ -41,6 +41,10 @@ void testLoadingTable() {
   data = delimiterTable.get('A');
   assert(data.type == -1);
   assert(data.value == -1);
+
+  // token type and value to data
+  assert(instructionTable.get((TokenData){-1, -1}) == "");
+  assert(instructionTable.get((TokenData){1, 33}) == "OR");
 }
 
 void testHashTable() {

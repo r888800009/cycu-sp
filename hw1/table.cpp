@@ -44,6 +44,7 @@ void LoadingTable::loadTable(const string& filename) {
     fin >> line;  // loading and trim
     transform(line.begin(), line.end(), line.begin(), ::toupper);
     tableData[line] = counter;
+    revTableData[counter] = line;
     counter++;
   }
 }
@@ -108,6 +109,11 @@ TokenData HashTable::put(const string& token) {
   tableData[indexStep(index, step)].value = token;
 
   return {this->tableID, indexStep(index, step)};
+}
+
+string LoadingTable::get(TokenData data) {
+  if (data.type == tableID) return revTableData[data.value];
+  return "";
 }
 
 string HashTable::get(TokenData data) {
