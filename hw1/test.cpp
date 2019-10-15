@@ -107,7 +107,7 @@ void testLexer() {
   testcase.push_back("ADD A,92");
   testcase.push_back("ADD        A, 92");
   testcase.push_back(" ADD    A ,92");
-  testcase.push_back(" ADD      A , 92   ");
+  testcase.push_back(" AdD      A , 92   ");
 
   for (int i = 0; i < testcase.size(); i++)
     assert(lexicaler.lexingLine(testcase[i]) == "(1,1)(3,1)(4,1)(6,7)");

@@ -88,6 +88,91 @@ string Lexicaler::getData(TokenData data) {
   }
 }
 
+string Lexicaler::lexingLine(const string& line) {
+  string result = "";
+
+  // split
+  Mode mode = mode_normal;
+  string curStr = "";
+  int index = 0;
+  while (index < line.size()) {
+    char getChar = line.at(index);
+    switch (mode) {
+      case mode_normal:
+        if (isspace(getChar)) {
+          if (curStr != "") {
+            TokenData data = checkToken(curStr);
+            result += tableValueToString(data);
+            curStr = "";
+          }
+
+          break;
+        }
+
+        if (delimiterTable.exist(getChar)) {
+          if (getChar == '\'') {
+            // into string mode or comment mode
+            if (curStr == "x" || curStr == "X")
+              mode = mode_integer;
+            else if (curStr == "c" || curStr == "C")
+              mode = mode_string;
+            else
+              mode = mode_string;
+          } else {
+            if (curStr != "") {
+              TokenData data = checkToken(curStr);
+              result += tableValueToString(data);
+            }
+
+            if (getChar == ';') mode = mode_comment;
+          }
+
+          TokenData data = delimiterTable.get(getChar);
+          result += tableValueToString(data);
+          curStr = "";
+          break;
+        }
+
+        curStr += getChar;
+
+        break;
+      case mode_string:
+        // until ' back to normal mode
+        if (getChar == '\'') {
+          result += tableValueToString(stringTable.put(curStr));
+          TokenData data = delimiterTable.get(getChar);
+          result += tableValueToString(data);
+          curStr = "";
+          mode = mode_normal;
+        } else {
+          curStr += getChar;
+        }
+
+        break;
+      case mode_integer:
+        // until ' back to normal mode
+        break;
+      case mode_comment:
+        // cout << "?";
+        // until next line
+        break;
+      default:
+        assert(false);
+    }
+
+    index++;
+  }
+
+  // last token
+  if (curStr != "") {
+    TokenData data = checkToken(curStr);
+    result += tableValueToString(data);
+    curStr = "";
+  }
+
+  return result;
+}
+
 void Lexicaler::lexing() {
   // loading file
   string line, token;

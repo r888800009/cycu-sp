@@ -34,7 +34,7 @@ class Lexicaler {
   void writeFile(const string &);
   string getData(TokenData);
   enum Error { loading_failure };
-  enum Mode { mode_normal, mode_string, mode_comment };
+  enum Mode { mode_normal, mode_string, mode_integer, mode_comment };
 };
 
 #endif
