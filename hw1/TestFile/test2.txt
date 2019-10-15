@@ -1,0 +1,25 @@
+#lable1
+#1234
+@retadr
++JSUB
+=c'EOF'
+=x'1f'
+
+c'asd'
+C'asd'
+X'123'
+x'asd'
+c'123'
+x'123'
+x'12f'
+x'12ABCDEF'
+x'12abcDEF'
+x'12g'
+x'1212 '
+x'12 12 '
+x'  12 12 '
+=#1234string
+1234ABCDEFG
+# 123
+
+1234

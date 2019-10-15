@@ -1,0 +1,61 @@
+Loading table: Table1.table
+Loading table: Table4.table
+Loading table: Table1.table
+Loading table: Table2.table
+Loading table: Table3.table
+Loading table: Table4.table
+Loading table: Table1.table
+Loading table: Table2.table
+Loading table: Table3.table
+Loading table: Table4.table
+Loading file: "TestFile/test2.txt"
+#lable1
+(4,12)(5,61)
+#1234
+(4,12)(6,2)
+@retadr
+(4,13)(5,42)
++JSUB
+(4,2)(1,19)
+=c'EOF'
+(4,11)(4,9)(7,18)(4,9)
+=x'1f'
+(4,11)(4,9)
+
+
+c'asd'
+(4,9)(7,12)(4,9)
+C'asd'
+(4,9)(7,12)(4,9)
+X'123'
+(4,9)
+x'asd'
+(4,9)
+c'123'
+(4,9)(7,50)(4,9)
+x'123'
+(4,9)
+x'12f'
+(4,9)
+x'12ABCDEF'
+(4,9)
+x'12abcDEF'
+(4,9)
+x'12g'
+(4,9)
+x'1212 '
+(4,9)
+x'12 12 '
+(4,9)
+x'  12 12 '
+(4,9)
+=#1234string
+(4,11)(4,12)(5,65)
+1234ABCDEFG
+(5,78)
+# 123
+(4,12)(6,50)
+
+
+1234
+(6,2)

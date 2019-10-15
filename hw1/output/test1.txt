@@ -1,0 +1,83 @@
+Loading table: Table1.table
+Loading table: Table4.table
+Loading table: Table1.table
+Loading table: Table2.table
+Loading table: Table3.table
+Loading table: Table4.table
+Loading table: Table1.table
+Loading table: Table2.table
+Loading table: Table3.table
+Loading table: Table4.table
+Loading file: "TestFile/test1.txt"
+; play Delimiter
+(4,7)
+asduw add A, '[],+_*/\'\'   '
+(5,48)(1,1)(3,1)(4,1)(4,9)(7,47)(4,9)(4,9)(7,96)(4,9)
+##,,,,,'''';;
+(4,12)(4,12)(4,1)(4,1)(4,1)(4,1)(4,1)(4,9)(7,0)(4,9)(4,9)(7,0)(4,9)(4,7)
+
+
+; string and comment has some problem
+(4,7)
+ MESSAGE DB '  Hello,_World!$ ; ';a 
+(5,17)(5,34)(4,9)(7,15)(4,9)(4,7)
+ MESSAGE DB '  Hello,_World!$ ; ' ;11a 
+(5,17)(5,34)(4,9)(7,15)(4,9)(4,7)
+ MESSAGE DB '  Hello,_World!$ ; ' ; 11a ; ; ; ;
+(5,17)(5,34)(4,9)(7,15)(4,9)(4,7)
+ MESSAGE DB '  Hello,_World!$ ; ' ; ' 
+(5,17)(5,34)(4,9)(7,15)(4,9)(4,7)
+ MESSAGE DB '  Hello , _World!$ ; ' ; ' 
+(5,17)(5,34)(4,9)(7,79)(4,9)(4,7)
+
+
+; Mommy syntax error
+(4,7)
+ MESSAGE   Hello , _World!$ ; ' ; ' 
+(5,17)(5,0)(4,1)(5,84)(4,7)
+ STRrIGN asiouw 'MOV AH , 9' ; 'MOV AH , 9'
+(5,85)(5,64)(4,9)(7,76)(4,9)(4,7)
+
+
+;my label is my string '
+(4,7)
+MESSAGE DB 'MESSAGE'
+(5,17)(5,34)(4,9)(7,17)(4,9)
+MESSAGE DB MESSAGE'
+(5,17)(5,34)(4,9)
+MESSAGE DB 'MESSAGE'
+(5,17)(5,34)(4,9)(7,17)(4,9)
+
+
+
+
+; 'multiple' 'string'
+(4,7)
+INT 'MESSAGE', 'MQWE',, 'qweqweqw'
+(5,35)(4,9)(7,17)(4,9)(4,1)(4,9)(7,14)(4,9)(4,1)(4,1)(4,9)(7,98)(4,9)
+
+
+; Multi-line string
+(4,7)
+ MESSAGE DB '
+(5,17)(5,34)(4,9)
+   Hello , _World!$ ' ; ' ; ' 
+(5,0)(4,1)(5,84)(4,9)(7,23)(4,9)(4,7)
+
+
+;  1234AH
+(4,7)
+Mov ah, 1234
+(5,6)(5,1)(4,1)(6,2)
+Mov ah, #1234
+(5,6)(5,1)(4,1)(4,12)(6,2)
+Mov ah, 12F4
+(5,6)(5,1)(4,1)(5,21)
+Mov ah, #12F4
+(5,6)(5,1)(4,1)(4,12)(5,21)
+Mov ah, 12F41278918278A
+(5,6)(5,1)(4,1)(5,19)
+Mov ah, 12dh##ASDF4A
+(5,6)(5,1)(4,1)(5,3)(4,12)(4,12)(5,4)
+abc, MOV AX,BX 
+(5,94)(4,1)(5,42)(5,53)(4,1)(5,54)

@@ -1,18 +1,6 @@
-;happy white space
-MOV AH,9
-MOV AH, 9 ; MOV AH, 9
-MOV AH ,9
-MOV AH , 9
-
-  MOV   DX, OFFSET(MESSAGE)
- INT 21H   ;call
-
-     MESSAGE DB 'Hello,_World!$'
-  MESSAGE DB 'Hello,_World!$  '   
- MESSAGE DB '  Hello,_World!$  '  
-
 ; play Delimiter
-asduw mov AH, '[],+_*/\'\'   '
+asduw add A, '[],+_*/\'\'   '
+##,,,,,'''';;
 
 ; string and comment has some problem
  MESSAGE DB '  Hello,_World!$ ; ';a 
@@ -37,3 +25,12 @@ INT 'MESSAGE', 'MQWE',, 'qweqweqw'
 ; Multi-line string
  MESSAGE DB '
    Hello , _World!$ ' ; ' ; ' 
+
+;  1234AH
+Mov ah, 1234
+Mov ah, #1234
+Mov ah, 12F4
+Mov ah, #12F4
+Mov ah, 12F41278918278A
+Mov ah, 12dh##ASDF4A
+abc, MOV AX,BX 
