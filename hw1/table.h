@@ -41,6 +41,8 @@ class LoadingTable : public Table {
  public:
   LoadingTable(int);
   void loadTable(const string&);
+  bool exist(const string& token);
+  bool exist(char);
   TokenData get(const string& token);
   TokenData get(char delimiter);
   string get(TokenData);
