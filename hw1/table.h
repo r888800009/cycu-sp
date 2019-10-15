@@ -42,6 +42,7 @@ class LoadingTable : public Table {
   LoadingTable(int);
   void loadTable(const string&);
   TokenData get(const string& token);
+  TokenData get(char delimiter);
   string get(TokenData);
 
   enum Error { loading_failure };
