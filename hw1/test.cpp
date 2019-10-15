@@ -116,12 +116,12 @@ void testLexer() {
   lexicaler.reset();
   assert(lexicaler.lexingLine("MESSAGE DB c'Hello,_World!$  '") ==
          "(5,17)(5,34)(4,9)(7,92)(4,9)");
-  assert(lexicaler.getData({7, 56}) == "Hello,_World!$  ");
+  assert(lexicaler.getData({7, 92}) == "Hello,_World!$  ");
 
   lexicaler.reset();
   assert(lexicaler.lexingLine("MESSAGE DB C'  Hello,_World!$'") ==
          "(5,17)(5,34)(4,9)(7,92)(4,9)");
-  assert(lexicaler.getData({7, 56}) == "  Hello,_World!$");
+  assert(lexicaler.getData({7, 92}) == "  Hello,_World!$");
 
   lexicaler.reset();
   assert(lexicaler.lexingLine("MESSAGE DB c'  Hello,_World!$  '") ==
@@ -135,6 +135,18 @@ void testLexer() {
   lexicaler.reset();
   assert(lexicaler.lexingLine("   aDd a, 92 ; ADD AH, 92") ==
          "(1,1)(3,1)(4,1)(6,7)(4,7)");
+
+  // test getData
+  lexicaler.reset();
+  lexicaler.lexingLine("MESSAGE ADD A,9");
+  lexicaler.lexingLine("MESSAGE DB c'  Hello,_World!$  '");
+  assert(lexicaler.getData({1, 1}) == "ADD");
+  assert(lexicaler.getData({2, 1}) == "START");
+  assert(lexicaler.getData({3, 1}) == "A");
+  assert(lexicaler.getData({4, 1}) == ",");
+  assert(lexicaler.getData({5, 17}) == "MESSAGE");
+  assert(lexicaler.getData({6, 57}) == "9");
+  assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
 }
 
 void test() {

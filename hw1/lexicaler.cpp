@@ -67,6 +67,27 @@ void Lexicaler::reset() {
   stringTable.reset();
 }
 
+string Lexicaler::getData(TokenData data) {
+  switch (data.type) {
+    case INSTRUCTION_TABLE:
+      return instructionTable.get(data);
+    case PSEUDO_EXTRA_TABLE:
+      return pseudoExtraTable.get(data);
+    case REGISTER_TABLE:
+      return registerTable.get(data);
+    case DELIMITER_TABLE:
+      return delimiterTable.get(data);
+    case STRING_TABLE:
+      return stringTable.get(data);
+    case INTEGER_REAL_TABLE:
+      return integerTable.get(data);
+    case SYMBOL_TABLE:
+      return symbolTable.get(data);
+    default:
+      assert(false);
+  }
+}
+
 void Lexicaler::lexing() {
   // loading file
   string line, token;
