@@ -1,6 +1,7 @@
 // 資工三甲 林詠翔
 // must to use -std=c++11 or higher version
 #include "table.h"
+
 #include <algorithm>
 #include <cassert>
 #include <string>
@@ -56,7 +57,7 @@ TokenData LoadingTable::get(char delimiter) {
 
 TokenData LoadingTable::get(const string& token) {
   int result;
-  map<string, int>::iterator it;
+  unordered_map<string, int>::iterator it;
   string upper = token;
 
   transform(upper.begin(), upper.end(), upper.begin(), ::toupper);

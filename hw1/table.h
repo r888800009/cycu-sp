@@ -4,8 +4,8 @@
 #define _TABLE_H_
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 
 #define INSTRUCTION_TABLE 1
 #define PSEUDO_EXTRA_TABLE 2
@@ -35,8 +35,8 @@ class Table {
 class LoadingTable : public Table {
   string filename;
   fstream fin;
-  map<string, int> tableData;
-  map<int, string> revTableData;
+  unordered_map<string, int> tableData;
+  unordered_map<int, string> revTableData;
 
  public:
   LoadingTable(int);
