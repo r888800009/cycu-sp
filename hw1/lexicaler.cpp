@@ -1,12 +1,12 @@
 // 資工三甲 林詠翔
 // must to use -std=c++11 or higher version
+#include "lexicaler.h"
+
 #include <cassert>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <sstream>
-
-#include "lexicaler.h"
 
 using namespace std;
 
@@ -151,6 +151,15 @@ string Lexicaler::lexingLine(const string& line) {
         break;
       case mode_integer:
         // until ' back to normal mode
+        if (getChar == '\'') {
+          result += tableValueToString(integerTable.put(curStr));
+          TokenData data = delimiterTable.get(getChar);
+          result += tableValueToString(data);
+          curStr = "";
+          mode = mode_normal;
+        } else {
+          curStr += getChar;
+        }
         break;
       case mode_comment:
         // cout << "?";

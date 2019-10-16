@@ -128,6 +128,14 @@ void testLexer() {
          "(5,17)(5,34)(4,9)(7,56)(4,9)");
   assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
 
+  // integer
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("MESSAGE DB x'9'") ==
+         "(5,17)(5,34)(4,9)(6,57)(4,9)");
+  assert(lexicaler.lexingLine("MESSAGE DB X'9'") ==
+         "(5,17)(5,34)(4,9)(6,57)(4,9)");
+  assert(lexicaler.getData({6, 57}) == "9");
+
   // other
   assert(lexicaler.lexingLine("    ") == "");
   lexicaler.reset();
