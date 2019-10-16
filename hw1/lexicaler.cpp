@@ -124,7 +124,7 @@ string Lexicaler::lexingLine(const string& line) {
               result += tableValueToString(data);
             }
 
-            if (getChar == ';') mode = mode_comment;
+            if (getChar == '.') mode = mode_comment;
           }
 
           TokenData data = delimiterTable.get(getChar);

@@ -1,32 +1,32 @@
-; play Delimiter
+. play Delimiter
 asduw add A, '[],+_*/\'\'   '
-##,,,,,'''';;
+##,,,,,''''..
 
-; string and comment has some problem
- MESSAGE DB '  Hello,_World!$ ; ';a 
- MESSAGE DB '  Hello,_World!$ ; ' ;11a 
- MESSAGE DB '  Hello,_World!$ ; ' ; 11a ; ; ; ;
- MESSAGE DB '  Hello,_World!$ ; ' ; ' 
- MESSAGE DB '  Hello , _World!$ ; ' ; ' 
+. string and comment has some problem
+ MESSAGE DB '  Hello,_World!$ . '.a 
+ MESSAGE DB '  Hello,_World!$ . ' .11a 
+ MESSAGE DB '  Hello,_World!$ . ' . 11a . . . .
+ MESSAGE DB '  Hello,_World!$ . ' . ' 
+ MESSAGE DB '  Hello , _World!$ . ' . ' 
 
-; Mommy syntax error
- MESSAGE   Hello , _World!$ ; ' ; ' 
- STRrIGN asiouw 'MOV AH , 9' ; 'MOV AH , 9'
+. Mommy syntax error
+ MESSAGE   Hello , _World!$ . ' . ' 
+ STRrIGN asiouw 'MOV AH , 9' . 'MOV AH , 9'
 
-;my label is my string '
+.my label is my string '
 MESSAGE DB 'MESSAGE'
 MESSAGE DB MESSAGE'
 MESSAGE DB 'MESSAGE'
 
 
-; 'multiple' 'string'
+. 'multiple' 'string'
 INT 'MESSAGE', 'MQWE',, 'qweqweqw'
 
-; Multi-line string
+. Multi-line string
  MESSAGE DB '
-   Hello , _World!$ ' ; ' ; ' 
+   Hello , _World!$ ' . ' . ' 
 
-;  1234AH
+.  1234AH
 Mov ah, 1234
 Mov ah, #1234
 Mov ah, 12F4
@@ -34,3 +34,5 @@ Mov ah, #12F4
 Mov ah, 12F41278918278A
 Mov ah, 12dh##ASDF4A
 abc, MOV AX,BX 
+
+; .not comment

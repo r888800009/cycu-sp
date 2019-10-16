@@ -1,9 +1,11 @@
 // 資工三甲 林詠翔
 // must to use -std=c++11 or higher version
 #include "test.h"
+
 #include <cassert>
 #include <iostream>
 #include <vector>
+
 #include "lexicaler.h"
 #include "table.h"
 
@@ -141,8 +143,8 @@ void testLexer() {
   lexicaler.reset();
   assert(lexicaler.lexingLine("ADD A,9") == "(1,1)(3,1)(4,1)(6,57)");
   lexicaler.reset();
-  assert(lexicaler.lexingLine("   aDd a, 92 ; ADD AH, 92") ==
-         "(1,1)(3,1)(4,1)(6,7)(4,7)");
+  assert(lexicaler.lexingLine("   aDd a, 92 . ADD AH, 92") ==
+         "(1,1)(3,1)(4,1)(6,7)(4,10)");
 
   // test getData
   lexicaler.reset();
