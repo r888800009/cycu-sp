@@ -2,11 +2,12 @@
 - 資訊三甲 10612150 林詠翔
 
 ## 開發環境與平台
-- linux (archlinux) 64bit
-- gcc (GCC) 9.2.0 C++ 11
-- SIC組合語言
+- 開發平台: Linux 64bit (archlinux)
+- 所選擇的組合語言: SIC組合語言
+- 使用的程式語言: C++ 11
+- 使用開發環境: vim ,gcc (GCC) 9.2.0 C++ 11
 
-並且確保有將編譯器加上參數`-std=c++11 -DNDEBUG`，採用文字編輯器編寫並透過script執行編譯指令。
+本次作業採用c++ 11編寫，並且確保有將編譯器加上參數`-std=c++11 -DNDEBUG`，透過指令進行編譯，採用文字編輯器編寫並透過script執行編譯指令。
 ``` bash
 g++ *.cpp -std=c++11 -DNDEBUG 
 ```
@@ -49,11 +50,41 @@ symbol六個，若不是前四者也不是數字的一律當成symbol，而如�
 `[0-9]+`等正則表達式下去檢查。
 
 ### 數字或字串
-數字與字串狀態，都會將所有的內容保存到各自的表，字串表中將不分大小寫並且包含whitespace的保存到string table，而數字模式的話則會保存所有
+數字與字串狀態，都會將所有的內容保存到各自的表，字串表中將不分大小寫並且包含whitespace
+的保存到string table，而數字模式的話則會保存所有
 
 ### 註解
 註解模式只需要標記含有註解符號即可轉跳下行，依然保留一個狀態以利於未來擴充功能。
 
 在切換各種模式之前，會將已經讀到的delimiter的輸出，之後另外一個模式如字串或數字則是
 
+### 資料結構
+ 
+LoadingTable採用C++ 11中STL的unordered_map，標準函數庫實做大多透過hashTable，
+LoadingTable建立兩個方向兩個表，雙向查詢token的`(type, value)`與對映的token string如`add`或`sub`，
+而查詢`(type, value)`時透過string作為key找到對映的`(type, value)`，
+反向則是`(type, value)`可以對映到string。
+
+HashTable透過字串中所有的ascii相加後取mod 100的進行索引，裡面含有一個陣列並且保存
+碰撞採用linear probing
+
+透過`empty`來判斷是否存放資料，並且透過`value`保存內容值
+``` c++
+ typedef struct HashTableData {
+    bool empty = true;
+    string value;
+  } HashTableData;
+```
+
+而`Instruction`、`PseudoExtra`、`Register`、`Delimiter`皆是採用LoadingTable處理，
+`Integer/real`、`String`、`Symbol`皆是採用HashTable。
+
 ### 除錯的方式
+這裡的除錯採用檔案進行完整測試以及單元測試，單元測試寫在`test.cpp`當中，
+並且需要定義`#define DEBUGING`才會執行，並且在裡面編寫容易出錯的測試，
+並且在單元測試檔案裡面編寫斷言，在程式出錯的時候會自動在該地點停下。
+
+檔案測試是透過一些SIC或其他架構的組合語言，並且檢查確定測資合理之後將檔案保存下來，
+之後可以在修改程式或重構的時候，立即抓到相關的錯誤。
+
+## 未完成的功能
