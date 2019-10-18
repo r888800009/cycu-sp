@@ -3,6 +3,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+
 #include "lexicaler.h"
 
 #ifdef DEBUGING
@@ -19,6 +20,8 @@ void loadFile(const string &filename) {
     lexicaler.lexing();
   } catch (Lexicaler::Error e) {
     if (e == Lexicaler::loading_failure)
+      ;
+    else if (e == Lexicaler::saving_failure)
       ;
     else
       throw "Unknown Error!";

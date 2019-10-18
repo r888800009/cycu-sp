@@ -21,14 +21,19 @@ Lexicaler::Lexicaler() {
 }
 
 void Lexicaler::loadFile(const string& filename) {
-  cout << "Loading file: \"" << filename << '"' << endl;
-
   this->filename = filename;
-  fin.open(filename, ios::in);
+  cout << "Loading file: \"" << filename << '"' << endl;
+  fin.open(this->filename, ios::in);
   if (!fin) {
-    cout << "Can't load file " << filename << endl;
+    cout << "Can't load file " << this->filename << endl;
     throw loading_failure;
   }
+
+  regex postFix("_input.txt$");
+  string newName = filename;
+  newName = regex_replace(newName, postFix, "");
+  this->saveName = newName + "_output.txt";
+  cout << "SaveName: \"" << saveName << '"' << endl;
 }
 
 Table& Lexicaler::getTable(int index) { assert(index >= 1); }
@@ -187,10 +192,14 @@ void Lexicaler::lexing() {
   // loading file
   string line, token;
   fstream fout;
-  string saveName = filename + ".output.txt";
 
   fout.open(saveName, ios::out);
+  if (!fout) {
+    cout << "Can't open file " << saveName << endl;
+    throw saving_failure;
+  }
 
+  cout << "start write: \"" << saveName << '"' << endl;
   while (getline(fin, line)) {
     // get line
     cout << line << endl;
@@ -202,5 +211,6 @@ void Lexicaler::lexing() {
   }
 
   fout.close();
+  fin.close();
 }
 

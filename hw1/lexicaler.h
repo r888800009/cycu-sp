@@ -10,7 +10,7 @@ using namespace std;
 class Lexicaler {
   Table &getTable(int index);
   fstream fin;
-  string filename;
+  string filename, saveName;
 
   LoadingTable instructionTable = LoadingTable(INSTRUCTION_TABLE);
   LoadingTable pseudoExtraTable = LoadingTable(PSEUDO_EXTRA_TABLE);
@@ -34,7 +34,7 @@ class Lexicaler {
   void loadFile(const string &);
   void writeFile(const string &);
   string getData(TokenData);
-  enum Error { loading_failure };
+  enum Error { loading_failure, saving_failure };
   enum Mode { mode_normal, mode_string, mode_integer, mode_comment };
 };
 
