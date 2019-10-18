@@ -8,12 +8,9 @@ if [ -z $1]; then
 
   echo test files
   fileList='error1.txt test1.txt test2.txt'
-  rm test-temp -r
-  mkdir test-temp
   for filename in $fileList; do
-    ./a.out ./TestFile/$filename > test-temp/$filename
-    drophead=12
-    diff <(tail -n +$drophead test-temp/$filename) <(tail -n +$drophead output/$filename)
+    ./a.out ./TestFile/$filename >> ./logging.txt
+    diff TestFile/$filename.output.txt output/$filename
     if [ $? -eq 1 ]; then
       echo $filename error
     fi

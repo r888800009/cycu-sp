@@ -10,6 +10,7 @@ using namespace std;
 class Lexicaler {
   Table &getTable(int index);
   fstream fin;
+  string filename;
 
   LoadingTable instructionTable = LoadingTable(INSTRUCTION_TABLE);
   LoadingTable pseudoExtraTable = LoadingTable(PSEUDO_EXTRA_TABLE);

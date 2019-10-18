@@ -23,7 +23,8 @@ Lexicaler::Lexicaler() {
 void Lexicaler::loadFile(const string& filename) {
   cout << "Loading file: \"" << filename << '"' << endl;
 
-  fin.open(filename, ios::in | ios::binary);
+  this->filename = filename;
+  fin.open(filename, ios::in);
   if (!fin) {
     cout << "Can't load file " << filename << endl;
     throw loading_failure;
@@ -185,12 +186,21 @@ string Lexicaler::lexingLine(const string& line) {
 void Lexicaler::lexing() {
   // loading file
   string line, token;
+  fstream fout;
+  string saveName = filename + ".output.txt";
+
+  fout.open(saveName, ios::out);
+
   while (getline(fin, line)) {
-    stringstream spliter;
     // get line
     cout << line << endl;
+    fout << line << endl;
 
-    cout << lexingLine(line) << endl;
+    string out = lexingLine(line);
+    cout << out << endl;
+    fout << out << endl;
   }
+
+  fout.close();
 }
 

@@ -1,14 +1,3 @@
-Loading table: Table1.table
-Loading table: Table4.table
-Loading table: Table1.table
-Loading table: Table2.table
-Loading table: Table3.table
-Loading table: Table4.table
-Loading table: Table1.table
-Loading table: Table2.table
-Loading table: Table3.table
-Loading table: Table4.table
-Loading file: "TestFile/error1.txt"
 TEST     START   1000
 (5,20)(2,1)(6,93)
 FIRST    STL     RETADR
@@ -40,7 +29,7 @@ ENDFIL   LDA     EOF
          RSUB
 (1,36)
 EOF      BYTE    C'EOF
-(5,18)(2,3)(4,9)(5,31)
+(5,18)(2,3)(4,9)(5,18)
 THREE    WORD    3
 (5,76)(2,4)(6,51)
 ZERO     WORD    0

@@ -1,14 +1,3 @@
-Loading table: Table1.table
-Loading table: Table4.table
-Loading table: Table1.table
-Loading table: Table2.table
-Loading table: Table3.table
-Loading table: Table4.table
-Loading table: Table1.table
-Loading table: Table2.table
-Loading table: Table3.table
-Loading table: Table4.table
-Loading file: "TestFile/test2.txt"
 #lable1
 (4,12)(5,61)
 #1234
