@@ -146,6 +146,10 @@ void testLexer() {
   assert(lexicaler.lexingLine("   aDd a, 92 . ADD AH, 92") ==
          "(1,1)(3,1)(4,1)(6,7)(4,10)");
 
+  // upper case
+  lexicaler.reset();
+  assert(lexicaler.lexingLine("x'ffaA'") == lexicaler.lexingLine("x'fFaA'"));
+
   // test getData
   lexicaler.reset();
   lexicaler.lexingLine("MESSAGE ADD A,9");

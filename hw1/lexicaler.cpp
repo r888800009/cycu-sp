@@ -158,6 +158,10 @@ string Lexicaler::lexingLine(const string& line) {
       case mode_integer:
         // until ' back to normal mode
         if (getChar == '\'') {
+          // upper case
+          transform(curStr.begin(), curStr.end(), curStr.begin(), ::toupper);
+
+          // set result
           result += tableValueToString(integerTable.put(curStr));
           TokenData data = delimiterTable.get(getChar);
           result += tableValueToString(data);

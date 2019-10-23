@@ -1,0 +1,40 @@
+. Str test
+C''
+C'ADD'
+C'add'
+C' A D D '
+C 'ADD'     . not exist
+C'AD        . not exist
+D'          . not exist
+
+. Num test
+X''
+X'ADD'
+X'add'
+X' A D D '  . not exist
+X 'ADD'     . not exist
+X'AD        . not exist
+D'          . not exist
+
+. Imm test
+123
+#123
+#ABC
+#123ABC     . not exist
+
+. Instruction test
+X
+x
+add
+ADD
+aDd
+
+. Label test
+C
+c
+LABEL1
+_LABEL1
+1LABEL      . not exist
+
+. Delimiter test
+,+-*/:;?''=#@.

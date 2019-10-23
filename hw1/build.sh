@@ -8,7 +8,7 @@ if [ -z $1]; then
   ./a.out --debuging
 
   echo test files
-  fileList='error1 SIC SICXE2 test2 MY SICXE1 test1'
+  fileList='error1 SIC SICXE2 test2 MY SICXE1 test1 special'
   for filename in $fileList; do
     ./a.out ./TestFile/"$filename"_input.txt  >> ./logging.txt
     diff TestFile/"$filename"_output.txt output/"$filename"_output.txt
