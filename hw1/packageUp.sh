@@ -2,6 +2,9 @@
 name="10612150"
 
 rm $name -r
+rm $name.zip
+pandoc README.md -o README.html
+pandoc README.md -o README.docx
 mkdir $name
 cp -r * $name
 

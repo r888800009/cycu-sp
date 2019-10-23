@@ -2,10 +2,10 @@
 - 資訊三甲 10612150 林詠翔
 
 ## 開發環境與平台
-- 開發平台: Linux 64bit (archlinux)
+- 開發平台: CPU: Intel i5-6300HQ (4) @ 3.200GHz, Memory: 12G 
 - 所選擇的組合語言: SIC組合語言
 - 使用的程式語言: C++ 11
-- 使用開發環境: vim ,gcc (GCC) 9.2.0 C++ 11
+- 使用開發環境: Linux 64bit (archlinux), vim, g++ (GCC) 9.2.0 C++ 11
 
 本次作業採用c++ 11編寫，並且確保有將編譯器加上參數`-std=c++11 -DNDEBUG`，透過指令進行編譯，採用文字編輯器編寫並透過script執行編譯指令。
 ``` bash
@@ -19,19 +19,22 @@ g++ *.cpp -std=c++11 -DNDEBUG
 ./a.out
 ```
 
-進入交互模式
+進入交互模式，輸入檔名
 ``` plaintext
 Interactive mode
 or "./a.out input.txt"
 type "." quit
 >
 ```
+之後會輸出一個後綴為`_output.txt`的檔案
 
 ### 參數模式:
 載啟動程式之前加上檔名作為參數，則程式會自動讀取此參數並進行Lexical Analysis
 ``` bash
 ./a.out SIC/SIC_input.txt
 ```
+
+之後會輸出一個`SIC_output.txt`檔案
 
 ## 程式設計與流程
 ### 編寫的方法
@@ -45,7 +48,7 @@ type "." quit
 時要判斷前方式否為`x`或`c`並且**不考慮大小寫**，若為`c`則切換到string
 狀態，若為`x`則切換到數字狀態。
 
-在一般指令狀態下token可以被解讀為delimiter, 指令, pseudo, register,integer以及
+在一般指令狀態下token可以被解讀為delimiter, 指令, pseudo, register, integer以及
 symbol六個，若不是前四者也不是數字的一律當成symbol，而如何判斷是否為數字採用
 `[0-9]+`等正則表達式下去檢查。
 
@@ -76,8 +79,8 @@ HashTable透過字串中所有的ascii相加後取mod 100的進行索引，裡�
   } HashTableData;
 ```
 
-而`Instruction`、`PseudoExtra`、`Register`、`Delimiter`皆是採用LoadingTable處理，
-`Integer/real`、`String`、`Symbol`皆是採用HashTable。
+而`Instruction`、`PseudoExtra`、`Register`、`Delimiter`皆是採用LoadingTable這個class處理，
+而背後實際上是兩個HashTable，`Integer/real`、`String`、`Symbol`皆是採用自己編寫HashTable。
 
 ### 除錯的方式
 這裡的除錯採用檔案進行完整測試以及單元測試，單元測試寫在`test.cpp`當中，
@@ -88,3 +91,4 @@ HashTable透過字串中所有的ascii相加後取mod 100的進行索引，裡�
 之後可以在修改程式或重構的時候，立即抓到相關的錯誤。
 
 ## 未完成的功能
+大致完成，但是如果輸入非預期的文字如中文字可能會崩潰。

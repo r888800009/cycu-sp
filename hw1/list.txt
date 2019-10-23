@@ -9,3 +9,6 @@ Table3.table
 Table4.table
 test.cpp
 test.h
+README.md
+README.html
+README.docx
