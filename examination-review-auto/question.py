@@ -2,11 +2,16 @@
 import sys
 import random
 import csv
+import json
 
-question_database = []
+question_database = {}
+score_pool = {}
 
 def getOneQuestion():
-    q = random.choice(question_database)
+    score = sorted(score_pool.items(), key=lambda kv: kv[1])
+    qid = score[0][0]
+    q = question_database[qid]
+
     print('Q:' + q['question'])
     for i in range(0, 4):
         print('{}: {}'.format(i + 1, q['op'][i]))
@@ -22,6 +27,22 @@ def getOneQuestion():
     if select != q['ans']:
         print("fail")
         print(q['op'][q['ans'] - 1])
+        score_pool[qid] -= 1
+    else:
+        score_pool[qid] += 1
+
+    saveDatabase()
+
+def saveDatabase():
+    global score_pool
+    with open('score_pool.txt', 'w') as outfile:
+        json.dump(score_pool, outfile, indent=2)
+
+
+def loadDatabase():
+    global score_pool
+    with open('score_pool.txt', 'r') as json_file:
+        score_pool = json.load(json_file)
 
 def load(filename):
     with open(filename, newline='') as csvfile:
@@ -30,16 +51,22 @@ def load(filename):
         for row in spamreader:
             if row[0] == 'qid':
                 continue
+
+            if not score_pool.get(row[0]):
+                score_pool[row[0]] = 0
+
             new_data = {
                     'op': row[2:6],
                     'question': row[1],
                     'ans': int(row[6])
                     }
-            question_database.append(new_data)
+            question_database[row[0]] = new_data
 
+loadDatabase()
 load('c1.csv')
 load('c2.csv')
 load('c3.csv')
+saveDatabase()
 
 #print(question_database)
 while True:
