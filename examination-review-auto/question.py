@@ -9,7 +9,9 @@ score_pool = {}
 
 def getOneQuestion():
     score = sorted(score_pool.items(), key=lambda kv: kv[1])
-    qid = score[0][0]
+    sub = [i for i in score if i[1] <= score[0][1]]
+
+    qid = random.choice(sub)[0]
     q = question_database[qid]
 
     print('Q:' + q['question'])
