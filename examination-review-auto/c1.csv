@@ -1,0 +1,67 @@
+qid,title,op1,op2,op3,op4,ans
+1001,所謂間接定址法 (Indirect Addressing)是指,將地址翻譯在機器碼內,變數所在地址內放的是地址，再由此地址找到值,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1002,下列何者是屬於Indirect Addressing？,"MOV AX,DATA","MOV AL,[SI]","MOV AX,[1500]","MOV AX,DATA[SI]",2
+1003,請問在Assembly中Indexed Addressing主要是用來,array access,relocation,register access,以上皆非,1
+1004,下列何者是屬於Indexed Addressing？,"MOV AX,DATA","MOV AX,[1500]","MOV AL,1500H","MOV AX,DATA[SI]",4
+1005,所謂索引(或相對)定址法 (Indexed或Relative Addressing)是指,將地址翻譯在機器碼內,變數的地址，由此地址找到值,變數的地址，再加offset找到正確位址,由機器碼內之地址立即可以得到運算元之值,3
+1006,所謂間接定址法 (Indirect Addressing)是指,將地址翻譯在機器碼內,變數所在地址內放的是地址，再由此地址找到值,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1007,下列有關Java語言之特性何者不正確,"若在特定機器上執行程式,則Java所翻出之byte code執行速度會比此特定機器碼快",Java翻出byte code具有跨平台執行的特性,Java是一種物件導向語言(object oriented language),Java之byte code 無法直接執行，它必須經由Java直譯器之執行模組(run module)執行,1
+1008,下列那一個敘述不屬於指令週期(Instruction Cycle)中的執行週期(Execution cycle),找尋operand,Point to the data,Perform action required by the instruction,Access the next instruction,4
+1009,下列1.Compiler 2.Assembler 3.Program Trace 中，哪些是用來處理語法(Syntax)錯誤的工具?,1，2,1，3,1，2，3,3,1
+1010,下列何者是屬於Immediate Addressing？,"MOV AX,DATA","MOV AX,[1500]","MOV AL,1500H","MOV AX,DATA[SI]",3
+1011,下列何者是屬於Direct Addressing？,"MOV AX,DATA","MOV AL,1500H","MOV AX,DATA[SI]",以上皆非,1
+1012,所謂立即定址法(Immediate Addressing)是指,將地址翻譯在機器碼內,將值翻譯在機器碼內,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1013,所謂直接定址法(Direct Addressing),由機器碼內之地址立即可以得到運算元之值,將值翻譯到機器碼內,與高階語言之指標有相同的定址方式,以上皆非,1
+1014,下列有關Java語言之特性何者不正確,"若在特定機器上執行程式,則Java所翻出之byte code執行速度會比此特定機器碼快",Java翻出byte code具有跨平台執行的特性,Java是一種物件導向語言(object oriented language),Java之byte code 無法直接執行，它必須經由Java直譯器之執行模組(run module)執行,1
+1015,下列何者不是系統程式所包含之範圍？,Compiler,Loader,Debugging Aids,Memory Management,4
+1016,Macro call 又稱為,Closed subroutine,Open subroutine,Function,Macro Definition,2
+1017,下列何種敘述是錯誤的   ,使用函數必須透過疊堆傳參數，所以執行速度較慢,使用巨集將造成程式變大，浪費記憶體空間,使用巨集將造成程式執行的速度較快,使用函數時，控制權會交由函數處理，所以浪費記憶體空間,4
+1018,有關Java的敘述，何者不正確 ,它產生的是一種Byte code,它產生的是一種中間碼,它產生的是一種機器碼,它可以跨平台在不同機器上執行,3
+1019,指令週期(Instruction Cycle)之第一個工作是,Address decoder,operator fetch,instruction fetch,memory fetch,3
+1020,找尋指令的動作是先以什麼元件之內涵為地址，至記憶體中取出待執行之指令?,Program Counter,Accumulator,Operand address,Base Register,1
+1021,指令週期(Instruction Cycle)中的instruction fetch time是作,Sends the instruction to CPU,Sends the data to Memory Buffer Register,Decodes the instruction,Execution the instruction,1
+1022,基本輸出/輸入系統(Basic Input/Output System簡稱BIOS)是屬於  ,Software,Hardware,Middleware,Firmware,4
+1023,下列那些是由直譯器(Interpreter)所執行,BASIC，C,HTML，BASIC,HTML，C++,COBOL，BASIC,2
+1024,下列那些是由直譯器(Interpreter)所執行,VB，C++,Java script，C,HTML，C,Java script，HTML,4
+1025,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些是由直譯器(Interpreter)所執行,(1)(2)(3)(4)(6),(1)(2)(3)(4),(1)(2)(3),(1)(2)(4),2
+1026,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些是由編譯器(Compiler)所執行,(3)(4)(5)(6),(4)(5)(6),(5)(6),(3)(4)(5),3
+1027,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些不是由直譯器(Interpreter)所執行,(5)(6),(4)(5)(6),(3)(5)(6),(1)(3)(5)(6),1
+1028,所謂一個指令週期(instruction cycle)是指,執行一個指令所要經歷的週期,找尋週期及執行週期,找尋週期、解碼週期、找尋運算子週期，計算週期、及儲存結果週期,以上皆對,4
+1029,Java之執行模組(Run Module)是,與機器無關(Machine Independent),與機器有關(Machine Dependent),跨平台的,以上皆非,2
+1030,巨集(Macro)又被稱為    ,Function,Open subroutine,Closed subroutine,Macro Expansion,2
+1031,下列何種語言不使用直譯器(interpreter),C,HTML,Java,VB,1
+1032,下列1 Program Trace 2 Debug 3 Compiler 4 print 中，哪些是屬於撰寫程式時除錯的工具?,"1,2","1,2,4","1,2,3","1,2,3,4",4
+1033,下列1 Compiler 2 Assembler 3 Program Trace 中，哪些是用來處理語意(Semantic)錯誤的工具?,"1,2","1,3","1,2,3",3,4
+1034,所謂間接定址法 (Indirect Addressing)是指,將地址翻譯在機器碼內,變數所在地址內放的是地址，再由此地址找到值,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1035,下列何者是屬於Indirect Addressing？,"MOV AX,DATA","MOV AL,[SI]","MOV AX,[1500]","MOV AX,DATA[SI]",2
+1036,請問在Assembly中Indexed Addressing主要是用來,array access,relocation,register access,以上皆非,1
+1037,下列何者是屬於Indexed Addressing？,"MOV AX,DATA","MOV AX,[1500]","MOV AL,1500H","MOV AX,DATA[SI]",4
+1038,所謂索引(或相對)定址法 (Indexed或Relative Addressing)是指,將地址翻譯在機器碼內,變數的地址，由此地址找到值,變數的地址，再加offset找到正確位址,由機器碼內之地址立即可以得到運算元之值,3
+1039,所謂間接定址法 (Indirect Addressing)是指,將地址翻譯在機器碼內,變數所在地址內放的是地址，再由此地址找到值,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1040,下列有關Java語言之特性何者不正確,"若在特定機器上執行程式,則Java所翻出之byte code執行速度會比此特定機器碼快",Java翻出byte code具有跨平台執行的特性,Java是一種物件導向語言(object oriented language),Java之byte code 無法直接執行，它必須經由Java直譯器之執行模組(run module)執行,1
+1041,下列那一個敘述不屬於指令週期(Instruction Cycle)中的執行週期(Execution cycle),找尋operand,Point to the data,Perform action required by the instruction,Access the next instruction,4
+1042,下列1.Compiler 2.Assembler 3.Program Trace 中，哪些是用來處理語法(Syntax)錯誤的工具?,1，2,1，3,1，2，3,3,1
+1043,下列何者是屬於Immediate Addressing？,"MOV AX,DATA","MOV AX,[1500]","MOV AL,1500H","MOV AX,DATA[SI]",3
+1044,下列何者是屬於Direct Addressing？,"MOV AX,DATA","MOV AL,1500H","MOV AX,DATA[SI]",以上皆非,1
+1045,所謂立即定址法(Immediate Addressing)是指,將地址翻譯在機器碼內,將值翻譯在機器碼內,將立即位址翻譯在機器碼內,由機器碼內之地址立即可以得到運算元之值,2
+1046,所謂直接定址法(Direct Addressing),由機器碼內之地址立即可以得到運算元之值,將值翻譯到機器碼內,與高階語言之指標有相同的定址方式,以上皆非,1
+1047,下列有關Java語言之特性何者不正確,"若在特定機器上執行程式,則Java所翻出之byte code執行速度會比此特定機器碼快",Java翻出byte code具有跨平台執行的特性,Java是一種物件導向語言(object oriented language),Java之byte code 無法直接執行，它必須經由Java直譯器之執行模組(run module)執行,1
+1048,下列何者不是系統程式所包含之範圍？,Compiler,Loader,Debugging Aids,Memory Management,4
+1049,Macro call 又稱為,Closed subroutine,Open subroutine,Function,Macro Definition,2
+1050,下列何種敘述是錯誤的   ,使用函數必須透過疊堆傳參數，所以執行速度較慢,使用巨集將造成程式變大，浪費記憶體空間,使用巨集將造成程式執行的速度較快,使用函數時，控制權會交由函數處理，所以浪費記憶體空間,4
+1051,有關Java的敘述，何者不正確 ,它產生的是一種Byte code,它產生的是一種中間碼,它產生的是一種機器碼,它可以跨平台在不同機器上執行,3
+1052, 指令週期(Instruction Cycle)之第一個工作是,Address decoder,operator fetch,instruction fetch,memory fetch,3
+1053,找尋指令的動作是先以什麼元件之內涵為地址，至記憶體中取出待執行之指令?,Program Counter,Accumulator,Operand address,Base Register,1
+1054,指令週期(Instruction Cycle)中的instruction fetch time是作,Sends the instruction to CPU,Sends the data to Memory Buffer Register,Decodes the instruction,Execution the instruction,1
+1055,基本輸出/輸入系統(Basic Input/Output System簡稱BIOS)是屬於  ,Software,Hardware,Middleware,Firmware,4
+1056,下列那些是由直譯器(Interpreter)所執行,BASIC，C,HTML，BASIC,HTML，C++,COBOL，BASIC,2
+1057,下列那些是由直譯器(Interpreter)所執行,VB，C++,Java script，C,HTML，C,Java script，HTML,4
+1058,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些是由直譯器(Interpreter)所執行,(1)(2)(3)(4)(6),(1)(2)(3)(4),(1)(2)(3),(1)(2)(4),2
+1059,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些是由編譯器(Compiler)所執行,(3)(4)(5)(6),(4)(5)(6),(5)(6),(3)(4)(5),3
+1060,下列語言(1)Java script(2)VB script(3)BASIC(4)HTML(5)C++(6)COBOL中，那些不是由直譯器(Interpreter)所執行,(5)(6),(4)(5)(6),(3)(5)(6),(1)(3)(5)(6),1
+1061,所謂一個指令週期(instruction cycle)是指,執行一個指令所要經歷的週期,找尋週期及執行週期,找尋週期、解碼週期、找尋運算子週期，計算週期、及儲存結果週期,以上皆對,4
+1062,Java之執行模組(Run Module)是,與機器無關(Machine Independent),與機器有關(Machine Dependent),跨平台的,以上皆非,2
+1063,巨集(Macro)又被稱為    ,Function,Open subroutine,Closed subroutine,Macro Expansion,2
+1064,下列何種語言不使用直譯器(interpreter),C,HTML,Java,VB,1
+1065,下列1 Program Trace 2 Debug 3 Compiler 4 print 中，哪些是屬於撰寫程式時除錯的工具?,"1,2","1,2,4","1,2,3","1,2,3,4",4
+1066,下列1 Compiler 2 Assembler 3 Program Trace 中，哪些是用來處理語意(Semantic)錯誤的工具?,"1,2","1,3","1,2,3",3,4

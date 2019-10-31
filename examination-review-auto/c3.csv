@@ -1,0 +1,41 @@
+qid,title,op1,op2,op3,op4,ans
+3001,將object program載入主記憶體內是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,4
+3002,將External Symbols之address放入external Symbol table內是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,3
+3003,將object code的重定位欄位作修正的動作是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,4
+3004,將每個function給予實際上的位址是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,3
+3005,算出Symbol之relative address是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,1
+3006,Absolute program之linking是由誰來作?,Programmer,Assembler,Loader,Linker,1
+3007,下列何者是用來處理重定位的暫存器？,Base register,Code segment,Data Segment,以上皆對,4
+3008,使用重定位裝置的敘述何者正確? 1.可以節省不同的程式間須重新改變位址 2.可以改善array access的速度 3. 可以節省memory,1,2,3,以上皆非,1
+3009,請問Linkage Editor需要透過以下哪一個的輔助link到Memory,Linking Loader,Dynamic Loader,Relocation Loader,Linkage Editor,3
+3010,哪一種Loader將*.obj link成linked program?,Linking Loader,Dynamic Loader,Relocation Loader,Linkage Editor,4
+3011,連結編輯器(Linkage Editor)要搭配下列哪一個工具一起使用,連結載入器(Linking Loader),初始程式載入器(Initial Program Loader),連結器(Linker),可重定位載入器(Relocation Loader),4
+3012,啟動載入器(Bootstrap Loader)是在電腦內的哪一個地方,磁碟,主記憶體內之ROM,主記憶體內之RAM,磁帶,2
+3013,啟動載入器(Bootstrap Loader)是,軟體,硬體,韌體,應用程式,3
+3014,開機時電腦為什麼會執行啟動載入器(Bootstrap Loader),使用者事先在開機檔內設定執行啟動載入器,打開電源之中斷使得程式計數器(PC)指向啟動載入器,開機者事先決定程式計數器指向啟動載入器,開機者下命令執行啟動載入器,2
+3015,經由Linkage Editor 處理完的資料會,直接載入主記憶體內執行,先儲存在磁碟內，再由Linking Loader載入主記憶體內執行,先儲存在磁碟內，再由Relocating Loader載入主記憶體,由Dynamic Loader載入主記憶體內,3
+3016,下列1.Modification Record 2. Base Register 3.Program Counter中，哪些可以被用來處理重定位,1，2,1，3,2，3,1，2，3,4
+3017,下列1.Modification Record 2. Segment Register 3.Program Counter中，哪些可以被用來處理重定位,1，2,1，3,1，2，3,2，3,3
+3018,下列1.Modification Record 2. Segment Register 3. Base Register中，若要處理Complex Relocatable，則必須使用何者來處理重定位?,1,2,3,1，3,1
+3019,下列1. Modification Record 2. Segment Register 3. Base Register中，若要處理Simple Relocatable，則必須使用何者來處理重定位?,1,1，2,2，3,1，2，3,4
+3020,Loader 的pass2 處理Loader的哪些功能? 1. Allocation ， Relocation ， Linking 2. Relocation ， Linking ， Loading 3. Allocation ， Linking ， Loading 4.  Allocation ， Relocation ， Linking,Allocation，Relocation，Linking,Relocation，Linking，Loading,Allocation，Linking，Loading,Allocation，Relocation，Linking,2
+3021,將object program載入主記憶體內是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,4
+3022,將External Symbols之address放入external Symbol table內是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,3
+3023,將object code的重定位欄位作修正的動作是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,4
+3024,將每個function給予實際上的位址是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,3
+3025,算出Symbol之relative address是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,1
+3026,Absolute program之linking是由誰來作?,Programmer,Assembler,Loader,Linker,1
+3027,下列何者是用來處理重定位的暫存器？,Base register,Code segment,Data Segment,以上皆對,4
+3028,使用重定位裝置的敘述何者正確? 1.可以節省不同的程式間須重新改變位址 2.可以改善array access的速度 3. 可以節省memory,1,2,3,以上皆非,1
+3029,請問Linkage Editor需要透過以下哪一個的輔助link到Memory,Linking Loader,Dynamic Loader,Relocation Loader,Linkage Editor,3
+3030,哪一種Loader將*.obj link成linked program?,Linking Loader,Dynamic Loader,Relocation Loader,Linkage Editor,4
+3031,連結編輯器(Linkage Editor)要搭配下列哪一個工具一起使用,連結載入器(Linking Loader),初始程式載入器(Initial Program Loader),連結器(Linker),可重定位載入器(Relocation Loader),4
+3032,啟動載入器(Bootstrap Loader)是在電腦內的哪一個地方,磁碟,主記憶體內之ROM,主記憶體內之RAM,磁帶,2
+3033,啟動載入器(Bootstrap Loader)是,軟體,硬體,韌體,應用程式,3
+3034,開機時電腦為什麼會執行啟動載入器(Bootstrap Loader),使用者事先在開機檔內設定執行啟動載入器,打開電源之中斷使得程式計數器(PC)指向啟動載入器,開機者事先決定程式計數器指向啟動載入器,開機者下命令執行啟動載入器,2
+3035,經由Linkage Editor 處理完的資料會,直接載入主記憶體內執行,先儲存在磁碟內，再由Linking Loader載入主記憶體內執行,先儲存在磁碟內，再由Relocating Loader載入主記憶體,由Dynamic Loader載入主記憶體內,3
+3036,下列1.Modification Record 2. Base Register 3.Program Counter中，哪些可以被用來處理重定位,1，2,1，3,2，3,1，2，3,4
+3037,下列1.Modification Record 2. Segment Register 3.Program Counter中，哪些可以被用來處理重定位,1，2,1，3,1，2，3,2，3,3
+3038,下列1.Modification Record 2. Segment Register 3. Base Register中，若要處理Complex Relocatable，則必須使用何者來處理重定位?,1,2,3,1，3,1
+3039,下列1. Modification Record 2. Segment Register 3. Base Register中，若要處理Simple Relocatable，則必須使用何者來處理重定位?,1,1，2,2，3,1，2，3,4
+3040,Loader 的pass2 處理Loader的哪些功能? 1. Allocation ， Relocation ， Linking 2. Relocation ， Linking ， Loading 3. Allocation ， Linking ， Loading 4. Allocation ， Relocation ， Linking,Allocation，Relocation，Linking,Relocation，Linking，Loading,Allocation，Linking，Loading,Allocation，Relocation，Linking,2

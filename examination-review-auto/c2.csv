@@ -1,0 +1,177 @@
+qid,title,op1,op2,op3,op4,ans
+2001,Assembler 翻機器碼時，duplicate symbol 在哪個pass被發現？,pass1,pass2,pass1及pass2,不一定,1
+2002,算出Symbol之relative address是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,1
+2003,LDA#3與THREE EQU 3，LDA #THREE 翻成machine code的結果為,相同,不同,無法判斷,語法有錯,1
+2004,LDA#3與THREE EQU 3，LDA THREE 翻成machine code的結果為,相同,不同,無法判斷,語法有錯,2
+2005,以下之程式需要幾個passes才能處理?ALPHA EQU BETA ;DELTA EQU STRING ;BETA BYTE ‘H’ ;STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,1
+2006,以下之程式需要幾個passes才能處理?ALPHA EQU BETA ;BETA EQU DELTA ;DELTA EQU STRING ;STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,3
+2007,以下之程式需要幾個passes才能處理?ALPHA EQU BETA ;  BETA EQU DELTA ;  DELTA EQU STRING ;  LINA EQU DELTA ;  DODN EQU ALPHA ;  STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,3
+2008,有關Literal之說明，下列何者正確？,Literal為程式還未被定義之常數,Assembler遇到Literal會將literal記錄在Literal Table內,Assembler遇到END時，會將literal自literal Table內取出，並assign address給每個Literal,以上皆對,4
+2009,以下之程式需要幾個passes才能處理?  ALPHA EQU DELTA;  STRING EQU BETA;  BETA BYTE ’2’;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,1
+2010,以下之程式需要幾個passes才能處理?  ALPHA EQU STRING;  STRING EQU BETA;  BETA EQU DELTA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,3
+2011,以下之程式需要幾個passes才能處理?  ALPHA EQU STRING;  STRING EQU DELTA;  BETA EQU ALPHA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,2
+2012,以下之程式需要幾個passes才能處理?  ALPHA EQU DELTA;  BETA EQU ALPHA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,1
+2013,請問有關assembler pass1的敘述何者正確? 1.儲存變數及符號的地址 2.發現未定義的符號 3.計算變數及符號的地址 4.以上皆是,1，2,2，3,1，3,4,3
+2014,請問assembler在解讀程式語法時，請問會在第幾個pass就會發現未定義的符號(undefined symbol)問題?,4 passes,3 passes,2 passes,1 passes,3
+2015,請問assembler在解讀程式語法時，請問會在第幾個pass就會發現重複命名(duplicate definition)的問題?,3 passes,2 passes,1pass,4passes,3
+2016,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA DC F’2’,2 passes,3 passes,4 passes,5 passes,2
+2017,假設程式並無forward reference時，需要幾個passes才能處理?,1 passes,2 passes,3 passes,4 passes,1
+2018,當電腦在處理某個指令週期(Instruction Cycle)時，其program counter是,指向此指令,指向下一個指令,指向operand,不一定，依定址模式會有不同,2
+2019,請問 = 屬於哪一個table ?,Instruction,Pseudo and Extra,Register,Delimiter,4
+2020,請問token table的敘述何者正確?1.用來存放資料2.供查詢時使用3.沒有什麼用處4.以上皆非,1,2,1，2,4,3
+2021,請問token table的敘述何者正確? 1.=屬於instruction table 2.symble table 內容會因為原始程式不同而不同 3.token不是電腦程式最小單位 4.以上皆非,1,2,1，3,4,2
+2022,下列那個token table會隨著程式語言不同而不同,Symbol,Instruction,Integer,String,2
+2023,下列那個token table不會隨著程式語言不同而不同,Instruction,Delimiter,Integer,Register,3
+2024,下列那個token table會隨著程式語言不同而不同 a. Instruction ; b. Symbol ; c. Delimiter ; d. Integer,a,a，b,a，c,a，b，c，d,3
+2025,下列那個token table會隨著程式語言不同而不同 a. Register ; b. Integer ; c. String ; d. Instruction,a,b，c,a，d,a，b，c，d,3
+2026,下列那個token table會隨著程式語言不同而不同 a. Instruction ; b. Symbol ; c. Delimiter ; d. Integer,a,a，b,a，c,以上皆非,3
+2027,下列那個token table不會隨著程式語言不同而不同 a. Symbol ; b. Instruction; c. delimiter ; d. register,a,a ， b,a，c,a，b，c，d,1
+2028,下列那個token table不會隨著程式語言不同而不同 a. Delimiter ; b. Integer ; c. String ; d. Symbol,a,b，c,a，d,b，c，d,4
+2029,下列那個token table不會隨著程式語言不同而不同 a. Delimiter ; b. Instruction ; c. Register ; d. Memory,a,a，b,a，c,以上皆非,4
+2030,下列那個token table不會隨著程式語言不同而不同 a. Register ; b. Integer ; c. String ; d. Instruction,a,a，c,b，d,以上皆非,4
+2031,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變?,Symbol,Instruction,Delimiter,Register,1
+2032,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. Instruction b. Delimiter c. Integer d. Register,a,c,a，d,b，c,2
+2033,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. String b. Integer c. Delimiter d. Register,a,a，b,c，d,以上皆是,2
+2034,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. String b. Integer c. Symbol d. Instruction,a,a，b,a，b，c,d,3
+2035,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變?,Symbol,String,Integer,Register,4
+2036,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變? a. Register b. String c. Integer d. Symbol,a,c,a，d,b，c,1
+2037,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變? a. String b. Integer c. Delimiter d. Register,a,a，b,c，d,以上皆是,3
+2038,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. Delimiter b. Instruction c. Register d. Integer,a,a，b,a，b，c,d,4
+2039,Token Table 之Search可以採用下列何種方式? a. Binary search b. Hash c. Linear search d. B-tree search,a,a，b,b，c,以上皆非,3
+2040,Token Table 之Search可以採用下列何種方式? a. Binary search b. data base search c. Linear search d. B-tree search,a,c,a，b,以上皆非,2
+2041,下列Token Table之敘述，何者正確?,Instruction Table不會隨著程式語言不同而不同,String Table不會隨著程式語言不同而不同,Delimiter Table不會隨著程式語言不同而不同,Register Table不會隨著程式語言不同而不同,2
+2042,下列Token Table之敘述，何者正確?,Instruction Table不會隨著程式語言不同而不同,Symbol Table不會隨著程式語言不同而不同,Delimiter Table不會隨著程式語言不同而不同,Register Table不會隨著程式語言不同而不同,2
+2043,區分token分別以什麼符號作分隔？1.空白 2 .tab 3.； 4 ，,12,123,124,1234,4
+2044,Token 的格式為 1.(Token type | Token value) 2.( Token value | Token type ) 3.(table value | entry),1,2,3,以上皆非,1
+2045,請算出MSG的token value為多少?假設A的Ascii值為65. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,21,31,41,55,2
+2046,請算出21的token value為多少?假設1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,87,96,157,99,4
+2047,請算出4C的token value為多少?假設A的Ascii值為65. 1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,41,17,19,33,3
+2048,請算出 6B 的 token value為多少? 假設A的Ascii值為65. 1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,21,11,20,34,3
+2049,請算出 ATF 的 token value為多少? 假設A的Ascii值為65. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,50,5,20,19,4
+2050,在電腦程式中最細小的單位(Atomic Unit)稱為,Reserved Word,Delimiter,Statement,Token,4
+2051,下列何者為電腦程式中最細小的單位?,Statement,Token,Instruction,Program,2
+2052,下列何者為電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,b，c,4
+2053,下列何者為電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,以上皆非,4
+2054,下列何者不是電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,b，c,3
+2055,算出Symbol之relative address是屬於,Assembler pass 1,Assembler pass 2,Loader pass 1,Loader pass 2,1
+2056,在什麼情況下不一定會有token ?,遇到white space,遇到Enter,遇到空白,以上皆是,4
+2057,遇到white space時，若判定有token，則會有幾個token ?,一個,二個,不一定,以上皆非,1
+2058,遇到delimiter時，會有幾個token ?,一個,二個,一個或二個,不一定,3
+2059,遇到white space時，會有幾個token ?,一個,二個,一個或二個,不一定,4
+2060,遇到下列那些字元時，需判定有否token ? a. space b. enter c. ， d. ],a，b,c，d,a，b，c，d,以上皆非,3
+2061,遇到下列那些字元時，需判定有否token ? a. space b. enter c. m d. ],a，b,c，d,a，b，c，d,以上皆非,4
+2062,若切出之token為(2，6)，請問何者是代表第幾個table,2,6,(2，6),以上皆非,1
+2063,對assembler無用的information包括 1.space/tab 2.enter 3.comment 4.comma 5.colon,1 2 5,2 3 4,1 2 4 5,1 2 3 4 5,4
+2064,white space有 1.space 2.tab 3.enter,1 2,2 3,1 3,1 2 3,4
+2065,Lexical Analysis的目的為,將原始的input轉成token,將原始的input轉成文法樹,將原始的input轉成機器碼,以上皆非,1
+2066,經過Lexical Analysis處理後留下的資料有 1. Label 2.opcode 3.operand 4.comment,1 2,1 2 3,1 2 3 4,以上皆非,2
+2067,MESSAGE DB ‘HELLO，!$’經過Lexical Analysis 的輸出有幾個token?,3,4,5,6,3
+2068,有關Lexical Analysis演算法之敘述何者正確？1.機器平台轉移時無須改變2. 機器平台轉移時須改變3.為Machine-dependant 4.非Machine-dependant,1，3,2，4,1，4,2，3,3
+2069,Lexical Analysis分析時不會建立哪幾個Table?1.Literal 2.integer3.Symbol,1,2,3,"1,2,3",1
+2070,MOVWORD＠PTR[BP]會有幾個tokens(@為空白) ?,3,4,5,6,3
+2071,MOV@WORD@PTR@[BP@]會有幾個tokens(@為空白) ?,3,4,5,6,4
+2072,MOVEBYTE@PTR[BP+SI] 會有幾個tokens(@為空白) ?,6,7,8,9,2
+2073,MOVEBYTE@PTR[BP+SI] 會有幾個tokens(@為空白) ?,4,7,error,以上皆非,2
+2074,ADD@AX@，34 會有幾個tokens(@為空白) ?,3,4,5,6,2
+2075,ADD@AX@，@34 會有幾個tokens(@為空白) ?,4,5,6,7,1
+2076,MOVEWO@RD@PTR[CH]: 會有幾個tokens(@為空白) ?,6,7,8,9,2
+2077,EOF@BYTE@21 會有幾個tokens(@為空白) ?,2,3,4,5,2
+2078,ASK@DB@'Hello'經過lexical analysis後，會有那些token (@為空白)?,pseudo，pseudo，delimiter，symbol，delimiter,symbol，pseudo，delimiter，symbol，delimiter,symbol，pseudo，instruction，string，delimiter,symbol，pseudo，delimiter，string，delimiter,4
+2079,ASKDB@'Hello'經過lexical analysis後，會有那些token (@為空白)?,pseudo，delimiter，symbol，delimiter,string，delimiter，symbol，delimiter,symbol，pseudo，instruction，string，delimiter,symbol，delimiter，string，delimiter,4
+2080,假設hello word字串hash放進table時發現欲放入的位置已經有另一字串，請問作業規定採取動作為,重新hash別的值,並存,覆蓋,往下移一位直到有空位為止,4
+2081,如果我們在工作站上寫一個轉譯器(Translator)，它可以將x86之原始程式轉成機器碼，則此轉譯器稱為,Assembler,Compiler,Disassembler,Cross Assembler,4
+2082,將machine code轉成Assembly Source 之軟體稱為,Assembler,Cross Assembler,Disassembler,以上皆非,3
+2083,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA EQU STRING;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,3
+2084,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA EQU STRING;  LINA EQU DELTA;  DODN EQU ALPHA;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,3
+2085,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  DELTA EQU STRING;  BETA EQU ‘H’;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,1
+2086,Assembler 翻機器碼時，undefined symbol 在哪個pass被發現？,pass1,pass2,pass1及pass2,不一定,2
+2087,White space 包含,空白,空白及Tab,空白及Enter,以上皆非,4
+2088,哪一種組合語言會以program counter 來當作relocation?,SIC,SIC/XE,X86,以上皆是,2
+2089,當電腦在處理某個指令週期(Instruction Cycle)時，其program counter是,指向此指令,指向下一個指令,指向operand,不一定，依定址模式會有不同,2
+2090,Assembler 翻機器碼時，duplicate symbol 在哪個pass被發現？,pass1,pass2,pass1及pass2,不一定,1
+2091,LDA#3與THREE EQU 3，LDA #THREE 翻成machine code的結果為,相同,不同,無法判斷,語法有錯,1
+2092,LDA#3與THREE EQU 3，LDA THREE 翻成machine code的結果為,相同,不同,無法判斷,語法有錯,2
+2093,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA ;  DELTA EQU STRING ;  BETA BYTE ‘H’ ;  STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,1
+2094,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA ;  BETA EQU DELTA ;  DELTA EQU STRING ;  STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,3
+2095,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA ;  BETA EQU DELTA ;  DELTA EQU STRING ;  LINA EQU DELTA ;  DODN EQU ALPHA ;  STRING BYTE ‘H’,2 passes,3 passes,4 passes,5 passes,3
+2096,有關Literal之說明，下列何者正確？,Literal為程式還未被定義之常數,Assembler遇到Literal會將literal記錄在Literal Table內,Assembler遇到END時，會將literal自literal Table內取出，並assign address給每個Literal,以上皆對,4
+2097,以下之程式需要幾個passes才能處理?  ALPHA EQU DELTA;  STRING EQU BETA;  BETA BYTE ’2’;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,1
+2098,以下之程式需要幾個passes才能處理?  ALPHA EQU STRING;  STRING EQU BETA;  BETA EQU DELTA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,3
+2099,以下之程式需要幾個passes才能處理?  ALPHA EQU STRING;  STRING EQU DELTA;  BETA EQU ALPHA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,2
+2100,以下之程式需要幾個passes才能處理?  ALPHA EQU DELTA;  BETA EQU ALPHA;  DELTA BYTE ’2’,2 passes,3 passes,4 passes,5 passes,1
+2101,請問有關assembler pass1的敘述何者正確? 1.儲存變數及符號的地址 2.發現未定義的符號 3.計算變數及符號的地址 4.以上皆是,1，2,2，3,1，3,4,3
+2102,請問assembler在解讀程式語法時，請問會在第幾個pass就會發現未定義的符號(undefined symbol)問題?,4 passes,3 passes,2 passes,1 passes,3
+2103,請問assembler在解讀程式語法時，請問會在第幾個pass就會發現重複命名(duplicate definition)的問題?,3 passes,2 passes,1pass,4passes,3
+2104,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA DC F’2’,2 passes,3 passes,4 passes,5 passes,2
+2105,假設程式並無forward reference時，需要幾個passes才能處理?,1 passes,2 passes,3 passes,4 passes,1
+2106,當電腦在處理某個指令週期(Instruction Cycle)時，其program counter是,指向此指令,指向下一個指令,指向operand,不一定，依定址模式會有不同,2
+2107,請問 = 屬於哪一個table ?,Instruction,Pseudo and Extra,Register,Delimiter,4
+2108,請問token table的敘述何者正確?1.用來存放資料2.供查詢時使用3.沒有什麼用處4.以上皆非,1,2,1，2,4,3
+2109,請問token table的敘述何者正確? 1.=屬於instruction table 2.symble table 內容會因為原始程式不同而不同 3.token不是電腦程式最小單位 4.以上皆非,1,2,1，3,4,2
+2110,下列那個token table會隨著程式語言不同而不同,Symbol,Instruction,Integer,String,2
+2111,下列那個token table不會隨著程式語言不同而不同,Instruction,Delimiter,Integer,Register,3
+2112,下列那個token table會隨著程式語言不同而不同 a. Instruction ; b. Symbol ; c. Delimiter ; d. Integer,a,a，b,a，c,a，b，c，d,3
+2113,下列那個token table會隨著程式語言不同而不同 a. Register ; b. Integer ; c. String ; d. Instruction,a,b，c,a，d,a，b，c，d,3
+2114,下列那個token table會隨著程式語言不同而不同 a. Instruction ; b. Symbol ; c. Delimiter ; d. Integer,a,a，b,a，c,以上皆非,3
+2115,下列那個token table不會隨著程式語言不同而不同 a. Symbol ; b. Instruction; c. delimiter ; d. register,a,a ， b,a，c,a，b，c，d,1
+2116,下列那個token table不會隨著程式語言不同而不同 a. Delimiter ; b. Integer ; c. String ; d. Symbol,a,b，c,a，d,b，c，d,4
+2117,下列那個token table不會隨著程式語言不同而不同 a. Delimiter ; b. Instruction ; c. Register ; d. Memory,a,a，b,a，c,以上皆非,4
+2118,下列那個token table不會隨著程式語言不同而不同 a. Register ; b. Integer ; c. String ; d. Instruction,a,a，c,b，d,以上皆非,4
+2119,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變?,Symbol,Instruction,Delimiter,Register,1
+2120,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. Instruction b. Delimiter c. Integer d. Register,a,c,a，d,b，c,2
+2121,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. String b. Integer c. Delimiter d. Register,a,a，b,c，d,以上皆是,2
+2122,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. String b. Integer c. Symbol d. Instruction,a,a，b,a，b，c,d,3
+2123,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變?,Symbol,String,Integer,Register,4
+2124,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變? a. Register b. String c. Integer d. Symbol,a,c,a，d,b，c,1
+2125,當我們定義完某個程式語言之後，下列那個Token Table不會隨著輸入之原始程式作改變? a. String b. Integer c. Delimiter d. Register,a,a，b,c，d,以上皆是,3
+2126,當我們定義完某個程式語言之後，下列那個Token Table會隨著輸入之原始程式作改變? a. Delimiter b. Instruction c. Register d. Integer,a,a，b,a，b，c,d,4
+2127,Token Table 之Search可以採用下列何種方式? a. Binary search b. Hash c. Linear search d. B-tree search,a,a，b,b，c,以上皆非,3
+2128,Token Table 之Search可以採用下列何種方式? a. Binary search b. data base search c. Linear search d. B-tree search,a,c,a，b,以上皆非,2
+2129,下列Token Table之敘述，何者正確?,Instruction Table不會隨著程式語言不同而不同,String Table不會隨著程式語言不同而不同,Delimiter Table不會隨著程式語言不同而不同,Register Table不會隨著程式語言不同而不同,2
+2130,下列Token Table之敘述，何者正確?,Instruction Table不會隨著程式語言不同而不同,Symbol Table不會隨著程式語言不同而不同,Delimiter Table不會隨著程式語言不同而不同,Register Table不會隨著程式語言不同而不同,2
+2131,區分token分別以什麼符號作分隔？1.空白 2 .tab 3.； 4 ，,12,123,124,1234,4
+2132,Token 的格式為 1.(Token type | Token value) 2.( Token value | Token type ) 3.(table value | entry),1,2,3,以上皆非,1
+2133,請算出MSG的token value為多少?假設A的Ascii值為65. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,21,31,41,55,2
+2134,請算出21的token value為多少?假設1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,87,96,157,99,4
+2135,請算出4C的token value為多少?假設A的Ascii值為65. 1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,41,17,19,33,3
+2136,請算出 6B 的 token value為多少? 假設A的Ascii值為65. 1的Ascii值為49. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,21,11,20,34,3
+2137,請算出 ATF 的 token value為多少? 假設A的Ascii值為65. hashy function 為token value = ΣAscii(Ci) mod 100 . for i=1~n,50,5,20,19,4
+2138,在電腦程式中最細小的單位(Atomic Unit)稱為,Reserved Word,Delimiter,Statement,Token,4
+2139,下列何者為電腦程式中最細小的單位?,Statement,Token,Instruction,Program,2
+2140,下列何者為電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,b，c,4
+2141,下列何者為電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,以上皆非,4
+2142,下列何者不是電腦程式中最細小的單位? a. Instruction b. Token c. Delimiter d. Program,a,b,a，d,b，c,3
+2143,在什麼情況下不一定會有token ?,遇到white space,遇到Enter,遇到空白,以上皆是,4
+2144,遇到white space時，若判定有token，則會有幾個token ?,一個,二個,不一定,以上皆非,1
+2145,遇到delimiter時，會有幾個token ?,一個,二個,一個或二個,不一定,3
+2146,遇到white space時，會有幾個token ?,一個,二個,一個或二個,不一定,4
+2147,遇到下列那些字元時，需判定有否token ? a. space b. enter c. ， d. ],a，b,c，d,a，b，c，d,以上皆非,3
+2148,遇到下列那些字元時，需判定有否token ? a. space b. enter c. m d. ],a，b,c，d,a，b，c，d,以上皆非,4
+2149,若切出之token為(2，6)，請問何者是代表第幾個table,2,6,(2，6),以上皆非,1
+2150,對assembler無用的information包括 1.space/tab 2.enter 3.comment 4.comma 5.colon,1 2 5,2 3 4,1 2 4 5,1 2 3 4 5,4
+2151,white space有 1.space 2.tab 3.enter,1 2,2 3,1 3,1 2 3,4
+2152,Lexical Analysis的目的為,將原始的input轉成token,將原始的input轉成文法樹,將原始的input轉成機器碼,以上皆非,1
+2153,經過Lexical Analysis處理後留下的資料有 1. Label 2.opcode 3.operand 4.comment,1 2,1 2 3,1 2 3 4,以上皆非,2
+2154,MESSAGE DB ‘HELLO，!$’經過Lexical Analysis 的輸出有幾個token?,3,4,5,6,3
+2155,有關Lexical Analysis演算法之敘述何者正確？1.機器平台轉移時無須改變2. 機器平台轉移時須改變3.為Machine-dependant 4.非Machine-dependant,1，3,2，4,1，4,2，3,3
+2156,Lexical Analysis分析時不會建立哪幾個Table?1.Literal 2.integer3.Symbol,1,2,3,"1,2,3",1
+2157,MOVWORD＠PTR[BP]會有幾個tokens(@為空白) ?,3,4,5,6,3
+2158,MOV@WORD@PTR@[BP@]會有幾個tokens(@為空白) ?,3,4,5,6,4
+2159,MOVEBYTE@PTR[BP+SI] 會有幾個tokens(@為空白) ?,6,7,8,9,2
+2160,MOVEBYTE@PTR[BP+SI] 會有幾個tokens(@為空白) ?,4,7,error,以上皆非,2
+2161,ADD@AX@，34 會有幾個tokens(@為空白) ?,3,4,5,6,2
+2162,ADD@AX@，@34 會有幾個tokens(@為空白) ?,4,5,6,7,1
+2163,MOVEWO@RD@PTR[CH]: 會有幾個tokens(@為空白) ?,6,7,8,9,2
+2164,EOF@BYTE@21 會有幾個tokens(@為空白) ?,2,3,4,5,2
+2165,ASK@DB@'Hello'經過lexical analysis後，會有那些token (@為空白)?,pseudo，pseudo，delimiter，symbol，delimiter,symbol，pseudo，delimiter，symbol，delimiter,symbol，pseudo，instruction，string，delimiter,symbol，pseudo，delimiter，string，delimiter,4
+2166,ASKDB@'Hello'經過lexical analysis後，會有那些token (@為空白)?,pseudo，delimiter，symbol，delimiter,string，delimiter，symbol，delimiter,symbol，pseudo，instruction，string，delimiter,symbol，delimiter，string，delimiter,4
+2167,假設hello word字串hash放進table時發現欲放入的位置已經有另一字串，請問作業規定採取動作為,重新hash別的值,並存,覆蓋,往下移一位直到有空位為止,4
+2168,如果我們在工作站上寫一個轉譯器(Translator)，它可以將x86之原始程式轉成機器碼，則此轉譯器稱為,Assembler,Compiler,Disassembler,Cross Assembler,4
+2169,將machine code轉成Assembly Source 之軟體稱為,Assembler,Cross Assembler,Disassembler,以上皆非,3
+2170,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA EQU STRING;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,3
+2171,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  BETA EQU DELTA;  DELTA EQU STRING;  LINA EQU DELTA;  DODN EQU ALPHA;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,3
+2172,以下之程式需要幾個passes才能處理?  ALPHA EQU BETA;  DELTA EQU STRING;  BETA EQU ‘H’;  STRING BYTE ‘H’;,2 passes,3 passes,4 passes,5 passes,1
+2173,Assembler 翻機器碼時，undefined symbol 在哪個pass被發現？,pass1,pass2,pass1及pass2,不一定,2
+2174,White space 包含,空白,空白及Tab,空白及Enter,以上皆非,4
+2175,哪一種組合語言會以program counter 來當作relocation?,SIC,SIC/XE,X86,以上皆是,2
+2176,當電腦在處理某個指令週期(Instruction Cycle)時，其program counter是,指向此指令,指向下一個指令,指向operand,不一定，依定址模式會有不同,2
