@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "assembler.h"
 #include "lexicaler.h"
 
 #ifdef DEBUGING
@@ -13,24 +14,9 @@
 using namespace std;
 
 void loadFile(const string &filename) {
-  Lexicaler lexicaler;
+  Assembler assembler;
 
-  try {
-    lexicaler.loadFile(filename);
-    lexicaler.lexing();
-  } catch (Lexicaler::Error e) {
-    if (e == Lexicaler::loading_failure)
-      ;
-    else if (e == Lexicaler::saving_failure)
-      ;
-    else
-      throw "Unknown Error!";
-  } catch (LoadingTable::Error e) {
-    if (e == LoadingTable::loading_failure)
-      ;
-    else
-      throw "Unknown Error!";
-  }
+  assembler.setFile(filename);
 }
 
 int main(int argc, char *argv[]) {
