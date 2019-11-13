@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "lexicaler.h"
+#include "optab.h"
 #include "table.h"
 
 using namespace std;
@@ -163,8 +164,11 @@ void testLexer() {
   assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
 }
 
+void testOPTab() { OPTab table1; }
+
 void test() {
   testHashTable();
   testLoadingTable();
   testLexer();
+  testOPTab();
 }
