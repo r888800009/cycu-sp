@@ -4,24 +4,32 @@
 #ifndef _OPTAB_H_
 #define _OPTAB_H_
 
+#include <fstream>
 #include <unordered_map>
 
 using namespace std;
 
 class OPTab {
   typedef struct Data {
-    string command;
-    char opcode;
-    int length;
-    int format;
+    // string command;
+    // int length;
+    int opcode, format;
   } Data;
 
   // <string command, Data>
   unordered_map<string, Data> table;
+  fstream fin;
+
+  string toUpper(string upper);
 
  public:
   OPTab();
+
   void loadOPTab(const string &);
+  int getOPCode(const string &);
+  int getFormat(const string &);
+
+  enum Error { loading_failure, saving_failure };
 };
 
 #endif

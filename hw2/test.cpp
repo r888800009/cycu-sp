@@ -164,7 +164,31 @@ void testLexer() {
   assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
 }
 
-void testOPTab() { OPTab table1; }
+void testOPTab() {
+  OPTab table;
+
+  // load test table
+  table.loadOPTab("test-optable.txt");
+
+  // getOPCode
+  // ignore case
+  assert(table.getOPCode("test1") == 0x10);
+  assert(table.getOPCode("TEsT1") == 0x10);
+
+  // check format
+  assert(table.getFormat("test1") == 4);
+  assert(table.getFormat("Test23") == 3);
+  assert(table.getFormat("23test23") == 2);
+
+  // check opcode to hex to dec
+  assert(table.getOPCode("test23") == 0xef);
+  assert(table.getOPCode("23test23") == 0x2f);
+
+  // null command
+  string nullcommand = "tseqywuy";
+  assert(table.getOPCode(nullcommand) == -1);
+  assert(table.getFormat(nullcommand) == -1);
+}
 
 void test() {
   testHashTable();
