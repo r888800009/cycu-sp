@@ -3,12 +3,16 @@
 
 #ifndef _ASSEMBLER_H_
 #define _ASSEMBLER_H_
+
 #include "lexicaler.h"
+#include "optab.h"
 
 using namespace std;
 
 class Assembler {
   Lexicaler lexer;
+  OPTab optab;
+
   string filename;
 
   void pass1();

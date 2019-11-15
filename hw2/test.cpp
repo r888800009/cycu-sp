@@ -8,6 +8,7 @@
 
 #include "lexicaler.h"
 #include "optab.h"
+#include "symtab.h"
 #include "table.h"
 
 using namespace std;
@@ -190,9 +191,53 @@ void testOPTab() {
   assert(table.getFormat(nullcommand) == -1);
 }
 
+void testSymtab() {
+  SymbolTable symtab;
+
+  // duplicate define
+  try {
+    symtab.define("aaa", 0x00, SymbolTable::absolute_address);
+    symtab.define("aaa", 0x00, SymbolTable::absolute_address);
+    assert(false);
+  } catch (SymbolTable::Error e) {
+    assert(e == SymbolTable::duplicate_define);
+  }
+
+  // undefine symbol
+  try {
+    symtab.getSymbolAddress("undefine");
+    assert(false);
+  } catch (SymbolTable::Error e) {
+    assert(e == SymbolTable::undefine_symbol);
+  }
+
+  try {
+    symtab.getSymbolType("undefine");
+    assert(false);
+  } catch (SymbolTable::Error e) {
+    assert(e == SymbolTable::undefine_symbol);
+  }
+
+  // define Symbol
+  try {
+    symtab.define("relative_address", 0x01, SymbolTable::relative_address);
+    assert(symtab.getSymbolType("relative_address") ==
+           SymbolTable::relative_address);
+    assert(symtab.getSymbolAddress("relative_address") == 0x01);
+
+    symtab.define("absolute_address", 0x02, SymbolTable::absolute_address);
+    assert(symtab.getSymbolType("absolute_address") ==
+           SymbolTable::absolute_address);
+    assert(symtab.getSymbolAddress("absolute_address") == 0x02);
+  } catch (SymbolTable::Error e) {
+    assert(false);
+  }
+}
+
 void test() {
   testHashTable();
   testLoadingTable();
   testLexer();
   testOPTab();
+  testSymtab();
 }
