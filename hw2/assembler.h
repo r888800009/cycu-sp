@@ -18,6 +18,15 @@ class Assembler {
   void pass1();
   void pass2();
 
+  typedef struct Flag {
+    bool n, i, x, b, p, e;
+  } Flag;
+
+  string genFormat1(int opcode);
+  string genFormat2(int opcode, int r1, int r2);
+  string genFormat3(int opcode, Flag flag, int disp);
+  string genFormat4(int opcode, Flag flag, int address);
+
  public:
   Assembler();
   void assembling();
