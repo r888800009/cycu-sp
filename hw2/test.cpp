@@ -234,10 +234,24 @@ void testSymtab() {
   }
 }
 
+void testAsmPass1() {
+  // duplicate define
+}
+
+void testAsmPass2() {
+  // undefine
+}
+
+void testAsm() {
+  testAsmPass1();
+  testAsmPass2();
+}
+
 void test() {
   testHashTable();
   testLoadingTable();
   testLexer();
   testOPTab();
   testSymtab();
+  testAsm();
 }
