@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 
+#include "assembler.h"
 #include "lexicaler.h"
 #include "optab.h"
 #include "symtab.h"
@@ -243,6 +244,10 @@ void testAsmPass2() {
 }
 
 void testAsm() {
+  Assembler asm1;
+
+  asm1.test();
+
   testAsmPass1();
   testAsmPass2();
 }

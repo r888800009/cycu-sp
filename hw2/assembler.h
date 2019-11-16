@@ -22,6 +22,7 @@ class Assembler {
     bool n, i, x, b, p, e;
   } Flag;
 
+  string genData(int data);
   string genFormat1(int opcode);
   string genFormat2(int opcode, int r1, int r2);
   string genFormat3(int opcode, Flag flag, int disp);
@@ -31,6 +32,7 @@ class Assembler {
   Assembler();
   void assembling();
   void setFile(const string &filename);
+  void test();
   enum Error { syntax_error, duplicate_define_error, undefined_error };
 };
 
