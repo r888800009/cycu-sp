@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "parser.h"
+
 using namespace std;
 
 Assembler::Assembler() {
