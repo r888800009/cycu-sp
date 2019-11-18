@@ -46,8 +46,6 @@ class LoadingTable : public Table {
   TokenData get(const string& token);
   TokenData get(char delimiter);
   string get(TokenData);
-
-  enum Error { loading_failure };
 };
 
 class HashTable : public Table {

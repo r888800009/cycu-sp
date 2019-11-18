@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "assembler.h"
+#include "error.h"
 #include "lexicaler.h"
 #include "optab.h"
 #include "parser.h"
@@ -207,23 +208,23 @@ void testSymtab() {
     symtab.define("aaa", 0x00, SymbolTable::absolute_address);
     symtab.define("aaa", 0x00, SymbolTable::absolute_address);
     assert(false);
-  } catch (SymbolTable::Error e) {
-    assert(e == SymbolTable::duplicate_define);
+  } catch (Error::ASMError e) {
+    assert(e == Error::duplicate_define);
   }
 
   // undefine symbol
   try {
     symtab.getSymbolAddress("undefine");
     assert(false);
-  } catch (SymbolTable::Error e) {
-    assert(e == SymbolTable::undefine_symbol);
+  } catch (Error::ASMError e) {
+    assert(e == Error::undefine_symbol);
   }
 
   try {
     symtab.getSymbolType("undefine");
     assert(false);
-  } catch (SymbolTable::Error e) {
-    assert(e == SymbolTable::undefine_symbol);
+  } catch (Error::ASMError e) {
+    assert(e == Error::undefine_symbol);
   }
 
   // define Symbol
@@ -237,7 +238,7 @@ void testSymtab() {
     assert(symtab.getSymbolType("absolute_address") ==
            SymbolTable::absolute_address);
     assert(symtab.getSymbolAddress("absolute_address") == 0x02);
-  } catch (SymbolTable::Error e) {
+  } catch (Error::ASMError e) {
     assert(false);
   }
 }

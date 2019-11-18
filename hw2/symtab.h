@@ -27,8 +27,6 @@ class SymbolTable {
   void define(const string&, int, Type);
   int getSymbolAddress(const string&);
   Type getSymbolType(const string&);
-
-  enum Error { duplicate_define, undefine_symbol };
 };
 
 #endif

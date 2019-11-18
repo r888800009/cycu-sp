@@ -33,7 +33,6 @@ class Assembler {
   void assembling();
   void setFile(const string &filename);
   void test();
-  enum Error { syntax_error, duplicate_define_error, undefined_error };
 };
 
 #endif

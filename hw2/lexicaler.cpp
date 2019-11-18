@@ -8,6 +8,8 @@
 #include <regex>
 #include <sstream>
 
+#include "error.h"
+
 using namespace std;
 
 Lexicaler::Lexicaler() {
@@ -26,7 +28,7 @@ void Lexicaler::loadFile(const string& filename) {
   fin.open(this->filename, ios::in);
   if (!fin) {
     cout << "Can't load file " << this->filename << endl;
-    throw loading_failure;
+    throw Error::loading_failure;
   }
 
   regex postFix("_input.txt$");
@@ -210,7 +212,7 @@ void Lexicaler::lexing() {
   fout.open(saveName, ios::out);
   if (!fout) {
     cout << "Can't open file " << saveName << endl;
-    throw saving_failure;
+    throw Error::saving_failure;
   }
 
   cout << "start write: \"" << saveName << '"' << endl;

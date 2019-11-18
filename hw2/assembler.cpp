@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include "error.h"
 #include "parser.h"
 
 using namespace std;
@@ -106,15 +107,15 @@ void Assembler::assembling() {
   try {
     lexer.loadFile(filename);
     lexer.lexing();
-  } catch (Lexicaler::Error e) {
-    if (e == Lexicaler::loading_failure)
+  } catch (Error::IOError e) {
+    if (e == Error::loading_failure)
       ;
-    else if (e == Lexicaler::saving_failure)
+    else if (e == Error::saving_failure)
       ;
     else
       throw "Unknown Error!";
-  } catch (LoadingTable::Error e) {
-    if (e == LoadingTable::loading_failure)
+  } catch (Error::IOError e) {
+    if (e == Error::loading_failure)
       ;
     else
       throw "Unknown Error!";

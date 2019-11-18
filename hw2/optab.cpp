@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "error.h"
+
 using namespace std;
 
 OPTab::OPTab() {}
@@ -13,7 +15,7 @@ OPTab::OPTab() {}
 void OPTab::loadOPTab(const string &optable_name) {
   fin.open(optable_name, ios::in);
 
-  if (!fin) throw loading_failure;
+  if (!fin) throw Error::loading_failure;
 
   string command;
   int type, opcode;

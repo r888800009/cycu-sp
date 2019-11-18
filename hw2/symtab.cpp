@@ -4,6 +4,11 @@
 #include "symtab.h"
 
 #include <iostream>
+
+#include "error.h"
+
+using namespace Error;
+
 SymbolTable::SymbolTable() {}
 
 void SymbolTable::define(const string& symbol, int address, Type type) {

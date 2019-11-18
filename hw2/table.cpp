@@ -6,6 +6,8 @@
 #include <cassert>
 #include <string>
 
+#include "error.h"
+
 using namespace std;
 
 int Table::getTableID() {
@@ -35,7 +37,7 @@ void LoadingTable::loadTable(const string& filename) {
   fin.open(filename, ios::in | ios::binary);
   if (!fin) {
     cout << "Can't load table " << filename << endl;
-    throw loading_failure;
+    throw Error::loading_failure;
   }
 
   // loading file
