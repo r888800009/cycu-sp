@@ -7,6 +7,8 @@
 #include <regex>
 #include <vector>
 
+#include "table.h"
+
 using namespace std;
 
 class Parser {
@@ -30,6 +32,8 @@ class Parser {
 
  public:
   Parser();  // define Syntax
+
+  int matchSyntax(vector<TokenData>);
   void test();
 };
 
