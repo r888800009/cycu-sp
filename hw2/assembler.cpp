@@ -34,7 +34,26 @@ string Assembler::genFormat2(int opcode, int r1, int r2) {
   return stream.str();
 }
 
-string Assembler::genFormat3(int opcode, Flag flag, int disp) {}
+string Assembler::genFormat3(int opcode, Flag flag, int disp) {
+  stringstream stream;
+  int result = 0;
+
+  result |= (0b111111 & opcode) << 12 + 6;
+
+  result |= (flag.n) << 12 + 5;
+  result |= (flag.i) << 12 + 4;
+  result |= (flag.x) << 12 + 3;
+  result |= (flag.b) << 12 + 2;
+  result |= (flag.p) << 12 + 1;
+  result |= (flag.e) << 12 + 0;
+
+  result |= (disp & 0b111111111111);
+
+  stream << std::noshowbase << setfill('0') << setw(6) << uppercase << std::hex
+         << result;
+
+  return stream.str();
+}
 string Assembler::genFormat4(int opcode, Flag flag, int address) {}
 
 void Assembler::test() {
@@ -59,6 +78,15 @@ void Assembler::test() {
   // format3
   code = genFormat3(0b111111, {1, 1, 0, 0, 0, 0}, 0x0);
   assert(code == "FF0000" && code.length() == 6);  // 6 nibble
+
+  code = genFormat3(0b111100, {0, 0, 1, 1, 1, 1}, 0b111111111111);
+  assert(code == "F0FFFF" && code.length() == 6);  // 6 nibble
+
+  code = genFormat3(0b000000, {0, 0, 1, 1, 1, 1}, 0b111111111111);
+  assert(code == "00FFFF" && code.length() == 6);  // 6 nibble
+
+  code = genFormat3(0b000000, {0, 0, 1, 1, 1, 1}, 0b111100001111);
+  assert(code == "00FF0F" && code.length() == 6);  // 6 nibble
 
   // format4
   code = genFormat4(0b111111, {1, 1, 0, 0, 0, 0}, 0x0);
