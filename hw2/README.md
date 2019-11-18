@@ -79,7 +79,7 @@ Parser為Recursive Descent Parser，設計一個資料結構Syntax List來保存
     int tableType; // if terminal symbol is true
     int syntaxID; // false
 
-    bool ( *checker)(const string &str); // only work in table5,6,7
+    bool ( *checker)(const string &str); // work for all table
   } SyntaxData;
 ```
 
