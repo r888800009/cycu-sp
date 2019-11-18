@@ -37,19 +37,25 @@ string Assembler::genFormat2(int opcode, int r1, int r2) {
   return stream.str();
 }
 
+int Assembler::flagToBinary(Flag flag) {
+  int result = 0;
+
+  result |= (flag.n) << 5;
+  result |= (flag.i) << 4;
+  result |= (flag.x) << 3;
+  result |= (flag.b) << 2;
+  result |= (flag.p) << 1;
+  result |= (flag.e) << 0;
+
+  return result;
+}
+
 string Assembler::genFormat3(int opcode, Flag flag, int disp) {
   stringstream stream;
   int result = 0;
 
   result |= (0b111111 & opcode) << 12 + 6;
-
-  result |= (flag.n) << 12 + 5;
-  result |= (flag.i) << 12 + 4;
-  result |= (flag.x) << 12 + 3;
-  result |= (flag.b) << 12 + 2;
-  result |= (flag.p) << 12 + 1;
-  result |= (flag.e) << 12 + 0;
-
+  result |= flagToBinary(flag) << 12;
   result |= (disp & 0b111111111111);
 
   stream << std::noshowbase << setfill('0') << setw(6) << uppercase << std::hex
@@ -57,7 +63,20 @@ string Assembler::genFormat3(int opcode, Flag flag, int disp) {
 
   return stream.str();
 }
-string Assembler::genFormat4(int opcode, Flag flag, int address) {}
+
+string Assembler::genFormat4(int opcode, Flag flag, int address) {
+  stringstream stream;
+  int result = 0;
+
+  result |= (0b111111 & opcode) << 20 + 6;
+  result |= flagToBinary(flag) << 20;
+  result |= (address & 0b11111111111111111111);
+
+  stream << std::noshowbase << setfill('0') << setw(8) << uppercase << std::hex
+         << result;
+
+  return stream.str();
+}
 
 void Assembler::test() {
   string code;
@@ -94,6 +113,15 @@ void Assembler::test() {
   // format4
   code = genFormat4(0b111111, {1, 1, 0, 0, 0, 0}, 0x0);
   assert(code == "FF000000" && code.length() == 8);  // 8 nibble
+
+  code = genFormat4(0b111111, {1, 1, 0, 0, 0, 0}, 0b11111111111111111111);
+  assert(code == "FF0FFFFF" && code.length() == 8);  // 8 nibble
+
+  code = genFormat4(0b000000, {0, 0, 1, 1, 1, 1}, 0b11111111111111111111);
+  assert(code == "00FFFFFF" && code.length() == 8);  // 8 nibble
+
+  code = genFormat4(0b000000, {0, 0, 1, 1, 1, 1}, 0b11111111111100001111);
+  assert(code == "00FFFF0F" && code.length() == 8);  // 8 nibble
 }
 
 void Assembler::setFile(const string &filename) { this->filename = filename; }

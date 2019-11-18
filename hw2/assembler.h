@@ -28,6 +28,8 @@ class Assembler {
   string genFormat3(int opcode, Flag flag, int disp);
   string genFormat4(int opcode, Flag flag, int address);
 
+  int flagToBinary(Flag flag);
+
  public:
   Assembler();
   void assembling();
