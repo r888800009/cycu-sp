@@ -94,8 +94,8 @@ string Lexicaler::getData(TokenData data) {
   }
 }
 
-string Lexicaler::lexingLine(const string& line) {
-  string result = "";
+vector<TokenData> Lexicaler::lexingLine(const string& line) {
+  vector<TokenData> result;
 
   // split
   Mode mode = mode_normal;
@@ -108,7 +108,7 @@ string Lexicaler::lexingLine(const string& line) {
         if (isspace(getChar)) {
           if (curStr != "") {
             TokenData data = checkToken(curStr);
-            result += tableValueToString(data);
+            result.push_back(data);
             curStr = "";
           }
 
@@ -127,14 +127,14 @@ string Lexicaler::lexingLine(const string& line) {
           } else {
             if (curStr != "") {
               TokenData data = checkToken(curStr);
-              result += tableValueToString(data);
+              result.push_back(data);
             }
 
             if (getChar == '.') mode = mode_comment;
           }
 
           TokenData data = delimiterTable.get(getChar);
-          result += tableValueToString(data);
+          result.push_back(data);
           curStr = "";
           break;
         }
@@ -145,9 +145,9 @@ string Lexicaler::lexingLine(const string& line) {
       case mode_string:
         // until ' back to normal mode
         if (getChar == '\'') {
-          result += tableValueToString(stringTable.put(curStr));
+          result.push_back(stringTable.put(curStr));
           TokenData data = delimiterTable.get(getChar);
-          result += tableValueToString(data);
+          result.push_back(data);
           curStr = "";
           mode = mode_normal;
         } else {
@@ -162,9 +162,9 @@ string Lexicaler::lexingLine(const string& line) {
           transform(curStr.begin(), curStr.end(), curStr.begin(), ::toupper);
 
           // set result
-          result += tableValueToString(integerTable.put(curStr));
+          result.push_back(integerTable.put(curStr));
           TokenData data = delimiterTable.get(getChar);
-          result += tableValueToString(data);
+          result.push_back(data);
           curStr = "";
           mode = mode_normal;
         } else {
@@ -185,9 +185,19 @@ string Lexicaler::lexingLine(const string& line) {
   // last token
   if (curStr != "") {
     TokenData data = checkToken(curStr);
-    result += tableValueToString(data);
+    result.push_back(data);
     curStr = "";
   }
+
+  return result;
+}
+
+string Lexicaler::lexingLineString(const string& line) {
+  vector<TokenData> tokenStr = lexingLine(line);
+  string result = "";
+
+  for (int i = 0; i < tokenStr.size(); i++)
+    result += tableValueToString(tokenStr[i]);
 
   return result;
 }
@@ -209,7 +219,7 @@ void Lexicaler::lexing() {
     cout << line << endl;
     fout << line << endl;
 
-    string out = lexingLine(line);
+    string out = lexingLineString(line);
     cout << out << endl;
     fout << out << endl;
   }

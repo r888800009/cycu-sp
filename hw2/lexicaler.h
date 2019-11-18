@@ -3,6 +3,8 @@
 
 #ifndef _LEXICALER_H_
 #define _LEXICALER_H_
+#include <vector>
+
 #include "table.h"
 
 using namespace std;
@@ -24,7 +26,8 @@ class Lexicaler {
   bool checkTokenData(const TokenData token);
 
  public:
-  string lexingLine(const string &line);
+  vector<TokenData> lexingLine(const string &line);
+  string lexingLineString(const string &line);
   TokenData checkToken(const string &token);
   string tableValueToString(TokenData token);
 

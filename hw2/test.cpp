@@ -102,6 +102,11 @@ void testHashTable() {
   assert(table1.get(data) == "  t  es t");
 }
 
+bool equalTokenString(vector<TokenData> tokenStr1,
+                      vector<TokenData> tokenStr2) {
+  if (tokenStr1.size() != tokenStr2.size()) return false;
+}
+
 void testLexer() {
   Lexicaler lexicaler;
   string result;
@@ -115,48 +120,49 @@ void testLexer() {
   testcase.push_back(" AdD      A , 92   ");
 
   for (int i = 0; i < testcase.size(); i++)
-    assert(lexicaler.lexingLine(testcase[i]) == "(1,1)(3,1)(4,1)(6,7)");
+    assert(lexicaler.lexingLineString(testcase[i]) == "(1,1)(3,1)(4,1)(6,7)");
 
   // string write space
   lexicaler.reset();
-  assert(lexicaler.lexingLine("MESSAGE DB c'Hello,_World!$  '") ==
+  assert(lexicaler.lexingLineString("MESSAGE DB c'Hello,_World!$  '") ==
          "(5,17)(5,34)(4,9)(7,92)(4,9)");
   assert(lexicaler.getData({7, 92}) == "Hello,_World!$  ");
 
   lexicaler.reset();
-  assert(lexicaler.lexingLine("MESSAGE DB C'  Hello,_World!$'") ==
+  assert(lexicaler.lexingLineString("MESSAGE DB C'  Hello,_World!$'") ==
          "(5,17)(5,34)(4,9)(7,92)(4,9)");
   assert(lexicaler.getData({7, 92}) == "  Hello,_World!$");
 
   lexicaler.reset();
-  assert(lexicaler.lexingLine("MESSAGE DB c'  Hello,_World!$  '") ==
+  assert(lexicaler.lexingLineString("MESSAGE DB c'  Hello,_World!$  '") ==
          "(5,17)(5,34)(4,9)(7,56)(4,9)");
   assert(lexicaler.getData({7, 56}) == "  Hello,_World!$  ");
 
   // integer
   lexicaler.reset();
-  assert(lexicaler.lexingLine("MESSAGE DB x'9'") ==
+  assert(lexicaler.lexingLineString("MESSAGE DB x'9'") ==
          "(5,17)(5,34)(4,9)(6,57)(4,9)");
-  assert(lexicaler.lexingLine("MESSAGE DB X'9'") ==
+  assert(lexicaler.lexingLineString("MESSAGE DB X'9'") ==
          "(5,17)(5,34)(4,9)(6,57)(4,9)");
   assert(lexicaler.getData({6, 57}) == "9");
 
   // other
-  assert(lexicaler.lexingLine("    ") == "");
+  assert(lexicaler.lexingLineString("    ") == "");
   lexicaler.reset();
-  assert(lexicaler.lexingLine("ADD A,9") == "(1,1)(3,1)(4,1)(6,57)");
+  assert(lexicaler.lexingLineString("ADD A,9") == "(1,1)(3,1)(4,1)(6,57)");
   lexicaler.reset();
-  assert(lexicaler.lexingLine("   aDd a, 92 . ADD AH, 92") ==
+  assert(lexicaler.lexingLineString("   aDd a, 92 . ADD AH, 92") ==
          "(1,1)(3,1)(4,1)(6,7)(4,10)");
 
   // upper case
   lexicaler.reset();
-  assert(lexicaler.lexingLine("x'ffaA'") == lexicaler.lexingLine("x'fFaA'"));
+  assert(lexicaler.lexingLineString("x'ffaA'") ==
+         lexicaler.lexingLineString("x'fFaA'"));
 
   // test getData
   lexicaler.reset();
-  lexicaler.lexingLine("MESSAGE ADD A,9");
-  lexicaler.lexingLine("MESSAGE DB c'  Hello,_World!$  '");
+  lexicaler.lexingLineString("MESSAGE ADD A,9");
+  lexicaler.lexingLineString("MESSAGE DB c'  Hello,_World!$  '");
   assert(lexicaler.getData({1, 1}) == "ADD");
   assert(lexicaler.getData({2, 1}) == "START");
   assert(lexicaler.getData({3, 1}) == "A");
