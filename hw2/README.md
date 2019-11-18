@@ -100,7 +100,7 @@ append這個指令會回傳SyntaxList所給予的ID並保存identifer，
 使用到空文法應該中斷程式報錯由程式設計師解決。
 ``` c++ 
   class SyntaxList {
-    vector<Syntex> list;
+    vector<Syntax> list;
     map<string, int> identiferList;
    public:
      int append(string identifer, Syntax);
@@ -111,6 +111,6 @@ append這個指令會回傳SyntaxList所給予的ID並保存identifer，
 
 ## 未完成的功能
 - syntax
-- SyntaxList資料結構不支援向前參考
+- ~~SyntaxList資料結構不支援向前參考~~，直接在SyntaxSyntax中加入識別符。
 - 由於作業只需要輸出Object code的hex，因此尚未支援轉成二進位的機器碼檔案的功能。
 

@@ -11,13 +11,36 @@
 #include "table.h"
 
 using namespace std;
+
+class SyntexList;
+
 class SyntaxData {
  public:
   bool terminal = true;
   SyntaxData();
-  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer) {
+  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer,
+                           const SyntexList &syntaxList) {
     return false;
   };
+};
+
+class Syntax {
+  typedef vector<SyntaxData> TokenGroup;
+  vector<TokenGroup> syntaxGroup;
+
+ public:
+  void append(TokenGroup);
+  int match(vector<TokenData>);  // if match return  syntaxGroup index else
+                                 // return -1
+};
+
+class SyntexList {
+  vector<Syntax> list;
+  map<string, int> identiferList;
+
+ public:
+  int append(string identifer, Syntax);
+  int find(string identifer);
 };
 
 class SyntaxInstruction : SyntaxData {};
@@ -38,10 +61,10 @@ class SyntaxInteger : SyntaxData {};
 class SyntaxString : SyntaxData {};
 
 class SyntaxSyntax : SyntaxData {
-  int syntaxID;
+  string syntaxID;
 
  public:
-  SyntaxSyntax(int syntaxID);
+  SyntaxSyntax(const string &syntaxID);
 };
 
 class Parser {
