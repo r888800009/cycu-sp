@@ -11,4 +11,4 @@ test.cpp
 test.h
 README.md
 README.html
-README.docx
+README.txt
