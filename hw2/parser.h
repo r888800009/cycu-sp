@@ -7,23 +7,45 @@
 #include <regex>
 #include <vector>
 
+#include "lexicaler.h"
 #include "table.h"
 
 using namespace std;
+class SyntaxData {
+ public:
+  bool terminal = true;
+  SyntaxData();
+  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer) {
+    return false;
+  };
+};
+
+class SyntaxInstruction : SyntaxData {};
+
+class SyntaxPseudo : SyntaxData {};
+
+class SyntaxDelimiter : SyntaxData {
+  char delimiter;
+
+ public:
+  SyntaxDelimiter(char delimiter);
+};
+
+class SyntaxRegister : SyntaxData {};
+
+class SyntaxSymbol : SyntaxData {};
+class SyntaxInteger : SyntaxData {};
+class SyntaxString : SyntaxData {};
+
+class SyntaxSyntax : SyntaxData {
+  int syntaxID;
+
+ public:
+  SyntaxSyntax(int syntaxID);
+};
 
 class Parser {
  public:
-  typedef class SyntaxData {
-    int tableType;
-    bool checkReg;
-    regex reg;
-    SyntaxData *next;
-
-   public:
-    SyntaxData(int type, bool enableRegex, regex reg);
-    void append(SyntaxData nextSyntax);
-  } SyntaxData;
-
   typedef vector<SyntaxData> Syntex;
 
  private:

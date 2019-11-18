@@ -67,20 +67,21 @@ Parser為Recursive Descent Parser，設計一個資料結構Syntax List來保存
 ![SyntAxList 結構圖](SyntaxList.svg)
 
 #### Syntax Data
-一串Syntax Data可以代表Terminal Symbol或Non-Terminal Symbol，
+Syntax Data可以代表Terminal Symbol或Non-Terminal Symbol，
 如果為前者則判斷tableType是否符合，否則就判斷後者syntaxID，
 而syntaxID是由SyntaxList自行管理，產生Syntax時會返回一個ID。
 
-並且允許配置一個function來檢查Table的內容是否符合文法。
+實做SyntaxData採用class，並且針對指令、偽代碼、暫存器、分割符、Symbol、Integer、String、
+Non-terminal Symbol等下去繼承類別。
 ``` c++ 
-  typedef struct SyntaxData {
-    bool terminal;
-
-    int tableType; // if terminal symbol is true
-    int syntaxID; // false
-
-    bool ( *checker)(const string &str); // work for all table
-  } SyntaxData;
+class SyntaxData {
+ public:
+  bool terminal = true;
+  SyntaxData();
+  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer) {
+    return false;
+  };
+};
 ```
 
 #### Syntax
