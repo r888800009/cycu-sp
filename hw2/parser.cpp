@@ -2,15 +2,31 @@
 // must to use -std=c++11 or higher version
 
 #include "parser.h"
-SyntaxData::SyntaxData() {}
 
-Parser::Parser() {  // define Syntax
-  // define root syntax
-  rootSyntax = syntexList[0];
+#include <cassert>
 
-  // BYTE X'F1'
+Parser::Parser(Lexicaler *lexer) { this->lexer = lexer; }
 
-  // BYTE C'EOF'
+void Parser::setTokens(vector<TokenData> tokenString) {
+  this->tokenString = tokenString;
+  syntaxIndex.clear();
 }
 
-void Parser::test() {}
+int Parser::matchInstruction() {
+  // instruction
+
+  // pseudo
+
+  // BYTE X'F1'
+  // BYTE C'EOF'
+  // WORD X'FFFFFF'
+}
+
+int Parser::matchSyntax(vector<TokenData> tokenString) {
+  // define grammar
+
+  // has symbol
+  // no symbol
+}
+
+void Parser::test() { assert(false); }

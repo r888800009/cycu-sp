@@ -6,11 +6,13 @@
 
 #include "lexicaler.h"
 #include "optab.h"
+#include "parser.h"
 
 using namespace std;
 
 class Assembler {
   Lexicaler lexer;
+  Parser parser;
   OPTab optab;
 
   string filename;

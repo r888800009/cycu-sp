@@ -11,9 +11,8 @@
 
 using namespace std;
 
-Assembler::Assembler() {
+Assembler::Assembler() : parser(&lexer) {
   // lexer = Lexicaler(); Maybe not necessary?
-
   // OPTAB
   // SYMTAB
   // LOCCTR

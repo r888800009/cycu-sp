@@ -261,7 +261,8 @@ void testAsm() {
 }
 
 void testParser() {
-  Parser paser;
+  Lexicaler lexer;
+  Parser paser(&lexer);
   paser.test();
 }
 

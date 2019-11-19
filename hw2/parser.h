@@ -12,71 +12,21 @@
 
 using namespace std;
 
-class SyntexList;
-
-class SyntaxData {
- public:
-  bool terminal = true;
-  SyntaxData();
-  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer,
-                           const SyntexList &syntaxList) {
-    return false;
-  };
-};
-
-class Syntax {
-  typedef vector<SyntaxData> TokenGroup;
-  vector<TokenGroup> syntaxGroup;
-
- public:
-  void append(TokenGroup);
-  int match(vector<TokenData>);  // if match return  syntaxGroup index else
-                                 // return -1
-};
-
-class SyntexList {
-  vector<Syntax> list;
-  map<string, int> identiferList;
-
- public:
-  int append(string identifer, Syntax);
-  int find(string identifer);
-};
-
-class SyntaxInstruction : SyntaxData {};
-
-class SyntaxPseudo : SyntaxData {};
-
-class SyntaxDelimiter : SyntaxData {
-  char delimiter;
-
- public:
-  SyntaxDelimiter(char delimiter);
-};
-
-class SyntaxRegister : SyntaxData {};
-
-class SyntaxSymbol : SyntaxData {};
-class SyntaxInteger : SyntaxData {};
-class SyntaxString : SyntaxData {};
-
-class SyntaxSyntax : SyntaxData {
-  string syntaxID;
-
- public:
-  SyntaxSyntax(const string &syntaxID);
-};
-
 class Parser {
- public:
-  typedef vector<SyntaxData> Syntex;
-
- private:
-  vector<Syntex> syntexList;
-  Syntex &rootSyntax = syntexList[0];
+  Lexicaler *lexer = nullptr;
+  vector<int> syntaxIndex;
+  vector<TokenData> tokenString;
 
  public:
-  Parser();  // define Syntax
+  Parser(Lexicaler *lexer);  // define Syntax
+
+  void syntaxBegin();
+  bool syntaxEnd();  // return match or not
+  void setTokens(vector<TokenData>);
+
+  bool matchDelimiter(char c);
+  bool matchOP();
+  int matchInstruction();
 
   int matchSyntax(vector<TokenData>);
   void test();
