@@ -9,14 +9,9 @@
 
 Parser::Parser(Lexicaler *lexer) { this->lexer = lexer; }
 
-void Parser::syntaxBegin(vector<TokenData> *tokenString) {
+void Parser::setTokenString(vector<TokenData> *tokenString) {
   this->tokenString = tokenString;
-  syntaxIndex.clear();
-  curIndex = 0;
-  syntaxIndex.push_back(curIndex);
 }
-
-void Parser::syntaxEnd() { syntaxIndex.pop_back(); }
 
 int Parser::matchInstruction() {
   // instruction
@@ -35,30 +30,24 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
   // no symbol
 }
 
-bool Parser::matchDelimiter(char c) {
-  if (curIndex >= tokenString->size()) return false;
-
-  TokenData d1 = tokenString->at(curIndex);
-  TokenData d2 = lexer->delimiterTable.get(c);
-  curIndex++;
-  if (isTokenEqual(d1, d2)) return true;
-
-  return false;
+bool Parser::matchDelimiter(char c, int i) {
+  if (i >= tokenString->size()) return false;
+  return isTokenEqual(tokenString->at(i), lexer->delimiterTable.get(c));
 }
 
-bool Parser::matchRegister(const string &reg) { return false; }
-bool Parser::matchOP(int format) { return false; }
+bool Parser::matchRegister(const string &reg, int i) {
+  if (i >= tokenString->size()) return false;
+  return isTokenEqual(tokenString->at(i), lexer->registerTable.get(reg));
+}
+
+bool Parser::matchOP(int format, int i) { return false; }
 
 void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
-  // cout << tokens.size() << endl;
-  syntaxBegin(&tokens);
-  bool syntax = matchDelimiter(',') && matchDelimiter(',') &&
-                matchDelimiter(',') && matchDelimiter(',');
+  setTokenString(&tokens);
+  bool syntax = matchDelimiter(',', 0) && matchDelimiter(',', 1) &&
+                matchDelimiter(',', 2) && matchDelimiter(',', 3);
   assert(syntax == result);
-  syntaxEnd();
 }
-
-void Parser::testNest(int deep) {}
 
 void Parser::test() {
   // begin and end
@@ -76,8 +65,6 @@ void Parser::test() {
 
   tokens = {{1, 1}, {4, 1}, {4, 1}, {4, 1}, {4, 1}};
   testBeginAndEnd(tokens, false);
-
-  // nest Syntax
 
   // delimiter
   // ,,,,
