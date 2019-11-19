@@ -19,6 +19,10 @@ class Parser {
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);
 
  public:
+  struct MatchData {
+    TokenData symbol;
+  } matchData;
+
   Parser(Lexicaler *lexer);  // define Syntax
 
   void setTokenString(vector<TokenData> *tokenString);
@@ -26,6 +30,7 @@ class Parser {
   bool matchDelimiter(char c, int i);
   bool matchRegister(const string &reg, int i);
   bool matchOP(int format, int i);
+  bool matchSymbol(int i);
 
   int matchInstruction();
 

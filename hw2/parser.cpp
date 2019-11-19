@@ -23,6 +23,15 @@ int Parser::matchInstruction() {
   // WORD X'FFFFFF'
 }
 
+bool Parser::matchSymbol(int i) {
+  if (i >= tokenString->size()) return false;
+  TokenData data = tokenString->at(i);
+  if (!lexer->symbolTable.exist(data)) return false;
+
+  matchData.symbol = data;
+  return true;
+}
+
 int Parser::matchSyntax(vector<TokenData> tokenString) {
   // define grammar
 
@@ -70,4 +79,11 @@ void Parser::test() {
   // ,,,,
   tokens = {{4, 1}, {4, 1}, {4, 1}, {4, 1000}, {4, 100}};
   testBeginAndEnd(tokens, false);
+
+  // match symbol
+  lexer->symbolTable.put("test");  // define a symbol
+  tokens = {{SYMBOL_TABLE, ('t' + 'e' + 's' + 't') % 100}};
+  setTokenString(&tokens);
+  assert(matchSymbol(0));
+  assert(isTokenEqual(tokens[0], this->matchData.symbol));
 }
