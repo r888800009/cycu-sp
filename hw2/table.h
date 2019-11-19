@@ -23,6 +23,10 @@ typedef struct TokenData {
   int type, value;
 } TokenData;
 
+bool isTokenEqual(TokenData t1, TokenData t2);
+
+void printTokenValue(TokenData token);
+
 class Table {
  protected:
   int tableID;

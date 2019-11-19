@@ -14,18 +14,24 @@ using namespace std;
 
 class Parser {
   Lexicaler *lexer = nullptr;
+  int curIndex;
   vector<int> syntaxIndex;
-  vector<TokenData> tokenString;
+
+  vector<TokenData> *tokenString;
+
+  void testBeginAndEnd(vector<TokenData> &tokens, bool result);
+  void testNest(int deep);
 
  public:
   Parser(Lexicaler *lexer);  // define Syntax
 
-  void syntaxBegin();
-  bool syntaxEnd();  // return match or not
-  void setTokens(vector<TokenData>);
+  void syntaxBegin(vector<TokenData> *tokenString);
+  void syntaxEnd();  // return match or not
 
   bool matchDelimiter(char c);
-  bool matchOP();
+  bool matchRegister(const string &reg);
+  bool matchOP(int format);
+
   int matchInstruction();
 
   int matchSyntax(vector<TokenData>);

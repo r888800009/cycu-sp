@@ -14,6 +14,10 @@ class Lexicaler {
   fstream fin;
   string filename, saveName;
 
+  void printTableValue(TokenData);
+  bool checkTokenData(const TokenData token);
+
+ public:
   LoadingTable instructionTable = LoadingTable(INSTRUCTION_TABLE);
   LoadingTable pseudoExtraTable = LoadingTable(PSEUDO_EXTRA_TABLE);
   LoadingTable registerTable = LoadingTable(REGISTER_TABLE);
@@ -22,10 +26,6 @@ class Lexicaler {
   HashTable integerTable = HashTable(INTEGER_REAL_TABLE);
   HashTable stringTable = HashTable(STRING_TABLE);
 
-  void printTableValue(TokenData);
-  bool checkTokenData(const TokenData token);
-
- public:
   vector<TokenData> lexingLine(const string &line);
   string lexingLineString(const string &line);
   TokenData checkToken(const string &token);
@@ -36,6 +36,7 @@ class Lexicaler {
   void reset();
   void loadFile(const string &);
   void writeFile(const string &);
+
   string getData(TokenData);
   enum Mode { mode_normal, mode_string, mode_integer, mode_comment };
 };

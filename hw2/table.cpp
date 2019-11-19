@@ -10,6 +10,15 @@
 
 using namespace std;
 
+bool isTokenEqual(TokenData t1, TokenData t2) {
+  return t1.type == t2.type && t1.value == t2.value;
+};
+
+void printTokenValue(TokenData token) {
+  cout << "(" << token.type << "," << token.value << ")";
+  cout.flush();
+}
+
 int Table::getTableID() {
   assert(tableID >= 1);
   return tableID;
