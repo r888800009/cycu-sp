@@ -60,6 +60,7 @@ void testHashTable() {
   // test null
   TokenData data = table1.get("test");
   assert(data.type == -1 && data.value == -1);
+  assert(table1.exist({1, ('t' + 'e' + 's' + 't') % 100}) == false);
 
   // test Upper lower
   table1.put("tesT");
@@ -70,6 +71,8 @@ void testHashTable() {
   // cout << data.type << ":" << data.value << endl;
   assert(data.type == 1);
   assert(data.value == ('t' + 'e' + 's' + 't') % 100);
+  assert(table1.exist({1, ('t' + 'e' + 's' + 't') % 100}) == true);
+  assert(table1.exist({2, ('t' + 'e' + 's' + 't') % 100}) == false);
 
   data = table1.get("test");
   // cout << data.type << ":" << data.value << endl;

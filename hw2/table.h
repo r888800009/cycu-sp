@@ -70,6 +70,7 @@ class HashTable : public Table {
   TokenData put(const string& token);
   TokenData get(const string& token);
   string get(TokenData);
+  bool exist(TokenData data);
 };
 
 #endif

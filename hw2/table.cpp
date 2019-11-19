@@ -133,6 +133,10 @@ string HashTable::get(TokenData data) {
   return "";
 }
 
+bool HashTable::exist(TokenData data) {
+  return data.type == tableID && !tableData[data.value].empty;
+}
+
 TokenData HashTable::get(const string& token) {
   int index = hash_fucntion(token), step = 0;
 
