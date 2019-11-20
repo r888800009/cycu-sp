@@ -16,10 +16,84 @@ void Parser::setTokenString(vector<TokenData> *tokenString) {
   this->tokenString = tokenString;
 }
 
-bool Parser::matchInstruction(int i) {
+void Parser::debug() {
+  printTokenValue(matchData.symbol);
+  cout << matchData.opcode << ", " << matchData.format << endl;
+  cout.flush();
+}
+
+bool Parser::matchFormat1(const int r, int &l) {
+  if (r + 1 != tokenString->size()) return false;
+  TokenData data = tokenString->at(r);
+
+  string mnemonic = lexer->instructionTable.get(data);
+  matchData.opcode = optab->getOPCode(mnemonic);
+  matchData.format = optab->getFormat(mnemonic);
+  l++;
+
+  if (matchData.opcode != -1 && matchData.format == 1) return true;
+
+  return false;
+}
+
+void Parser::testFmt1() {
+  vector<TokenData> tokens;
+  int l = 0;
+
+  // fix
+  tokens = {{1, 12}};
+  setTokenString(&tokens);
+  assert(matchFormat1(l = 0, l) == true && l != 0);
+  assert(matchData.opcode == 0xc4);
+  assert(matchData.format == 1);
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchFormat1(l = 0, l) == false && l == 0);
+
+  // op op
+  tokens = {{1, 12}, {1, 12}};
+  setTokenString(&tokens);
+  assert(matchFormat1(l = 0, l) == false && l == 0);
+
+  // fmt2
+  tokens = {{1, 3}};
+  setTokenString(&tokens);
+  assert(matchFormat1(l = 0, l) == false && l != 0);
+
+  // fmt3,4
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat1(l = 0, l) == false && l != 0);
+}
+
+bool Parser::matchFormat2(const int r, int &l) {}
+void Parser::testFmt2() {}
+
+bool Parser::matchFormat3(const int r, int &l) {}
+void Parser::testFmt3() {}
+
+bool Parser::matchFormat4(const int r, int &l) {}
+void Parser::testFmt4() {}
+
+bool Parser::matchInstruction(const int r, int &l) {
+  int base = r;
+
   // instruction
   // format 1
+  // i
+
   // format 2
+  /*- CLEAR r1
+- SHIFTL r1, n
+- SHIFTR r1, n
+- SVC n
+- TIXR r1
+*/
+
+  // other format2
+
   // format 3
   // format 4
 
@@ -93,4 +167,9 @@ void Parser::test() {
   setTokenString(&tokens);
   assert(matchSymbol(0));
   assert(isTokenEqual(tokens[0], this->matchData.symbol));
+
+  testFmt1();
+  testFmt2();
+  testFmt3();
+  testFmt4();
 }

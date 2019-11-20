@@ -19,10 +19,12 @@ class Parser {
   OPTab *optab;
 
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);
+  void debug();
 
  public:
   struct MatchData {
     TokenData symbol;
+    int opcode, format;
   } matchData;
 
   Parser(Lexicaler *lexer, OPTab *optab);
@@ -34,10 +36,20 @@ class Parser {
   bool matchOP(int format, int i);
   bool matchSymbol(int i);
 
-  bool matchInstruction(int i);
+  // r; begin, l: end
+  bool matchFormat1(const int r, int &l);
+  bool matchFormat2(const int r, int &l);
+  bool matchFormat3(const int r, int &l);
+  bool matchFormat4(const int r, int &l);
+  bool matchInstruction(const int r, int &l);
 
   int matchSyntax(vector<TokenData>);
   void test();
+
+  void testFmt1();
+  void testFmt2();
+  void testFmt3();
+  void testFmt4();
 };
 
 #endif
