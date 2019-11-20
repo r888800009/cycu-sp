@@ -19,6 +19,14 @@ void Parser::setTokenString(vector<TokenData> *tokenString) {
 void Parser::debug() {
   printTokenValue(matchData.symbol);
   cout << matchData.opcode << ", " << matchData.format << endl;
+
+  cout << "n:" << matchData.flag.n << endl;
+  cout << "i:" << matchData.flag.i << endl;
+  cout << "x:" << matchData.flag.x << endl;
+  cout << "b:" << matchData.flag.b << endl;
+  cout << "p:" << matchData.flag.p << endl;
+  cout << "e:" << matchData.flag.e << endl;
+
   cout.flush();
 }
 
