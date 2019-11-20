@@ -7,14 +7,21 @@
 
 #include "lexicaler.h"
 
-Parser::Parser(Lexicaler *lexer) { this->lexer = lexer; }
+Parser::Parser(Lexicaler *lexer, OPTab *optab) {
+  this->lexer = lexer;
+  this->optab = optab;
+}
 
 void Parser::setTokenString(vector<TokenData> *tokenString) {
   this->tokenString = tokenString;
 }
 
-int Parser::matchInstruction() {
+bool Parser::matchInstruction(int i) {
   // instruction
+  // format 1
+  // format 2
+  // format 3
+  // format 4
 
   // pseudo
 

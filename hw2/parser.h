@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "lexicaler.h"
+#include "optab.h"
 #include "table.h"
 
 using namespace std;
@@ -15,6 +16,7 @@ using namespace std;
 class Parser {
   Lexicaler *lexer = nullptr;
   vector<TokenData> *tokenString;
+  OPTab *optab;
 
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);
 
@@ -23,7 +25,7 @@ class Parser {
     TokenData symbol;
   } matchData;
 
-  Parser(Lexicaler *lexer);  // define Syntax
+  Parser(Lexicaler *lexer, OPTab *optab);
 
   void setTokenString(vector<TokenData> *tokenString);
 
@@ -32,7 +34,7 @@ class Parser {
   bool matchOP(int format, int i);
   bool matchSymbol(int i);
 
-  int matchInstruction();
+  bool matchInstruction(int i);
 
   int matchSyntax(vector<TokenData>);
   void test();

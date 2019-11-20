@@ -23,7 +23,7 @@ void OPTab::loadOPTab(const string &optable_name) {
   while (fin >> command >> hex >> opcode >> type) {
     command = toUpper(command);
 
-    cout << command << "_" << opcode << "_" << type << endl;
+    // cout << command << "_" << opcode << "_" << type << endl;
     table[command] = Data{opcode, type};
   }
 }

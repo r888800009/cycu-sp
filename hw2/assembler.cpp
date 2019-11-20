@@ -11,9 +11,10 @@
 
 using namespace std;
 
-Assembler::Assembler() : parser(&lexer) {
+Assembler::Assembler() : parser(&lexer, &optab) {
   // lexer = Lexicaler(); Maybe not necessary?
-  // OPTAB
+  optab.loadOPTab("OPtable.tsv");  // OPTAB
+
   // SYMTAB
   // LOCCTR
 }

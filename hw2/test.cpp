@@ -265,7 +265,11 @@ void testAsm() {
 
 void testParser() {
   Lexicaler lexer;
-  Parser paser(&lexer);
+  OPTab optab;
+
+  Parser paser(&lexer, &optab);
+
+  optab.loadOPTab("OPtable.tsv");  // OPTAB
   paser.test();
 }
 
