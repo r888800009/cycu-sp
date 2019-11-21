@@ -128,7 +128,7 @@ void Parser::testFmt2() {
   assert(matchFormat2(l = 0, l) && l == 2);
   assert(matchData.opcode == 0xb4);
   assert(matchData.format == 2);
-  assert(matchData.op1 == 8);
+  assert(matchData.op1 == 8 - 1);
   assert(matchData.op2 == 0);
 
   // error ClEAR n
@@ -141,10 +141,10 @@ void Parser::testFmt2() {
   dataClear();
   tokens = {{1, 54}, lexer->integerTable.put(to_string(5))};
   setTokenString(&tokens);
-  assert(matchFormat2(l = 0, l) == false && l == 2);
+  assert(matchFormat2(l = 0, l) && l == 2);
   assert(matchData.opcode == 0xb0);
   assert(matchData.format == 2);
-  assert(matchData.op1 == 4);
+  assert(matchData.op1 == 5);
   assert(matchData.op2 == 0);
   lexer->reset();
 
@@ -160,7 +160,7 @@ void Parser::testFmt2() {
   assert(matchFormat2(l = 0, l) && l == 4);
   assert(matchData.opcode == 0xa4);
   assert(matchData.format == 2);
-  assert(matchData.op1 == 2);
+  assert(matchData.op1 == 1);
   assert(matchData.op2 == 4);
   lexer->reset();
 
@@ -171,7 +171,7 @@ void Parser::testFmt2() {
   assert(matchFormat2(l = 0, l) && l == 4);
   assert(matchData.opcode == 0xa8);
   lexer->reset();
--
+
   // error SHIFTL r1, r2
   tokens = {{1, 38}, {3, 2}, {4, 1}, {3, 1}};
   setTokenString(&tokens);
@@ -195,7 +195,11 @@ void Parser::testFmt2() {
   assert(matchFormat2(l = 0, l) == false);
   lexer->reset();
 
-  // not format 2, error maybe not need test
+  // not format 2
+  dataClear();
+  tokens = {{2, 3}, {3, 2}, {4, 1}, {3, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
 }
 
 bool Parser::matchFormat3(const int r, int &l) {}
