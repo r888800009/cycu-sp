@@ -18,7 +18,11 @@ void Parser::setTokenString(vector<TokenData> *tokenString) {
 
 void Parser::debug() {
   printTokenValue(matchData.symbol);
+  cout << endl << "token string size:" << tokenString->size() << endl;
   cout << matchData.opcode << ", " << matchData.format << endl;
+
+  cout << "op1" << matchData.op1 << endl;
+  cout << "op2" << matchData.op1 << endl;
 
   cout << "n:" << matchData.flag.n << endl;
   cout << "i:" << matchData.flag.i << endl;
