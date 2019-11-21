@@ -229,6 +229,7 @@ void Parser::testN() {
 }
 
 int Parser::matchRegister(int i) {
+  if (i >= tokenString->size()) return -1;
   TokenData data = tokenString->at(i);
   if (lexer->registerTable.get(data) == "")
     return -1;
@@ -238,7 +239,11 @@ int Parser::matchRegister(int i) {
 
 void Parser::testReg() {
   vector<TokenData> tokens;
-  int l = 0;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchRegister(0) == -1);
 
   // has reg
   for (int i = 1; i <= 9; i++) {
