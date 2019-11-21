@@ -97,17 +97,100 @@ bool Parser::matchFormat2(const int r, int &l) {
 
     // other format2
   }
+
+void Parser::dataClear() {
+  matchData.symbol = {-1, -1};
+  matchData.opcode = -1;
+  matchData.format = -1;
+  matchData.op1 = -1;
+  matchData.op2 = -1;
+  matchData.flag = {0, 0, 0, 0, 0};
 }
 
 void Parser::testFmt2() {
-  // CLEAR r1
+  vector<TokenData> tokens;
+  int l = 0;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
+
+  // CLEAR r1, TIXR r1
+  dataClear();
+  tokens = {{1, 5}, {3, 8}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) && l == 2);
+  assert(matchData.opcode == 0xb4);
+  assert(matchData.format == 2);
+  assert(matchData.op1 == 8);
+  assert(matchData.op2 == 0);
+
+  // error ClEAR n
+  tokens = {{1, 5}, lexer->integerTable.put(to_string(2))};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
+  lexer->reset();
+
   // SVC n
-  // TIXR r1
+  dataClear();
+  tokens = {{1, 54}, lexer->integerTable.put(to_string(5))};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false && l == 2);
+  assert(matchData.opcode == 0xb0);
+  assert(matchData.format == 2);
+  assert(matchData.op1 == 4);
+  assert(matchData.op2 == 0);
+  lexer->reset();
+
+  // error SVC r1
+  tokens = {{1, 54}, {3, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
 
   // SHIFTL r1, n
+  dataClear();
+  tokens = {{1, 37}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5))};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) && l == 4);
+  assert(matchData.opcode == 0xa4);
+  assert(matchData.format == 2);
+  assert(matchData.op1 == 2);
+  assert(matchData.op2 == 4);
+  lexer->reset();
+
   // SHIFTR r1, n
+  dataClear();
+  tokens = {{1, 38}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5))};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) && l == 4);
+  assert(matchData.opcode == 0xa8);
+  lexer->reset();
+-
+  // error SHIFTL r1, r2
+  tokens = {{1, 38}, {3, 2}, {4, 1}, {3, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
 
   // other format2
+  // op r1,r2
+  dataClear();
+  tokens = {{1, 3}, {3, 2}, {4, 1}, {3, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) && l == 4);
+  assert(matchData.opcode == 0x90);
+  assert(matchData.format == 2);
+  assert(matchData.op1 == 1);
+  assert(matchData.op2 == 0);
+
+  // error op r1, n
+  dataClear();
+  tokens = {{1, 3}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5))};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
+  lexer->reset();
+
+  // not format 2, error maybe not need test
 }
 
 bool Parser::matchFormat3(const int r, int &l) {}
