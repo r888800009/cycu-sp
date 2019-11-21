@@ -7,7 +7,7 @@
 #include <regex>
 #include <vector>
 
-#include "assembler.h"
+#include "format.h"
 #include "lexicaler.h"
 #include "optab.h"
 #include "table.h"
@@ -26,7 +26,7 @@ class Parser {
   struct MatchData {
     TokenData symbol;
     int opcode, format;
-    Assembler::Flag flag;
+    Flag flag;
   } matchData;
 
   Parser(Lexicaler *lexer, OPTab *optab);

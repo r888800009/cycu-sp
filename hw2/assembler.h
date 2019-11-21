@@ -4,6 +4,7 @@
 #ifndef _ASSEMBLER_H_
 #define _ASSEMBLER_H_
 
+#include "format.h"
 #include "lexicaler.h"
 #include "optab.h"
 #include "parser.h"
@@ -20,10 +21,7 @@ class Assembler {
   void pass1();
   void pass2();
 
-  typedef struct Flag {
-    bool n, i, x, b, p, e;
-  } Flag;
-
+ private:
   string genData(int data);
   string genFormat1(int opcode);
   string genFormat2(int opcode, int r1, int r2);

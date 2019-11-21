@@ -31,7 +31,7 @@ void Parser::debug() {
 }
 
 bool Parser::matchFormat1(const int r, int &l) {
-  if (r + 1 != tokenString->size()) return false;
+  if (r >= tokenString->size()) return false;
   TokenData data = tokenString->at(r);
 
   string mnemonic = lexer->instructionTable.get(data);
@@ -60,10 +60,10 @@ void Parser::testFmt1() {
   setTokenString(&tokens);
   assert(matchFormat1(l = 0, l) == false && l == 0);
 
-  // op op
+  // op op without check end
   tokens = {{1, 12}, {1, 12}};
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == false && l == 0);
+  assert(matchFormat1(l = 0, l) == true && l != 0);
 
   // fmt2
   tokens = {{1, 3}};
@@ -76,8 +76,39 @@ void Parser::testFmt1() {
   assert(matchFormat1(l = 0, l) == false && l != 0);
 }
 
-bool Parser::matchFormat2(const int r, int &l) {}
-void Parser::testFmt2() {}
+bool Parser::matchFormat2(const int r, int &l) {
+  if (r + 2 == tokenString->size()) {
+    TokenData data = tokenString->at(l = r);
+    string mnemonic = lexer->instructionTable.get(data);
+    l++;
+
+    matchData.opcode = optab->getOPCode(mnemonic);
+    matchData.format = optab->getFormat(mnemonic);
+
+    if (matchData.opcode != -1 && matchData.format == 1) return true;
+
+    // CLEAR r1
+    // SVC n
+    // TIXR r1
+
+  } else if (r + 4 == tokenString->size()) {
+    // SHIFTL r1, n
+    // SHIFTR r1, n
+
+    // other format2
+  }
+}
+
+void Parser::testFmt2() {
+  // CLEAR r1
+  // SVC n
+  // TIXR r1
+
+  // SHIFTL r1, n
+  // SHIFTR r1, n
+
+  // other format2
+}
 
 bool Parser::matchFormat3(const int r, int &l) {}
 void Parser::testFmt3() {}
@@ -93,14 +124,6 @@ bool Parser::matchInstruction(const int r, int &l) {
   // i
 
   // format 2
-  /*- CLEAR r1
-- SHIFTL r1, n
-- SHIFTR r1, n
-- SVC n
-- TIXR r1
-*/
-
-  // other format2
 
   // format 3
   // format 4
@@ -124,6 +147,7 @@ bool Parser::matchSymbol(int i) {
 int Parser::matchSyntax(vector<TokenData> tokenString) {
   // define grammar
 
+  // has comment or no comment at lest
   // has symbol
   // no symbol
 }
