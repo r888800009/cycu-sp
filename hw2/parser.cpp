@@ -54,6 +54,7 @@ void Parser::testFmt1() {
 
   // fix
   tokens = {{1, 12}};
+  dataClear();
   setTokenString(&tokens);
   assert(matchFormat1(l = 0, l) == true && l != 0);
   assert(matchData.opcode == 0xc4);
