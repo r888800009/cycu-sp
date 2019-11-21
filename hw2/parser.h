@@ -51,6 +51,7 @@ class Parser {
   void test();
   void testReg();
   void testN();
+  void testDelimiter();
 
   void testFmt1();
   void testFmt2();

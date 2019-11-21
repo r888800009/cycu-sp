@@ -262,6 +262,34 @@ void Parser::testReg() {
   assert(matchRegister(0) == -1);
 }
 
+void Parser::testDelimiter() {
+  vector<TokenData> tokens;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchDelimiter(',', 0) == false);
+
+  // delimiter
+  tokens = {{4, 13}};
+  setTokenString(&tokens);
+  assert(matchDelimiter('@', 0) == true);
+
+  // another delimiter
+  tokens = {{4, 13}};
+  setTokenString(&tokens);
+  assert(matchDelimiter(',', 0) == false);
+
+  // out of table
+  tokens = {{4, 14}};
+  setTokenString(&tokens);
+  assert(matchDelimiter(',', 0) == false);
+
+  // not delimiter
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(matchDelimiter(',', 0) == false);
+}
 void Parser::test() {
   // begin and end
   vector<TokenData> tokens = {{4, 1}, {4, 1}, {4, 1}, {4, 1}};
@@ -280,6 +308,7 @@ void Parser::test() {
   testBeginAndEnd(tokens, false);
 
   // delimiter
+  testDelimiter();
   // ,,,,
   tokens = {{4, 1}, {4, 1}, {4, 1}, {4, 1000}, {4, 100}};
   testBeginAndEnd(tokens, false);
