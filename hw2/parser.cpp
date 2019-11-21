@@ -82,26 +82,39 @@ void Parser::testFmt1() {
 }
 
 bool Parser::matchFormat2(const int r, int &l) {
-  if (r + 2 == tokenString->size()) {
-    TokenData data = tokenString->at(l = r);
-    string mnemonic = lexer->instructionTable.get(data);
-    l++;
+  TokenData data;
+  l = r;
+  if (r >= tokenString->size()) return false;
 
-    matchData.opcode = optab->getOPCode(mnemonic);
-    matchData.format = optab->getFormat(mnemonic);
+  // get opcode
+  data = tokenString->at(l);
+  string mnemonic = lexer->instructionTable.get(data);
 
-    if (matchData.opcode != -1 && matchData.format == 1) return true;
+  matchData.opcode = optab->getOPCode(mnemonic);
+  matchData.format = optab->getFormat(mnemonic);
 
-    // CLEAR r1
-    // SVC n
-    // TIXR r1
+  if (matchData.opcode == -1 && matchData.format != 2) return false;
 
-  } else if (r + 4 == tokenString->size()) {
+  if (r + 2 >= tokenString->size()) {
+    // CLEAR {r1}, TIXR {r1}
+    bool cond1 = (matchOP("CLEAR", l) || matchOP("TIXR", l)) &&
+                 ((matchData.op1 = matchRegister(l + 1)) != -1);
+    // SVC {n}
+    bool cond2 = matchOP("SVC", l) && ((matchData.op1 = matchN(l + 1)) != -1);
+
+    l += 2;
+    matchData.op2 = 0;
+
+    return cond1 || cond2;
+  } else if (r + 4 >= tokenString->size()) {
     // SHIFTL r1, n
     // SHIFTR r1, n
 
     // other format2
   }
+
+  return false;
+}
 
 void Parser::dataClear() {
   matchData.symbol = {-1, -1};
