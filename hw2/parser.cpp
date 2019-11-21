@@ -171,6 +171,35 @@ void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
   assert(syntax == result);
 }
 
+int Parser::matchRegister(int i) {
+  TokenData data = tokenString->at(i);
+  if (lexer->registerTable.get(data) == "")
+    return -1;
+  else
+    return data.value - 1;
+}
+
+void Parser::testReg() {
+  vector<TokenData> tokens;
+  int l = 0;
+
+  // has reg
+  for (int i = 1; i <= 9; i++) {
+    tokens = {{3, i}};
+    setTokenString(&tokens);
+    assert(matchRegister(0) == i - 1);
+  }
+
+  // not reg
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(matchRegister(0) == -1);
+
+  tokens = {{2, 1}};
+  setTokenString(&tokens);
+  assert(matchRegister(0) == -1);
+}
+
 void Parser::test() {
   // begin and end
   vector<TokenData> tokens = {{4, 1}, {4, 1}, {4, 1}, {4, 1}};
@@ -199,6 +228,8 @@ void Parser::test() {
   setTokenString(&tokens);
   assert(matchSymbol(0));
   assert(isTokenEqual(tokens[0], this->matchData.symbol));
+
+  testReg();
 
   testFmt1();
   testFmt2();

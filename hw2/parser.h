@@ -37,6 +37,7 @@ class Parser {
   bool matchRegister(const string &reg, int i);
   bool matchOP(int format, int i);
   bool matchSymbol(int i);
+  int matchRegister(int i);
 
   // r; begin, l: end
   bool matchFormat1(const int r, int &l);
@@ -47,6 +48,7 @@ class Parser {
 
   int matchSyntax(vector<TokenData>);
   void test();
+  void testReg();
 
   void testFmt1();
   void testFmt2();
