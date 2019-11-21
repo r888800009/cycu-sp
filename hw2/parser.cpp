@@ -171,6 +171,63 @@ void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
   assert(syntax == result);
 }
 
+int Parser::matchN(int i) {
+  if (i >= tokenString->size()) return -1;
+
+  TokenData data = tokenString->at(i);
+  string num = lexer->integerTable.get(data);
+  if (num == "") return -1;
+
+  // check dec
+  if (!regex_match(num, regex("[0-9]+"))) return -1;
+
+  // check range 1 ~ 16
+  int result = stoi(num);
+
+  if (1 <= result && result <= 16) return result;
+
+  return -1;
+}
+
+void Parser::testN() {
+  vector<TokenData> tokens;
+  string tmp;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchN(0) == -1);
+
+  // test 1 ~ 16
+  for (int i = 1; i <= 16; i++) {
+    tokens = {lexer->integerTable.put(to_string(i))};
+    setTokenString(&tokens);
+    assert(matchN(0) == i);
+
+    lexer->reset();
+  }
+
+  // not 1 ~ 16
+  for (int i = 17; i <= 50; i++) {
+    tokens = {lexer->integerTable.put(to_string(i))};
+    setTokenString(&tokens);
+    assert(matchN(0) == -1);
+
+    lexer->reset();
+  }
+
+  // hex
+  tokens = {lexer->integerTable.put("A")};
+  setTokenString(&tokens);
+  assert(matchN(0) == -1);
+  lexer->reset();
+
+  // not integer
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(matchN(0) == -1);
+}
+
 int Parser::matchRegister(int i) {
   TokenData data = tokenString->at(i);
   if (lexer->registerTable.get(data) == "")
@@ -230,6 +287,7 @@ void Parser::test() {
   assert(isTokenEqual(tokens[0], this->matchData.symbol));
 
   testReg();
+  testN();
 
   testFmt1();
   testFmt2();
