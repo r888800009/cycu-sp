@@ -245,7 +245,35 @@ bool Parser::matchRegister(const string &reg, int i) {
   return isTokenEqual(tokenString->at(i), lexer->registerTable.get(reg));
 }
 
-bool Parser::matchOP(int format, int i) { return false; }
+bool Parser::matchOP(const string &mnemonic, int i) {
+  if (i >= tokenString->size()) return false;
+  return isTokenEqual(tokenString->at(i),
+                      lexer->instructionTable.get(mnemonic));
+}
+
+void Parser::testOp() {
+  vector<TokenData> tokens;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchOP("ADD", 0) == false);
+
+  // match
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(matchOP("ADD", 0));
+
+  // not match
+  tokens = {{1, 2}};
+  setTokenString(&tokens);
+  assert(matchOP("ADD", 0) == false);
+
+  // another table
+  tokens = {{2, 1}};
+  setTokenString(&tokens);
+  assert(matchOP("ADD", 0) == false);
+}
 
 void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
   setTokenString(&tokens);
@@ -405,6 +433,7 @@ void Parser::test() {
 
   testReg();
   testN();
+  testOp();
 
   testFmt1();
   testFmt2();
