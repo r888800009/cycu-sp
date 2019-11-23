@@ -97,10 +97,28 @@ bool Parser::matchFormat2(const int r, int &l) {
 
     return cond1 || cond2;
   } else if (r + 4 >= tokenString->size()) {
-    // SHIFTL r1, n
-    // SHIFTR r1, n
+    int r1 = matchRegister(l + 1), r2 = matchRegister(l + 3);
+    int n1 = matchN(l + 3);
 
-    // other format2
+    if (matchOP("SHIFTL", l) || matchOP("SHIFTR", l)) {
+      if (r1 != -1 && matchDelimiter(',', l + 2) && n1 != -1) {
+        // SHIFTL {r1}, {n} or SHIFTR {r1}, {n}
+        matchData.op1 = r1;
+        matchData.op2 = n1 - 1;
+
+        l += 4;
+        return true;
+      }
+    } else if (matchOP(l)) {
+      if (r1 != -1 && matchDelimiter(',', l + 2) && r2 != -1) {
+        // other format2
+        matchData.op1 = r1;
+        matchData.op2 = r2;
+
+        l += 4;
+        return true;
+      }
+    }
   }
 
   return false;
@@ -201,6 +219,11 @@ void Parser::testFmt2() {
   // not format 2
   dataClear();
   tokens = {{2, 3}, {3, 2}, {4, 1}, {3, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) == false);
+
+  dataClear();
+  tokens = {{1, 1}, {3, 2}, {4, 1}, {3, 1}};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) == false);
 }
