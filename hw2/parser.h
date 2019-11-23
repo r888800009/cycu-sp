@@ -37,6 +37,7 @@ class Parser {
   bool matchDelimiter(char c, int i);
   bool matchRegister(const string &reg, int i);
   bool matchOP(const string &mnemonic, int i);
+  bool matchOP(int i);
   bool matchSymbol(int i);
   int matchRegister(int i);
   int matchN(int i);

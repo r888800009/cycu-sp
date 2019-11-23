@@ -273,6 +273,11 @@ bool Parser::matchOP(const string &mnemonic, int i) {
                       lexer->instructionTable.get(mnemonic));
 }
 
+bool Parser::matchOP(int i) {
+  if (i >= tokenString->size()) return false;
+  return lexer->instructionTable.get(tokenString->at(i)) != "";
+}
+
 void Parser::testOp() {
   vector<TokenData> tokens;
 
@@ -280,11 +285,13 @@ void Parser::testOp() {
   tokens = {};
   setTokenString(&tokens);
   assert(matchOP("ADD", 0) == false);
+  assert(matchOP(0) == false);
 
   // match
   tokens = {{1, 1}};
   setTokenString(&tokens);
   assert(matchOP("ADD", 0));
+  assert(matchOP(0));
 
   // not match
   tokens = {{1, 2}};
@@ -295,6 +302,7 @@ void Parser::testOp() {
   tokens = {{2, 1}};
   setTokenString(&tokens);
   assert(matchOP("ADD", 0) == false);
+  assert(matchOP(0) == false);
 }
 
 void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
