@@ -54,7 +54,7 @@ string Assembler::genFormat3(int opcode, Flag flag, int disp) {
   stringstream stream;
   int result = 0;
 
-  result |= (0b111111 & opcode) << 12 + 6;
+  result |= (0b11111100 & opcode) << (12 - 2) + 6;
   result |= flagToBinary(flag) << 12;
   result |= (disp & 0b111111111111);
 
@@ -68,7 +68,7 @@ string Assembler::genFormat4(int opcode, Flag flag, int address) {
   stringstream stream;
   int result = 0;
 
-  result |= (0b111111 & opcode) << 20 + 6;
+  result |= (0b11111100 & opcode) << (20 - 2) + 6;
   result |= flagToBinary(flag) << 20;
   result |= (address & 0b11111111111111111111);
 
@@ -98,29 +98,33 @@ void Assembler::test() {
   assert(code == "0000" && code.length() == 4);  // 4 nibble
 
   // format3
-  code = genFormat3(0b111111, {1, 1, 0, 0, 0, 0}, 0x0);
+  code = genFormat3(0b11111100, {1, 1, 0, 0, 0, 0}, 0x0);
   assert(code == "FF0000" && code.length() == 6);  // 6 nibble
 
-  code = genFormat3(0b111100, {0, 0, 1, 1, 1, 1}, 0b111111111111);
+  code = genFormat3(0b11110000, {0, 0, 1, 1, 1, 1}, 0b111111111111);
   assert(code == "F0FFFF" && code.length() == 6);  // 6 nibble
 
-  code = genFormat3(0b000000, {0, 0, 1, 1, 1, 1}, 0b111111111111);
+  code = genFormat3(0b00000000, {0, 0, 1, 1, 1, 1}, 0b111111111111);
   assert(code == "00FFFF" && code.length() == 6);  // 6 nibble
 
-  code = genFormat3(0b000000, {0, 0, 1, 1, 1, 1}, 0b111100001111);
+  code = genFormat3(0b00000000, {0, 0, 1, 1, 1, 1}, 0b111100001111);
   assert(code == "00FF0F" && code.length() == 6);  // 6 nibble
 
+  // add sic
+  code = genFormat3(0x18, {0, 0, 1, 1, 1, 1}, 0b111100001111);
+  assert(code == "18FF0F" && code.length() == 6);  // 6 nibble
+
   // format4
-  code = genFormat4(0b111111, {1, 1, 0, 0, 0, 0}, 0x0);
+  code = genFormat4(0b11111100, {1, 1, 0, 0, 0, 0}, 0x0);
   assert(code == "FF000000" && code.length() == 8);  // 8 nibble
 
-  code = genFormat4(0b111111, {1, 1, 0, 0, 0, 0}, 0b11111111111111111111);
+  code = genFormat4(0b11111100, {1, 1, 0, 0, 0, 0}, 0b11111111111111111111);
   assert(code == "FF0FFFFF" && code.length() == 8);  // 8 nibble
 
-  code = genFormat4(0b000000, {0, 0, 1, 1, 1, 1}, 0b11111111111111111111);
+  code = genFormat4(0b00000000, {0, 0, 1, 1, 1, 1}, 0b11111111111111111111);
   assert(code == "00FFFFFF" && code.length() == 8);  // 8 nibble
 
-  code = genFormat4(0b000000, {0, 0, 1, 1, 1, 1}, 0b11111111111100001111);
+  code = genFormat4(0b00000000, {0, 0, 1, 1, 1, 1}, 0b11111111111100001111);
   assert(code == "00FFFF0F" && code.length() == 8);  // 8 nibble
 }
 
