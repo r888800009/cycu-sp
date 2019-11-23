@@ -41,6 +41,7 @@ class Parser {
   bool matchSymbol(int i);
   int matchRegister(int i);
   int matchN(int i);
+  bool getOPData(int format, int i);
 
   // r; begin, l: end
   bool matchFormat1(const int r, int &l);

@@ -36,14 +36,10 @@ void Parser::debug() {
 
 bool Parser::matchFormat1(const int r, int &l) {
   if (r >= tokenString->size()) return false;
-  TokenData data = tokenString->at(r);
-
-  string mnemonic = lexer->instructionTable.get(data);
-  matchData.opcode = optab->getOPCode(mnemonic);
-  matchData.format = optab->getFormat(mnemonic);
-  l++;
-
-  if (matchData.opcode != -1 && matchData.format == 1) return true;
+  if (getOPData(1, l)) {
+    l++;
+    return true;
+  }
 
   return false;
 }
@@ -56,29 +52,29 @@ void Parser::testFmt1() {
   tokens = {{1, 12}};
   dataClear();
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == true && l != 0);
+  assert(matchFormat1(l = 0, l) && l != 0);
   assert(matchData.opcode == 0xc4);
   assert(matchData.format == 1);
 
   // null
   tokens = {};
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == false && l == 0);
+  assert(matchFormat1(l = 0, l) == false);
 
   // op op without check end
   tokens = {{1, 12}, {1, 12}};
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == true && l != 0);
+  assert(matchFormat1(l = 0, l) && l != 0);
 
   // fmt2
   tokens = {{1, 3}};
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == false && l != 0);
+  assert(matchFormat1(l = 0, l) == false);
 
   // fmt3,4
   tokens = {{1, 1}};
   setTokenString(&tokens);
-  assert(matchFormat1(l = 0, l) == false && l != 0);
+  assert(matchFormat1(l = 0, l) == false);
 }
 
 bool Parser::matchFormat2(const int r, int &l) {
@@ -87,13 +83,7 @@ bool Parser::matchFormat2(const int r, int &l) {
   if (r >= tokenString->size()) return false;
 
   // get opcode
-  data = tokenString->at(l);
-  string mnemonic = lexer->instructionTable.get(data);
-
-  matchData.opcode = optab->getOPCode(mnemonic);
-  matchData.format = optab->getFormat(mnemonic);
-
-  if (matchData.opcode == -1 && matchData.format != 2) return false;
+  if (!getOPData(2, l)) return false;
 
   if (r + 2 >= tokenString->size()) {
     // CLEAR {r1}, TIXR {r1}
@@ -278,6 +268,18 @@ bool Parser::matchOP(int i) {
   return lexer->instructionTable.get(tokenString->at(i)) != "";
 }
 
+bool Parser::getOPData(int format, int i) {
+  if (i >= tokenString->size()) return false;
+
+  TokenData data = tokenString->at(i);
+  string mnemonic = lexer->instructionTable.get(data);
+
+  matchData.opcode = optab->getOPCode(mnemonic);
+  matchData.format = optab->getFormat(mnemonic);
+
+  return matchData.opcode != -1 && matchData.format == format;
+}
+
 void Parser::testOp() {
   vector<TokenData> tokens;
 
@@ -286,12 +288,14 @@ void Parser::testOp() {
   setTokenString(&tokens);
   assert(matchOP("ADD", 0) == false);
   assert(matchOP(0) == false);
+  assert(getOPData(1, 0) == false);
 
   // match
   tokens = {{1, 1}};
   setTokenString(&tokens);
   assert(matchOP("ADD", 0));
   assert(matchOP(0));
+  assert(getOPData(3, 0));
 
   // not match
   tokens = {{1, 2}};
@@ -303,6 +307,25 @@ void Parser::testOp() {
   setTokenString(&tokens);
   assert(matchOP("ADD", 0) == false);
   assert(matchOP(0) == false);
+  assert(getOPData(1, 0) == false);
+
+  // format
+  tokens = {{1, 2}};
+  setTokenString(&tokens);
+  assert(getOPData(1, 0) == false);
+  assert(getOPData(3, 0) == true);
+
+  tokens = {{1, 3}};
+  setTokenString(&tokens);
+  assert(getOPData(3, 0) == false);
+  assert(getOPData(2, 0) == true);
+
+  // getData
+  tokens = {{1, 3}};
+  setTokenString(&tokens);
+  getOPData(2, 0);
+  assert(matchData.opcode == 0x90);
+  assert(matchData.format == 2);
 }
 
 void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
