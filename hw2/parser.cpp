@@ -677,7 +677,12 @@ int Parser::matchN(int i) {
   if (!regex_match(num, regex("[0-9]+"))) return -1;
 
   // check range 1 ~ 16
-  int result = stoi(num);
+  int result;
+  try {
+    result = stoi(num);
+  } catch (out_of_range e) {
+    return -1;
+  }
 
   if (1 <= result && result <= 16) return result;
 
@@ -710,6 +715,17 @@ void Parser::testN() {
 
     lexer->reset();
   }
+
+  // big num
+  tokens = {lexer->integerTable.put("2147483647")};
+  setTokenString(&tokens);
+  assert(matchN(0) == -1);
+  lexer->reset();
+
+  tokens = {lexer->integerTable.put("2147483648")};
+  setTokenString(&tokens);
+  assert(matchN(0) == -1);
+  lexer->reset();
 
   // hex
   tokens = {lexer->integerTable.put("A")};
