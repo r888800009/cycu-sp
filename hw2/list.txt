@@ -25,3 +25,4 @@ table.cpp
 table.h
 test.cpp
 test.h
+parserTest.cpp
