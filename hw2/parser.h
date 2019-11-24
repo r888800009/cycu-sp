@@ -28,7 +28,7 @@ class Parser {
     int opcode, format;
     int op1, op2;
     Flag flag;
-  } matchData;
+  } match;
 
   Parser(Lexicaler *lexer, OPTab *optab);
 

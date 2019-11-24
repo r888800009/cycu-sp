@@ -17,19 +17,19 @@ void Parser::setTokenString(vector<TokenData> *tokenString) {
 }
 
 void Parser::debug() {
-  printTokenValue(matchData.symbol);
+  printTokenValue(match.symbol);
   cout << endl << "token string size:" << tokenString->size() << endl;
-  cout << matchData.opcode << ", " << matchData.format << endl;
+  cout << match.opcode << ", " << match.format << endl;
 
-  cout << "op1" << matchData.op1 << endl;
-  cout << "op2" << matchData.op1 << endl;
+  cout << "op1" << match.op1 << endl;
+  cout << "op2" << match.op1 << endl;
 
-  cout << "n:" << matchData.flag.n << endl;
-  cout << "i:" << matchData.flag.i << endl;
-  cout << "x:" << matchData.flag.x << endl;
-  cout << "b:" << matchData.flag.b << endl;
-  cout << "p:" << matchData.flag.p << endl;
-  cout << "e:" << matchData.flag.e << endl;
+  cout << "n:" << match.flag.n << endl;
+  cout << "i:" << match.flag.i << endl;
+  cout << "x:" << match.flag.x << endl;
+  cout << "b:" << match.flag.b << endl;
+  cout << "p:" << match.flag.p << endl;
+  cout << "e:" << match.flag.e << endl;
 
   cout.flush();
 }
@@ -53,8 +53,8 @@ void Parser::testFmt1() {
   dataClear();
   setTokenString(&tokens);
   assert(matchFormat1(l = 0, l) && l != 0);
-  assert(matchData.opcode == 0xc4);
-  assert(matchData.format == 1);
+  assert(match.opcode == 0xc4);
+  assert(match.format == 1);
 
   // null
   tokens = {};
@@ -88,12 +88,12 @@ bool Parser::matchFormat2(const int r, int &l) {
   if (r + 2 >= tokenString->size()) {
     // CLEAR {r1}, TIXR {r1}
     bool cond1 = (matchOP("CLEAR", l) || matchOP("TIXR", l)) &&
-                 ((matchData.op1 = matchRegister(l + 1)) != -1);
+                 ((match.op1 = matchRegister(l + 1)) != -1);
     // SVC {n}
-    bool cond2 = matchOP("SVC", l) && ((matchData.op1 = matchN(l + 1)) != -1);
+    bool cond2 = matchOP("SVC", l) && ((match.op1 = matchN(l + 1)) != -1);
 
     l += 2;
-    matchData.op2 = 0;
+    match.op2 = 0;
 
     return cond1 || cond2;
   } else if (r + 4 >= tokenString->size()) {
@@ -103,8 +103,8 @@ bool Parser::matchFormat2(const int r, int &l) {
     if (matchOP("SHIFTL", l) || matchOP("SHIFTR", l)) {
       if (r1 != -1 && matchDelimiter(',', l + 2) && n1 != -1) {
         // SHIFTL {r1}, {n} or SHIFTR {r1}, {n}
-        matchData.op1 = r1;
-        matchData.op2 = n1 - 1;
+        match.op1 = r1;
+        match.op2 = n1 - 1;
 
         l += 4;
         return true;
@@ -112,8 +112,8 @@ bool Parser::matchFormat2(const int r, int &l) {
     } else if (matchOP(l)) {
       if (r1 != -1 && matchDelimiter(',', l + 2) && r2 != -1) {
         // other format2
-        matchData.op1 = r1;
-        matchData.op2 = r2;
+        match.op1 = r1;
+        match.op2 = r2;
 
         l += 4;
         return true;
@@ -125,12 +125,12 @@ bool Parser::matchFormat2(const int r, int &l) {
 }
 
 void Parser::dataClear() {
-  matchData.symbol = {-1, -1};
-  matchData.opcode = -1;
-  matchData.format = -1;
-  matchData.op1 = -1;
-  matchData.op2 = -1;
-  matchData.flag = {0, 0, 0, 0, 0};
+  match.symbol = {-1, -1};
+  match.opcode = -1;
+  match.format = -1;
+  match.op1 = -1;
+  match.op2 = -1;
+  match.flag = {0, 0, 0, 0, 0};
 }
 
 void Parser::testFmt2() {
@@ -147,10 +147,10 @@ void Parser::testFmt2() {
   tokens = {{1, 5}, {3, 8}};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 2);
-  assert(matchData.opcode == 0xb4);
-  assert(matchData.format == 2);
-  assert(matchData.op1 == 8 - 1);
-  assert(matchData.op2 == 0);
+  assert(match.opcode == 0xb4);
+  assert(match.format == 2);
+  assert(match.op1 == 8 - 1);
+  assert(match.op2 == 0);
 
   // error ClEAR n
   tokens = {{1, 5}, lexer->integerTable.put(to_string(2))};
@@ -163,10 +163,10 @@ void Parser::testFmt2() {
   tokens = {{1, 54}, lexer->integerTable.put(to_string(5))};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 2);
-  assert(matchData.opcode == 0xb0);
-  assert(matchData.format == 2);
-  assert(matchData.op1 == 5);
-  assert(matchData.op2 == 0);
+  assert(match.opcode == 0xb0);
+  assert(match.format == 2);
+  assert(match.op1 == 5);
+  assert(match.op2 == 0);
   lexer->reset();
 
   // error SVC r1
@@ -179,10 +179,10 @@ void Parser::testFmt2() {
   tokens = {{1, 37}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5))};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 4);
-  assert(matchData.opcode == 0xa4);
-  assert(matchData.format == 2);
-  assert(matchData.op1 == 1);
-  assert(matchData.op2 == 4);
+  assert(match.opcode == 0xa4);
+  assert(match.format == 2);
+  assert(match.op1 == 1);
+  assert(match.op2 == 4);
   lexer->reset();
 
   // SHIFTR r1, n
@@ -190,7 +190,7 @@ void Parser::testFmt2() {
   tokens = {{1, 38}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5))};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 4);
-  assert(matchData.opcode == 0xa8);
+  assert(match.opcode == 0xa8);
   lexer->reset();
 
   // error SHIFTL r1, r2
@@ -204,10 +204,10 @@ void Parser::testFmt2() {
   tokens = {{1, 3}, {3, 2}, {4, 1}, {3, 1}};
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 4);
-  assert(matchData.opcode == 0x90);
-  assert(matchData.format == 2);
-  assert(matchData.op1 == 1);
-  assert(matchData.op2 == 0);
+  assert(match.opcode == 0x90);
+  assert(match.format == 2);
+  assert(match.op1 == 1);
+  assert(match.op2 == 0);
 
   // error op r1, n
   dataClear();
@@ -258,7 +258,7 @@ bool Parser::matchSymbol(int i) {
   TokenData data = tokenString->at(i);
   if (!lexer->symbolTable.exist(data)) return false;
 
-  matchData.symbol = data;
+  match.symbol = data;
   return true;
 }
 
@@ -297,10 +297,10 @@ bool Parser::getOPData(int format, int i) {
   TokenData data = tokenString->at(i);
   string mnemonic = lexer->instructionTable.get(data);
 
-  matchData.opcode = optab->getOPCode(mnemonic);
-  matchData.format = optab->getFormat(mnemonic);
+  match.opcode = optab->getOPCode(mnemonic);
+  match.format = optab->getFormat(mnemonic);
 
-  return matchData.opcode != -1 && matchData.format == format;
+  return match.opcode != -1 && match.format == format;
 }
 
 void Parser::testOp() {
@@ -347,8 +347,8 @@ void Parser::testOp() {
   tokens = {{1, 3}};
   setTokenString(&tokens);
   getOPData(2, 0);
-  assert(matchData.opcode == 0x90);
-  assert(matchData.format == 2);
+  assert(match.opcode == 0x90);
+  assert(match.format == 2);
 }
 
 void Parser::testBeginAndEnd(vector<TokenData> &tokens, bool result) {
@@ -505,7 +505,7 @@ void Parser::test() {
   tokens = {{SYMBOL_TABLE, ('t' + 'e' + 's' + 't') % 100}};
   setTokenString(&tokens);
   assert(matchSymbol(0));
-  assert(isTokenEqual(tokens[0], this->matchData.symbol));
+  assert(isTokenEqual(tokens[0], this->match.symbol));
 
   testReg();
   testN();
