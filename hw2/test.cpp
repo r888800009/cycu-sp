@@ -201,6 +201,11 @@ void testOPTab() {
   string nullcommand = "tseqywuy";
   assert(table.getOPCode(nullcommand) == -1);
   assert(table.getFormat(nullcommand) == -1);
+
+  // check sic xe
+  assert(table.isSICXE("test1") == false);
+  assert(table.isSICXE("test23") == true);
+  assert(table.isSICXE("23test23") == false);
 }
 
 void testSymtab() {

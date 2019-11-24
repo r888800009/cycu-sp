@@ -14,6 +14,7 @@ class OPTab {
     // string command;
     // int length;
     int opcode, format;
+    bool sicxe;
   } Data;
 
   // <string command, Data>
@@ -28,6 +29,7 @@ class OPTab {
   void loadOPTab(const string &);
   int getOPCode(const string &);
   int getFormat(const string &);
+  bool isSICXE(const string &);
 };
 
 #endif

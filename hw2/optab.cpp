@@ -19,18 +19,28 @@ void OPTab::loadOPTab(const string &optable_name) {
 
   string command;
   int type, opcode;
+  bool sicxe;
 
-  while (fin >> command >> hex >> opcode >> type) {
+  while (fin >> command >> hex >> opcode >> type >> sicxe) {
     command = toUpper(command);
 
-    // cout << command << "_" << opcode << "_" << type << endl;
-    table[command] = Data{opcode, type};
+    // cout << command << "_" << opcode << "_" << type  << "_"<< sicxe<< endl;
+    table[command] = Data{opcode, type, sicxe};
   }
 }
 
 string OPTab::toUpper(string upper) {
   transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
   return upper;
+}
+
+bool OPTab::isSICXE(const string &command) {
+  unordered_map<string, Data>::iterator it;
+  it = table.find(toUpper(command));
+
+  if (it != table.end()) return it->second.sicxe;
+
+  return false;
 }
 
 int OPTab::getOPCode(const string &command) {

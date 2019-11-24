@@ -1,59 +1,59 @@
-add	18	3
-addf	58	3
-addr	90	2
-and	40	3
-clear	B4	2
-comp	28	3
-compf	88	3
-compr	a0	2
-div	24	3
-divf	64	3
-divr	9c	2
-fix	c4	1
-float	c0	1
-hio	f4	1
-j	3c	3
-jeq	30	3
-jgt	34	3
-jlt	38	3
-jsub	48	3
-lda	0	3
-ldb	68	3
-ldch	50	3
-ldf	70	3
-ldl	8	3
-lds	6c	3
-ldt	74	3
-ldx	4	3
-lps	d0	3
-mul	20	3
-mulf	60	3
-mulr	98	2
-norm	c8	1
-or	44	3
-rd	d8	3
-rmo	ac	3
-rsub	4c	2
-shiftl	a4	2
-shiftr	a8	2
-sio	f0	1
-ssk	ec	3
-sta	0c	3
-stb	78	3
-stch	54	3
-stf	80	3
-sti	d4	3
-stl	14	3
-sts	7c	3
-stsw	e8	3
-stt	84	3
-stx	10	3
-sub	1c	3
-subf	5c	3
-subr	94	2
-svc	b0	2
-td	e0	3
-tio	f8	1
-tix	2c	3
-tixr	b8	2
-wd	dc	3
+add	18	3	0
+addf	58	3	1
+addr	90	2	1
+and	40	3	0
+clear	B4	2	1
+comp	28	3	0
+compf	88	3	1
+compr	a0	2	1
+div	24	3	0
+divf	64	3	1
+divr	9c	2	1
+fix	c4	1	1
+float	c0	1	1
+hio	f4	1	1
+j	3c	3	0
+jeq	30	3	0
+jgt	34	3	0
+jlt	38	3	0
+jsub	48	3	0
+lda	0	3	0
+ldb	68	3	1
+ldch	50	3	0
+ldf	70	3	1
+ldl	8	3	0
+lds	6c	3	1
+ldt	74	3	1
+ldx	4	3	0
+lps	d0	3	1
+mul	20	3	0
+mulf	60	3	1
+mulr	98	2	1
+norm	c8	1	1
+or	44	3	0
+rd	d8	3	0
+rmo	ac	3	1
+rsub	4c	2	0
+shiftl	a4	2	1
+shiftr	a8	2	1
+sio	f0	1	1
+ssk	ec	3	1
+sta	0c	3	0
+stb	78	3	1
+stch	54	3	0
+stf	80	3	1
+sti	d4	3	1
+stl	14	3	0
+sts	7c	3	1
+stsw	e8	3	0
+stt	84	3	1
+stx	10	3	0
+sub	1c	3	0
+subf	5c	3	1
+subr	94	2	1
+svc	b0	2	1
+td	e0	3	0
+tio	f8	1	1
+tix	2c	3	0
+tixr	b8	2	1
+wd	dc	3	0
