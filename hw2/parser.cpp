@@ -84,19 +84,7 @@ bool Parser::matchFormat2(const int r, int &l) {
 
   // get opcode
   if (!getOPData(2, l)) return false;
-
-  if (r + 2 >= tokenString->size()) {
-    // CLEAR {r1}, TIXR {r1}
-    bool cond1 = (matchOP("CLEAR", l) || matchOP("TIXR", l)) &&
-                 ((match.op1 = matchRegister(l + 1)) != -1);
-    // SVC {n}
-    bool cond2 = matchOP("SVC", l) && ((match.op1 = matchN(l + 1)) != -1);
-
-    l += 2;
-    match.op2 = 0;
-
-    return cond1 || cond2;
-  } else if (r + 4 >= tokenString->size()) {
+  if (r + 3 < tokenString->size()) {
     int r1 = matchRegister(l + 1), r2 = matchRegister(l + 3);
     int n1 = matchN(l + 3);
 
@@ -119,6 +107,17 @@ bool Parser::matchFormat2(const int r, int &l) {
         return true;
       }
     }
+  } else if (r + 1 < tokenString->size()) {
+    // CLEAR {r1}, TIXR {r1}
+    bool cond1 = (matchOP("CLEAR", l) || matchOP("TIXR", l)) &&
+                 ((match.op1 = matchRegister(l + 1)) != -1);
+    // SVC {n}
+    bool cond2 = matchOP("SVC", l) && ((match.op1 = matchN(l + 1)) != -1);
+
+    l += 2;
+    match.op2 = 0;
+
+    return cond1 || cond2;
   }
 
   return false;
@@ -191,6 +190,14 @@ void Parser::testFmt2() {
   setTokenString(&tokens);
   assert(matchFormat2(l = 0, l) && l == 4);
   assert(match.opcode == 0xa8);
+  lexer->reset();
+
+  // test size
+  dataClear();
+  tokens = {{1, 38}, {3, 2}, {4, 1}, lexer->integerTable.put(to_string(5)),
+            {1, 1},  {1, 1}};
+  setTokenString(&tokens);
+  assert(matchFormat2(l = 0, l) && l == 4);
   lexer->reset();
 
   // error SHIFTL r1, r2
