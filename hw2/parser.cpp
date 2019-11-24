@@ -280,7 +280,54 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
   // no symbol
 }
 
-bool Parser::matchInteger(const int r, int &l) { return false; }
+bool Parser::matchInteger(const int r, int &l) {
+  int hexSize = 3, decSize = 1;
+  TokenData data;
+  string num;
+  try {
+    l = r;
+    if (r + hexSize - 1 < tokenString->size() &&
+        (matchDelimiter('\'', r) &&
+         lexer->integerTable.exist(data = tokenString->at(r + 1)) &&
+         matchDelimiter('\'', r + 2))) {
+      // check format
+      num = lexer->integerTable.get(data);
+      if (!regex_match(num, regex("[0-9a-fA-F]+"))) return false;
+
+      match.stringData.integer = stoi(num, nullptr, 16);
+      match.stringData.value = data;
+      match.stringData.type = MatchData::StringData::integer_hex;
+      l = r + hexSize;
+    } else if (r + decSize - 1 < tokenString->size() &&
+               lexer->integerTable.exist(data = tokenString->at(r))) {
+      // check format
+      num = lexer->integerTable.get(data);
+      if (!regex_match(num, regex("[0-9]+"))) return false;
+
+      match.stringData.integer = stoi(lexer->integerTable.get(data));
+      match.stringData.value = data;
+      match.stringData.type = MatchData::StringData::integer_dec;
+      l = r + decSize;
+    }
+
+    // check match and range
+    return l > r && match.stringData.integer <= 0xffffff;
+  } catch (invalid_argument) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  } catch (out_of_range) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  }
+
+  return false;
+}
 
 void Parser::testInteger() {
   // note: matchInteger would not check integer range
@@ -376,6 +423,12 @@ void Parser::testInteger() {
   assert(match.stringData.integer == 10);
   lexer->reset();
 
+  // big num
+  tokens = {lexer->integerTable.put("2147483648")};
+  setTokenString(&tokens);
+  assert(matchInteger(i = 0, i) == false);
+  lexer->reset();
+
   // not dec error
   dataClear();
   tokens = {lexer->integerTable.put("g")};
@@ -446,7 +499,7 @@ void Parser::testInteger() {
 
   // string is syntax error
   dataClear();
-  tokens = {{4, 9}, lexer->integerTable.put("1234"), {4, 9}};
+  tokens = {{4, 9}, lexer->stringTable.put("1234"), {4, 9}};
   setTokenString(&tokens);
   assert(matchInteger(i = 0, i) == false);
   lexer->reset();
@@ -455,8 +508,7 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("0")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
-  assert(match.stringData.integer == 0x0);
+  assert(matchInteger(i = 0, i) == false);
   lexer->reset();
 }
 
