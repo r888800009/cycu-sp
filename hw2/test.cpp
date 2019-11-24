@@ -105,6 +105,12 @@ void testHashTable() {
   table1.reset();
   data = table1.put("  t  es t");
   assert(table1.get(data) == "  t  es t");
+
+  // double put
+  table1.reset();
+  data = table1.put("test");
+  data2 = table1.put("test");
+  assert(isTokenEqual(data, data2));
 }
 
 bool equalTokenString(vector<TokenData> tokenStr1,
