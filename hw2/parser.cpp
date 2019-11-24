@@ -287,8 +287,9 @@ bool Parser::matchString(const int r, int &l) {
       (matchDelimiter('\'', r) &&
        lexer->stringTable.exist(data = tokenString->at(r + 1)) &&
        matchDelimiter('\'', r + 2))) {
+    match.stringData.str = lexer->stringTable.get(data);
     match.stringData.value = data;
-    match.stringData.type = MatchData::StringData::string;
+    match.stringData.type = MatchData::StringData::string_data;
     l = r + size;
     return true;
   }
@@ -310,8 +311,9 @@ void Parser::testString() {
   tokens = {{4, 9}, lexer->stringTable.put("test"), {4, 9}};
   setTokenString(&tokens);
   assert(matchString(i = 0, i) && i == 3);
-  assert(match.stringData.type == MatchData::StringData::string);
+  assert(match.stringData.type == MatchData::StringData::string_data);
   assert(isTokenEqual(match.stringData.value, lexer->stringTable.get("test")));
+  assert(match.stringData.str == "test");
   lexer->reset();
 
   // test with offset
@@ -584,6 +586,7 @@ void Parser::test() {
   testReg();
   testN();
   testOp();
+  testString();
 
   testFmt1();
   testFmt2();

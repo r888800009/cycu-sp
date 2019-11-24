@@ -27,7 +27,8 @@ class Parser {
     TokenData symbol;
     struct StringData {
       TokenData value;
-      enum Type { integer, string, null } type;
+      string str;
+      enum Type { integer_hex, integer_dec, string_data, null } type;
     } stringData;
 
     int opcode, format;
