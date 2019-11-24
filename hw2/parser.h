@@ -27,6 +27,7 @@ class Parser {
     TokenData symbol;
     struct StringData {
       TokenData value;
+      unsigned int integer;
       string str;
       enum Type { integer_hex, integer_dec, string_data, null } type;
     } stringData;
@@ -56,6 +57,9 @@ class Parser {
   bool matchFormat4(const int r, int &l);
   bool matchInstruction(const int r, int &l);
   bool matchString(const int r, int &l);
+  // note: matchInteger would not check integer range
+  // only check the size is less then 3 bytes
+  bool matchInteger(const int r, int &l);
 
   int matchSyntax(vector<TokenData>);
 
@@ -64,6 +68,7 @@ class Parser {
   void testReg();
   void testN();
   void testDelimiter();
+  void testInteger();
   void testString();
   void testOp();
 
