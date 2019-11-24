@@ -25,6 +25,11 @@ class Parser {
  public:
   struct MatchData {
     TokenData symbol;
+    struct StringData {
+      TokenData value;
+      enum Type { integer, string, null } type;
+    } stringData;
+
     int opcode, format;
     int op1, op2;
     Flag flag;
@@ -49,6 +54,7 @@ class Parser {
   bool matchFormat3(const int r, int &l);
   bool matchFormat4(const int r, int &l);
   bool matchInstruction(const int r, int &l);
+  bool matchString(const int r, int &l);
 
   int matchSyntax(vector<TokenData>);
 
@@ -57,6 +63,7 @@ class Parser {
   void testReg();
   void testN();
   void testDelimiter();
+  void testString();
   void testOp();
 
   void testFmt1();

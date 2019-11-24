@@ -130,6 +130,9 @@ void Parser::dataClear() {
   match.op1 = -1;
   match.op2 = -1;
   match.flag = {0, 0, 0, 0, 0};
+
+  match.stringData.value = {-1, -1};
+  match.stringData.type = MatchData::StringData::null;
 }
 
 void Parser::testFmt2() {
@@ -275,6 +278,70 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
   // has comment or no comment at lest
   // has symbol
   // no symbol
+}
+
+bool Parser::matchString(const int r, int &l) {
+  int size = 3;
+  TokenData data;
+  if (r + size - 1 < tokenString->size() &&
+      (matchDelimiter('\'', r) &&
+       lexer->stringTable.exist(data = tokenString->at(r + 1)) &&
+       matchDelimiter('\'', r + 2))) {
+    match.stringData.value = data;
+    match.stringData.type = MatchData::StringData::string;
+    l = r + size;
+    return true;
+  }
+
+  return false;
+}
+
+void Parser::testString() {
+  vector<TokenData> tokens;
+  int i = 0;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchString(i = 0, i) == false);
+
+  // string
+  dataClear();
+  tokens = {{4, 9}, lexer->stringTable.put("test"), {4, 9}};
+  setTokenString(&tokens);
+  assert(matchString(i = 0, i) && i == 3);
+  assert(match.stringData.type == MatchData::StringData::string);
+  assert(isTokenEqual(match.stringData.value, lexer->stringTable.get("test")));
+  lexer->reset();
+
+  // test with offset
+  dataClear();
+  tokens = {{4, 11}, {4, 9}, lexer->stringTable.put("test"), {4, 9}};
+  setTokenString(&tokens);
+  assert(matchString(i = 1, i) && i == 3 + 1);
+  lexer->reset();
+
+  // size
+  dataClear();
+  tokens = {{4, 11}, {4, 9}, lexer->stringTable.put("test"), {4, 9}, {4, 9},
+            {4, 9},  {4, 9}};
+  setTokenString(&tokens);
+  assert(matchString(i = 1, i) && i == 3 + 1);
+  lexer->reset();
+
+  // integer is syntax error
+  dataClear();
+  tokens = {{4, 9}, lexer->integerTable.put("1234"), {4, 9}};
+  setTokenString(&tokens);
+  assert(matchString(i = 0, i) == false);
+  lexer->reset();
+
+  // incomplete syntax
+  dataClear();
+  tokens = {{4, 11}, {4, 9}, lexer->stringTable.put("test")};
+  setTokenString(&tokens);
+  assert(matchString(i = 0, i) == false);
+  lexer->reset();
 }
 
 bool Parser::matchDelimiter(char c, int i) {
