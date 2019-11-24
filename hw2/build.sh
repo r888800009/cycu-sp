@@ -3,7 +3,7 @@
 if [ -z $1]; then
   echo $(date) >> ./logging.txt
   echo debug mode
-  g++ *.cpp -D DEBUGING -g
+  g++ -J 4 *.cpp -D DEBUGING -g
   echo test
   ./a.out --debuging
 else
