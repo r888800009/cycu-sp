@@ -485,18 +485,44 @@ void Parser::testN() {
 }
 
 void Parser::testMemory() {
-  cout << "memory no test" << endl;
+  vector<TokenData> tokens;
 
-  // literals
-  // simple
-  // immediate
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchMemory(0) == false);
 
-  // sic
+  // symbol
+  lexer->lexingLine("symbol1 EQU 123");  // add symbol
+  tokens = lexer->lexingLine("symbol1");
+  setTokenString(&tokens);
+  assert(matchMemory(0));
+  assert(isTokenEqual(match.memory, lexer->symbolTable.get("symbol1")));
+  lexer->reset();
 
-  // sicxe
+  // integer
+  tokens = lexer->lexingLine("1234");
+  setTokenString(&tokens);
+  assert(matchMemory(0));
+  assert(isTokenEqual(match.memory, lexer->integerTable.get("1234")));
+  lexer->reset();
+
+  // size
+  tokens = lexer->lexingLine("symbol1 EQU 123 ,,,,");
+  setTokenString(&tokens);
+  assert(matchMemory(2));
+
+  tokens = lexer->lexingLine("symbol2 EQU symbol ,,,,");
+  setTokenString(&tokens);
+  assert(matchMemory(2));
+  lexer->reset();
+
+  // dont match hex
+  tokens = lexer->lexingLine("X'123'");
+  setTokenString(&tokens);
+  assert(matchMemory(0) == false);
+  lexer->reset();
 }
-
-void Parser::testMode() { cout << "SIC no test!!" << endl; }
 
 void Parser::testReg() {
   vector<TokenData> tokens;

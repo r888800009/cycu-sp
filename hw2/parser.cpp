@@ -290,7 +290,16 @@ int Parser::matchN(int i) {
   return -1;
 }
 
-bool Parser::matchMemory(const int r, int &l) {}
+bool Parser::matchMemory(const int r) {
+  if (r >= tokenString->size()) return false;
+
+  if (matchSymbol(r) || matchIntegerDec(r)) {
+    match.memory = tokenString->at(r);
+    return true;
+  }
+
+  return false;
+}
 
 int Parser::matchRegister(int i) {
   if (i >= tokenString->size()) return -1;
