@@ -666,6 +666,8 @@ void Parser::testFmt3() {
   assert(matchFormat3(i = 0, i) && i == 1);
   assert(match.addrType == AddressingType::simple_addressing);
   assert(match.x == false);
+  assert(match.opcode == 0x00);
+  assert(match.format == 3);
   lexer->reset();
 
   // indirect false
