@@ -143,8 +143,43 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
   // no symbol
 }
 
-bool Parser::matchInteger(const int r, int &l) {
-  int hexSize = 3, decSize = 1;
+bool Parser::matchIntegerDec(int r) {
+  int decSize = 1;
+  TokenData data;
+  string num;
+  try {
+    if (r + decSize - 1 < tokenString->size() &&
+        lexer->integerTable.exist(data = tokenString->at(r))) {
+      // check format
+      num = lexer->integerTable.get(data);
+      if (!regex_match(num, regex("[0-9]+"))) return false;
+
+      match.stringData.integer = stoi(lexer->integerTable.get(data));
+      match.stringData.value = data;
+      match.stringData.type = MatchData::StringData::integer_dec;
+      return match.stringData.integer <= 0xffffff;
+    }
+
+    // check match and range
+  } catch (invalid_argument) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  } catch (out_of_range) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  }
+
+  return false;
+}
+
+bool Parser::matchIntegerHex(const int r, int &l) {
+  int hexSize = 3;
   TokenData data;
   string num;
   try {
@@ -161,20 +196,10 @@ bool Parser::matchInteger(const int r, int &l) {
       match.stringData.value = data;
       match.stringData.type = MatchData::StringData::integer_hex;
       l = r + hexSize;
-    } else if (r + decSize - 1 < tokenString->size() &&
-               lexer->integerTable.exist(data = tokenString->at(r))) {
-      // check format
-      num = lexer->integerTable.get(data);
-      if (!regex_match(num, regex("[0-9]+"))) return false;
-
-      match.stringData.integer = stoi(lexer->integerTable.get(data));
-      match.stringData.value = data;
-      match.stringData.type = MatchData::StringData::integer_dec;
-      l = r + decSize;
+      return match.stringData.integer <= 0xffffff;
     }
 
     // check match and range
-    return l > r && match.stringData.integer <= 0xffffff;
   } catch (invalid_argument) {
 #ifdef DEBUGING
     cout << "do what?" << endl;

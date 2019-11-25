@@ -59,7 +59,8 @@ class Parser {
   bool matchString(const int r, int &l);
   // note: matchInteger would not check integer range
   // only check the size is less then 3 bytes
-  bool matchInteger(const int r, int &l);
+  bool matchIntegerHex(const int r, int &l);
+  bool matchIntegerDec(int i);
 
   int matchSyntax(vector<TokenData>);
 

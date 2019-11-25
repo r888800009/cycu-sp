@@ -150,19 +150,20 @@ void Parser::testInteger() {
   // null
   tokens = {};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
-
-  dataClear();
-  tokens = {{4, 9}, lexer->integerTable.put(""), {4, 9}};
-  setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
-  lexer->reset();
+  assert(matchIntegerHex(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
 
   // hex
   dataClear();
+  tokens = {{4, 9}, lexer->integerTable.put(""), {4, 9}};
+  setTokenString(&tokens);
+  assert(matchIntegerHex(i = 0, i) == false);
+  lexer->reset();
+
+  dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("FFFFFF"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
+  assert(matchIntegerHex(i = 0, i) && i == 3);
   assert(match.stringData.type == MatchData::StringData::integer_hex);
   assert(
       isTokenEqual(match.stringData.value, lexer->integerTable.put("FFFFFF")));
@@ -172,14 +173,14 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("0"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
+  assert(matchIntegerHex(i = 0, i) && i == 3);
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("10"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
+  assert(matchIntegerHex(i = 0, i) && i == 3);
   assert(match.stringData.integer == 0x10);
   lexer->reset();
 
@@ -187,7 +188,7 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("abBcCd"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
+  assert(matchIntegerHex(i = 0, i) && i == 3);
   assert(match.stringData.integer == 0xabbccd);
   lexer->reset();
 
@@ -195,26 +196,26 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("g"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put(" ef "), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put(" 123 123 "), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   // dec
   dataClear();
   tokens = {lexer->integerTable.put("16777215")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 1);
+  assert(matchIntegerDec(i = 0));
   assert(match.stringData.type == MatchData::StringData::integer_dec);
   assert(isTokenEqual(match.stringData.value,
                       lexer->integerTable.put("16777215")));
@@ -224,73 +225,78 @@ void Parser::testInteger() {
   dataClear();
   tokens = {lexer->integerTable.put("0")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 1);
+  assert(matchIntegerDec(i = 0));
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put("10")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 1);
+  assert(matchIntegerDec(i = 0));
   assert(match.stringData.integer == 10);
   lexer->reset();
 
   // big num
   tokens = {lexer->integerTable.put("2147483648")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("X'100000000'");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   // not dec error
   dataClear();
   tokens = {lexer->integerTable.put("g")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put(" 123 ")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put(" 123 123 ")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put("FFFFFF")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
   lexer->reset();
 
   // range error
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("1000000"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put("16777216")};  // 16777216 > 0xffffff
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerDec(i = 0) == false);
   lexer->reset();
 
   // test with offset
   dataClear();
   tokens = {{4, 9}, {4, 9}, lexer->integerTable.put("0"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 1, i) && i == 3 + 1);
+  assert(matchIntegerHex(i = 1, i) && i == 3 + 1);
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("0")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 1, i) && i == 1 + 1);
+  assert(matchIntegerDec(i = 1));
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
@@ -298,14 +304,14 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("0"), {4, 9}, {4, 9}, {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 3);
+  assert(matchIntegerHex(i = 0, i) && i == 3);
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
   dataClear();
   tokens = {lexer->integerTable.put("0"), {4, 9}, {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) && i == 1);
+  assert(matchIntegerDec(i = 0));
   assert(match.stringData.integer == 0x0);
   lexer->reset();
 
@@ -313,14 +319,14 @@ void Parser::testInteger() {
   dataClear();
   tokens = {{4, 9}, lexer->stringTable.put("1234"), {4, 9}};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 
   // incomplete syntax
   dataClear();
   tokens = {{4, 9}, lexer->integerTable.put("0")};
   setTokenString(&tokens);
-  assert(matchInteger(i = 0, i) == false);
+  assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
 }
 
