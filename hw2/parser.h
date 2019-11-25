@@ -17,12 +17,20 @@ using namespace std;
 class Parser {
   Lexicaler *lexer = nullptr;
   vector<TokenData> *tokenString;
+  bool sicxe;
   OPTab *optab;
 
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);
   void debug();
 
  public:
+  enum AddressingType {
+    null_addressing,
+    simple_addressing,
+    indirect_addressing,
+    immediate_addressing
+  };
+
   struct MatchData {
     TokenData symbol;
     struct StringData {
@@ -32,9 +40,13 @@ class Parser {
       enum Type { integer_hex, integer_dec, string_data, null } type;
     } stringData;
 
+    TokenData memory, literal;
+    AddressingType addrType;
+    bool x;
+
     int opcode, format;
     int op1, op2;
-    Flag flag;
+
   } match;
 
   Parser(Lexicaler *lexer, OPTab *optab);
@@ -48,7 +60,9 @@ class Parser {
   bool matchSymbol(int i);
   int matchRegister(int i);
   int matchN(int i);
+  bool matchMemory(const int r);
   bool getOPData(int format, int i);
+  void setXE(bool sicxe);
 
   // r; begin, l: end
   bool matchFormat1(const int r, int &l);
@@ -71,7 +85,9 @@ class Parser {
   void testDelimiter();
   void testInteger();
   void testString();
+  void testMemory();
   void testOp();
+  void testMode();
 
   void testFmt1();
   void testFmt2();

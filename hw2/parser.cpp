@@ -13,6 +13,7 @@ Parser::Parser(Lexicaler *lexer, OPTab *optab) {
 }
 
 void Parser::setTokenString(vector<TokenData> *tokenString) {
+  dataClear();
   this->tokenString = tokenString;
 }
 
@@ -23,13 +24,6 @@ void Parser::debug() {
 
   cout << "op1" << match.op1 << endl;
   cout << "op2" << match.op1 << endl;
-
-  cout << "n:" << match.flag.n << endl;
-  cout << "i:" << match.flag.i << endl;
-  cout << "x:" << match.flag.x << endl;
-  cout << "b:" << match.flag.b << endl;
-  cout << "p:" << match.flag.p << endl;
-  cout << "e:" << match.flag.e << endl;
 
   cout.flush();
 }
@@ -96,10 +90,13 @@ void Parser::dataClear() {
   match.format = -1;
   match.op1 = -1;
   match.op2 = -1;
-  match.flag = {0, 0, 0, 0, 0};
+  match.x = false;
 
   match.stringData.value = {-1, -1};
   match.stringData.type = MatchData::StringData::null;
+  match.memory = {-1, -1};
+  match.literal = {-1, -1};
+  match.addrType = AddressingType::null_addressing;
 }
 
 bool Parser::matchFormat3(const int r, int &l) {}

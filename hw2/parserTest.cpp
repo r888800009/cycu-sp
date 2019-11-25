@@ -624,9 +624,141 @@ void Parser::test() {
   testMode();
 }
 
-void Parser::testFmt3() {
+void Parser::testMode() {
+  cout << "SIC no test!!" << endl;
+  // matchSyntax handle
+
   // sic mode
+  // fmt1 disable
+  // fmt2 disable
+  // fmt3 enable
+  // fmt4 disable
+
   // sicxe mode
+  // fmt1 enable
+  // fmt2 enable
+  // fmt3 enable
+  // fmt4 enable
 }
 
-void Parser::testFmt4() {}
+void Parser::testFmt3() {
+  cout << "fmt3 no test!!" << endl;
+  vector<TokenData> tokens;
+  int i = 0;
+
+  // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
+  // size more then
+  tokens = lexer->lexingLine("LDA 1,,");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 1);
+  lexer->reset();
+
+  // sic mode make should simple addressing
+  setXE(false);
+  // simple addressing true
+  tokens = lexer->lexingLine("LDA 1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 1);
+  assert(match.addrType == AddressingType::simple_addressing);
+  assert(match.x == false);
+  lexer->reset();
+
+  // indirect false
+  tokens = lexer->lexingLine("LDA @1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
+  // immediate false
+  tokens = lexer->lexingLine("LDA #1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
+  // sic not support mnemonic
+  tokens = lexer->lexingLine("LDB 1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
+  // sicxe mode make should simple addressing
+  setXE(true);
+  // simple addressing true
+  tokens = lexer->lexingLine("LDA 1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 1);
+  assert(match.addrType == AddressingType::simple_addressing);
+  lexer->reset();
+
+  // indirect true
+  tokens = lexer->lexingLine("LDA @1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 2);
+  assert(match.addrType == AddressingType::indirect_addressing);
+  lexer->reset();
+
+  // immediate true
+  tokens = lexer->lexingLine("LDA #1");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 2);
+  assert(match.addrType == AddressingType::immediate_addressing);
+  lexer->reset();
+
+  // test X reg
+  tokens = lexer->lexingLine("LDA #1,X");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("LDA 1,X");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 3);
+  assert(match.x == true);
+  assert(match.addrType == AddressingType::simple_addressing);
+  lexer->reset();
+
+  // with size
+  tokens = lexer->lexingLine("LDA 1,X,,,");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 3);
+  assert(match.x == true);
+  lexer->reset();
+
+  // literals
+  tokens = lexer->lexingLine("LDA =x'1'");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 4);
+  assert(isTokenEqual(match.literal, lexer->integerTable.get("1")));
+  assert(match.x == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("LDA =c' string '");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 4);
+  assert(isTokenEqual(match.literal, lexer->stringTable.get(" string ")));
+  assert(match.x == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("LDA =x'1',X");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 6);
+  assert(match.x == true);
+  lexer->reset();
+}
+
+void Parser::testFmt4() {
+  cout << "fmt4 no test!!" << endl;
+  // work on sicxe mode, sic mode would error
+
+  // null
+  // size more then
+
+  // tset fmt4
+  // test fmt3 would not match
+}
+
