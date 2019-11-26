@@ -99,7 +99,45 @@ void Parser::dataClear() {
   match.addrType = AddressingType::null_addressing;
 }
 
-bool Parser::matchFormat3(const int r, int &l) {}
+bool Parser::matchFormat3(const int r, int &l) {
+  l = r;
+  // match opcode is fmt3
+  if (!getOPData(3, l)) return false;
+  l++;
+
+  if (matchMemory(l)) {
+    // memory, simple addressing
+    match.addrType = AddressingType::simple_addressing;
+    l++;
+
+    // if have x register, move index and set x true
+    if (matchDelimiter(',', l) && matchRegister("X", l + 1)) {
+      match.x = true;
+      l += 2;
+    } else
+      match.x = false;
+    return true;
+  } else if (sicxe) {
+    if (matchDelimiter('@', l) && matchMemory(l + 1)) {
+      // indirect
+      match.addrType = AddressingType::indirect_addressing;
+      l += 2;
+      cout << l;
+      cout.flush();
+      return true;
+    } else if (matchDelimiter('#', l) && matchMemory(l + 1)) {
+      // immediate
+      match.addrType = AddressingType::immediate_addressing;
+      l += 2;
+      return true;
+    } else if (0) {
+      // literal
+      return true;
+    }
+  }
+
+  return false;
+}
 
 bool Parser::matchFormat4(const int r, int &l) {}
 
@@ -261,6 +299,8 @@ bool Parser::getOPData(int format, int i) {
   match.opcode = optab->getOPCode(mnemonic);
   match.format = optab->getFormat(mnemonic);
 
+  if (sicxe == false && optab->isSICXE(mnemonic)) return false;
+
   return match.opcode != -1 && match.format == format;
 }
 
@@ -306,3 +346,5 @@ int Parser::matchRegister(int i) {
   else
     return data.value - 1;
 }
+
+void Parser::setXE(bool XE) { sicxe = XE; }

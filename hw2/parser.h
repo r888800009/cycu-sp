@@ -17,7 +17,7 @@ using namespace std;
 class Parser {
   Lexicaler *lexer = nullptr;
   vector<TokenData> *tokenString;
-  bool sicxe;
+  bool sicxe = false;
   OPTab *optab;
 
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);

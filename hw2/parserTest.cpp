@@ -394,6 +394,22 @@ void Parser::testString() {
 void Parser::testOp() {
   vector<TokenData> tokens;
 
+  setXE(false);
+  // sic
+  tokens = {{1, 1}};
+  setTokenString(&tokens);
+  assert(getOPData(3, 0));
+
+  // not sic
+  tokens = lexer->lexingLine("ldb");
+  setTokenString(&tokens);
+  assert(getOPData(3, 0) == false);
+
+  setXE(true);
+  tokens = lexer->lexingLine("ldb");
+  setTokenString(&tokens);
+  assert(getOPData(3, 0) == true);
+
   // null
   tokens = {};
   setTokenString(&tokens);
@@ -543,22 +559,30 @@ void Parser::testReg() {
   tokens = {};
   setTokenString(&tokens);
   assert(matchRegister(0) == -1);
+  assert(matchRegister("X", 0) == false);
 
   // has reg
   for (int i = 1; i <= 9; i++) {
     tokens = {{3, i}};
     setTokenString(&tokens);
     assert(matchRegister(0) == i - 1);
+    assert(matchRegister(lexer->registerTable.get(tokens[0]), 0));
   }
 
   // not reg
   tokens = {{1, 1}};
   setTokenString(&tokens);
   assert(matchRegister(0) == -1);
+  assert(matchRegister(lexer->registerTable.get(TokenData{3, 1}), 0) == false);
 
   tokens = {{2, 1}};
   setTokenString(&tokens);
   assert(matchRegister(0) == -1);
+
+  // match reg
+  tokens = {{3, 4}};
+  setTokenString(&tokens);
+  assert(matchRegister(lexer->registerTable.get(TokenData{3, 4}), 0));
 }
 
 void Parser::testDelimiter() {
@@ -620,9 +644,9 @@ void Parser::test() {
   assert(matchSymbol(0));
   assert(isTokenEqual(tokens[0], this->match.symbol));
 
+  testOp();
   testReg();
   testN();
-  testOp();
   testString();
   testInteger();
 
@@ -667,7 +691,7 @@ void Parser::testFmt3() {
   // size more then
   tokens = lexer->lexingLine("LDA 1,,");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 1);
+  assert(matchFormat3(i = 0, i) && i == 2);
   lexer->reset();
 
   // sic mode make should simple addressing
@@ -675,7 +699,7 @@ void Parser::testFmt3() {
   // simple addressing true
   tokens = lexer->lexingLine("LDA 1");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 1);
+  assert(matchFormat3(i = 0, i) && i == 2);
   assert(match.addrType == AddressingType::simple_addressing);
   assert(match.x == false);
   assert(match.opcode == 0x00);
@@ -705,21 +729,21 @@ void Parser::testFmt3() {
   // simple addressing true
   tokens = lexer->lexingLine("LDA 1");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 1);
+  assert(matchFormat3(i = 0, i) && i == 2);
   assert(match.addrType == AddressingType::simple_addressing);
   lexer->reset();
 
   // indirect true
   tokens = lexer->lexingLine("LDA @1");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 2);
+  assert(matchFormat3(i = 0, i) && i == 3);
   assert(match.addrType == AddressingType::indirect_addressing);
   lexer->reset();
 
   // immediate true
   tokens = lexer->lexingLine("LDA #1");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 2);
+  assert(matchFormat3(i = 0, i) && i == 3);
   assert(match.addrType == AddressingType::immediate_addressing);
   lexer->reset();
 
@@ -731,7 +755,7 @@ void Parser::testFmt3() {
 
   tokens = lexer->lexingLine("LDA 1,X");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 3);
+  assert(matchFormat3(i = 0, i) && i == 4);
   assert(match.x == true);
   assert(match.addrType == AddressingType::simple_addressing);
   lexer->reset();
@@ -739,29 +763,30 @@ void Parser::testFmt3() {
   // with size
   tokens = lexer->lexingLine("LDA 1,X,,,");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 3);
+  assert(matchFormat3(i = 0, i) && i == 4);
   assert(match.x == true);
   lexer->reset();
 
   // literals
   tokens = lexer->lexingLine("LDA =x'1'");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 4);
+  assert(matchFormat3(i = 0, i) && i == 5);
   assert(isTokenEqual(match.literal, lexer->integerTable.get("1")));
+  assert(match.addrType == AddressingType::simple_addressing);
   assert(match.x == false);
   lexer->reset();
 
   tokens = lexer->lexingLine("LDA =c' string '");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 4);
+  assert(matchFormat3(i = 0, i) && i == 5);
   assert(isTokenEqual(match.literal, lexer->stringTable.get(" string ")));
+  assert(match.addrType == AddressingType::simple_addressing);
   assert(match.x == false);
   lexer->reset();
 
   tokens = lexer->lexingLine("LDA =x'1',X");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 6);
-  assert(match.x == true);
+  assert(matchFormat3(i = 0, i) == false);
   lexer->reset();
 }
 
