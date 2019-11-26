@@ -124,8 +124,7 @@ vector<TokenData> Lexicaler::lexingLine(const string& line) {
               mode = mode_integer;
             else if (curStr == "c" || curStr == "C")
               mode = mode_string;
-            else
-              mode = mode_string;
+            // else do nothing
           } else {
             if (curStr != "") {
               TokenData data = checkToken(curStr);

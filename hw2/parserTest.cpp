@@ -328,6 +328,12 @@ void Parser::testInteger() {
   setTokenString(&tokens);
   assert(matchIntegerHex(i = 0, i) == false);
   lexer->reset();
+
+  dataClear();
+  tokens = lexer->lexingLine("'123'");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(i = 0, i) == false);
+  lexer->reset();
 }
 
 void Parser::testString() {
@@ -374,6 +380,12 @@ void Parser::testString() {
   // incomplete syntax
   dataClear();
   tokens = {{4, 11}, {4, 9}, lexer->stringTable.put("test")};
+  setTokenString(&tokens);
+  assert(matchString(i = 0, i) == false);
+  lexer->reset();
+
+  dataClear();
+  tokens = lexer->lexingLine("'123'");
   setTokenString(&tokens);
   assert(matchString(i = 0, i) == false);
   lexer->reset();
