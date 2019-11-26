@@ -678,7 +678,6 @@ void Parser::testMode() {
 }
 
 void Parser::testFmt3() {
-  cout << "fmt3 no test!!" << endl;
   vector<TokenData> tokens;
   int i = 0;
 
@@ -750,7 +749,8 @@ void Parser::testFmt3() {
   // test X reg
   tokens = lexer->lexingLine("LDA #1,X");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) == false);
+  // fmt3 does not check is string end.
+  assert(matchFormat3(i = 0, i) == true && i == 3);
   lexer->reset();
 
   tokens = lexer->lexingLine("LDA 1,X");
@@ -784,18 +784,30 @@ void Parser::testFmt3() {
   assert(match.x == false);
   lexer->reset();
 
+  // fmt3 does not check is string end.
   tokens = lexer->lexingLine("LDA =x'1',X");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) == false);
+  assert(matchFormat3(i = 0, i) && i == 5);
   lexer->reset();
 }
 
 void Parser::testFmt4() {
   cout << "fmt4 no test!!" << endl;
+  vector<TokenData> tokens;
+  int i = 0;
   // work on sicxe mode, sic mode would error
 
   // null
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) == false);
+  lexer->reset();
+
   // size more then
+  tokens = lexer->lexingLine("LDA 1,,");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 2);
+  lexer->reset();
 
   // tset fmt4
   // test fmt3 would not match

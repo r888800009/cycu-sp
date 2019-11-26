@@ -118,21 +118,27 @@ bool Parser::matchFormat3(const int r, int &l) {
       match.x = false;
     return true;
   } else if (sicxe) {
+    // make sure x is false
+    match.x = false;
     if (matchDelimiter('@', l) && matchMemory(l + 1)) {
       // indirect
       match.addrType = AddressingType::indirect_addressing;
       l += 2;
-      cout << l;
-      cout.flush();
       return true;
     } else if (matchDelimiter('#', l) && matchMemory(l + 1)) {
       // immediate
       match.addrType = AddressingType::immediate_addressing;
       l += 2;
       return true;
-    } else if (0) {
-      // literal
-      return true;
+    } else if (matchDelimiter('=', l)) {
+      int preL = l + 1;
+      if (matchString(l = preL, l) || matchIntegerHex(l = preL, l)) {
+        // literal
+        match.literal = match.stringData.value;
+        match.addrType = AddressingType::simple_addressing;
+        // matchString or matchIntegerHex would modify l to size
+        return true;
+      }
     }
   }
 
