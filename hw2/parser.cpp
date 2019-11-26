@@ -145,7 +145,19 @@ bool Parser::matchFormat3(const int r, int &l) {
   return false;
 }
 
-bool Parser::matchFormat4(const int r, int &l) {}
+bool Parser::matchFormat4(const int r, int &l) {
+  l = r;
+  if (l >= tokenString->size()) return false;
+  if (!matchDelimiter('+', l)) return false;
+  l++;
+
+  if (matchFormat3(l, l)) {
+    match.format = 4;
+    return true;
+  }
+
+  return false;
+}
 
 bool Parser::matchInstruction(const int r, int &l) {
   int base = r;

@@ -792,7 +792,6 @@ void Parser::testFmt3() {
 }
 
 void Parser::testFmt4() {
-  cout << "fmt4 no test!!" << endl;
   vector<TokenData> tokens;
   int i = 0;
   // work on sicxe mode, sic mode would error
@@ -828,13 +827,13 @@ void Parser::testFmt4() {
   // immediate true
   tokens = lexer->lexingLine("+LDA #1");
   setTokenString(&tokens);
-  assert(matchFormat4(i = 0, i) && i == 3);
+  assert(matchFormat4(i = 0, i) && i == 4);
   lexer->reset();
 
   // X reg
   tokens = lexer->lexingLine("+LDA 1,X");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 5);
+  assert(matchFormat4(i = 0, i) && i == 5);
   lexer->reset();
 
   // test fmt3 would not match
