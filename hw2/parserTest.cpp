@@ -800,16 +800,66 @@ void Parser::testFmt4() {
   // null
   tokens = {};
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) == false);
+  assert(matchFormat4(i = 0, i) == false);
   lexer->reset();
 
   // size more then
-  tokens = lexer->lexingLine("LDA 1,,");
+  tokens = lexer->lexingLine("+LDA 1,,");
   setTokenString(&tokens);
-  assert(matchFormat3(i = 0, i) && i == 2);
+  assert(matchFormat4(i = 0, i) && i == 3);
   lexer->reset();
 
-  // tset fmt4
+  setXE(true);
+  // test fmt4
+  // sicxe mode make should simple addressing
+  // simple addressing
+  tokens = lexer->lexingLine("+LDA 1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) && i == 3);
+  assert(match.format == 4);
+  lexer->reset();
+
+  // indirect true
+  tokens = lexer->lexingLine("+LDA @1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) && i == 4);
+  lexer->reset();
+
+  // immediate true
+  tokens = lexer->lexingLine("+LDA #1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) && i == 3);
+  lexer->reset();
+
+  // X reg
+  tokens = lexer->lexingLine("+LDA 1,X");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 5);
+  lexer->reset();
+
   // test fmt3 would not match
+  // simple addressing
+  tokens = lexer->lexingLine("LDA 1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) == false);
+  lexer->reset();
+
+  // indirect true
+  tokens = lexer->lexingLine("LDA @1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) == false);
+  lexer->reset();
+
+  // immediate true
+  tokens = lexer->lexingLine("LDA #1");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) == false);
+  lexer->reset();
+
+  // X reg
+  tokens = lexer->lexingLine("LDA 1,X");
+  setTokenString(&tokens);
+  assert(matchFormat4(i = 0, i) == false);
+  lexer->reset();
 }
 
