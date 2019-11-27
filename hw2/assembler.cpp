@@ -25,6 +25,7 @@ string Assembler::genFormat1(int opcode) {
   stream << std::noshowbase << setfill('0') << setw(2) << uppercase << std::hex
          << opcode;
 
+  if (stream.str().length() != 2) throw Error::syntax_error;
   return stream.str();
 }
 
@@ -34,6 +35,7 @@ string Assembler::genFormat2(int opcode, int r1, int r2) {
   stream << std::noshowbase << setfill('0') << setw(2) << uppercase << std::hex
          << opcode << r1 << r2;
 
+  if (stream.str().length() != 4) throw Error::syntax_error;
   return stream.str();
 }
 
@@ -61,6 +63,7 @@ string Assembler::genFormat3(int opcode, Flag flag, int disp) {
   stream << std::noshowbase << setfill('0') << setw(6) << uppercase << std::hex
          << result;
 
+  if (stream.str().length() != 6) throw Error::syntax_error;
   return stream.str();
 }
 
@@ -75,6 +78,7 @@ string Assembler::genFormat4(int opcode, Flag flag, int address) {
   stream << std::noshowbase << setfill('0') << setw(8) << uppercase << std::hex
          << result;
 
+  if (stream.str().length() != 8) throw Error::syntax_error;
   return stream.str();
 }
 
