@@ -126,6 +126,37 @@ void Assembler::test() {
 
   code = genFormat4(0b00000000, {0, 0, 1, 1, 1, 1}, 0b11111111111100001111);
   assert(code == "00FFFF0F" && code.length() == 8);  // 8 nibble
+
+  // hello world
+
+  printHeader();
+  printLine(0, 0, "COPY  START 100", "");
+  printLine(5, 1000, "COPY  START 100", "");
+  printLine(10, 1000, "FIRST STL RETADR", "141033");
+  cout << printStream.str();
+}
+
+void Assembler::setXE(bool sicxe) {
+  sicxe = sicxe;
+  parser.setXE(sicxe);
+}
+
+void Assembler::printHeader() {
+  printStream << setw(OFFSET_LINE) << left << "Line" << setw(OFFSET_LOCATION)
+              << left << "  Loc" << setw(OFFSET_STATEMENT) << left
+              << "Source Statement" << setw(OFFSET_CODE) << left
+              << "Object code" << endl;
+  printStream << endl;
+}
+
+void Assembler::printLine(int line, int loc, const string &statement,
+                          const string &objcode) {
+  stringstream ss;
+  ss << setw(4) << setfill('0') << loc;
+  printStream << setw(OFFSET_LINE) << right << line << setw(OFFSET_LOCATION)
+              << right << ss.str() << setfill(' ') << setw(OFFSET_STATEMENT)
+              << left << (" " + statement) << setw(OFFSET_CODE) << left
+              << objcode << endl;
 }
 
 void Assembler::setFile(const string &filename) { this->filename = filename; }
