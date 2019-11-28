@@ -661,7 +661,7 @@ void Parser::test() {
   testPseudo();
 }
 
-void Parser::Parser::testSTART() {
+void Parser::testSTART() {
   vector<TokenData> tokens;
   int i;
 
@@ -705,7 +705,7 @@ void Parser::Parser::testSTART() {
   lexer->reset();
 }
 
-void Parser::Parser::testEND() {
+void Parser::testEND() {
   vector<TokenData> tokens;
   int i;
 
@@ -726,7 +726,7 @@ void Parser::Parser::testEND() {
   lexer->reset();
 }
 
-void Parser::Parser::testBYTE() {
+void Parser::testBYTE() {
   vector<TokenData> tokens;
   int i;
 
@@ -772,7 +772,7 @@ void Parser::Parser::testBYTE() {
   lexer->reset();
 }
 
-void Parser::Parser::testRESB() {
+void Parser::testRESB() {
   vector<TokenData> tokens;
   int i;
 
@@ -794,7 +794,7 @@ void Parser::Parser::testRESB() {
   lexer->reset();
 }
 
-void Parser::Parser::testRESW() {
+void Parser::testRESW() {
   vector<TokenData> tokens;
   int i;
 
@@ -816,7 +816,7 @@ void Parser::Parser::testRESW() {
   lexer->reset();
 }
 
-void Parser::Parser::testBASE() {
+void Parser::testBASE() {
   vector<TokenData> tokens;
   int i;
 
