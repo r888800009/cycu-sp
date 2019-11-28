@@ -17,9 +17,13 @@ g++ *.cpp -std=c++11 -DNDEBUG
 ### 流程
 #### Parser
 Parser為Recursive Descent Parser的設計，並且採用**深度優先搜尋**，
+透過函數定義文法，實際上執行後有建立parser Tree的效果，
+並且在剖析的過程中，將剖析出來的資訊如指令格式、定址模式保存起來，
 
 #### Lexer
 lexer會返回內容是token的vector
+
+### Assembler
 
 ### 資料結構 Lexer
 
@@ -54,63 +58,19 @@ Format1與Format2因為格式特性，實做上面透過stringstream輸出nibble
 產生Object file時只需要將hex code轉成binary的形式即可，而沒有透過位元運算子來計算結果。
 
 Format3與Format4透過位元運算子進行位移，之後在將多個bit疊在一個int上，
-最後產生Object code的byte String。
+最後產生Object code的byte String，因為每個指令的OP code的最小nibble中後兩位都是0，
+實際上使用到只有前6個bit，所以後面兩個要忽略掉。
 
 ### Parser
-Parser為Recursive Descent Parser，設計一個資料結構Syntax List來保存Backus–Naur form Grammar
-中定義的文法，每個Grammar可以定義成一個Syntax，而Syntax裡面包含多組Syntax Data，
-並且用vector保存`|`隔開的各個部份。
+format2幾個指令格式比較特別，在parser這邊先完成剖析之後交給assembler處理
 
-而下圖為Syntax List資料結構表示圖，Parser的RootSyntax會指向其中一個Syntax，
-用來作為根進行遞迴下降，之後Syntax中有多個Syntax Data的組合。
-
-![SyntAxList 結構圖](SyntaxList.svg)
-
-#### Syntax Data
-Syntax Data可以代表Terminal Symbol或Non-Terminal Symbol，
-如果為前者則判斷tableType是否符合，否則就判斷後者syntaxID，
-而syntaxID是由SyntaxList自行管理，產生Syntax時會返回一個ID。
-
-實做SyntaxData採用class，並且針對指令、偽代碼、暫存器、分割符、Symbol、Integer、String、
-Non-terminal Symbol等下去繼承類別。
-``` c++ 
-class SyntaxData {
- public:
-  bool terminal = true;
-  SyntaxData();
-  virtual bool checkSyntax(const TokenData token, const Lexicaler &lexer) {
-    return false;
-  };
-};
-```
-
-#### Syntax
-一個Syntax物件允許管理多個Syntax Data組合，透過二維陣列保存各個Syntax內容。
-``` c++ 
-  class Syntax {
-    typedef vector<SyntaxData> SyntaxGroup;
-  public:
-    void append(SyntaxGroup);
-  };
-```
-
-#### Syntax List  
-append這個指令會回傳SyntaxList所給予的ID並保存identifer，
-可用來定義其他文法，不過定義的時候要注意順序，
-使用到空文法應該中斷程式報錯由程式設計師解決。
-``` c++ 
-  class SyntaxList {
-    vector<Syntax> list;
-    map<string, int> identiferList;
-   public:
-     int append(string identifer, Syntax);
-     int find(string identifer);
-  };
-```
-
+- CLEAR r1
+- SHIFTL r1, n
+- SHIFTR r1, n
+- SVC n
+- TIXR r1
 
 ## 未完成的功能
 - syntax
-- ~~SyntaxList資料結構不支援向前參考~~，直接在SyntaxSyntax中加入識別符。
 - 由於作業只需要輸出Object code的hex，因此尚未支援轉成二進位的機器碼檔案的功能。
 
