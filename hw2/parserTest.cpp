@@ -772,6 +772,50 @@ void Parser::Parser::testBYTE() {
   lexer->reset();
 }
 
+void Parser::Parser::testRESB() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("RESB 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.pseudo == RESB);
+  assert(lexer->symbolTable.get(match.resMatch) == "1");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("RESB symbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol RESB 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  lexer->reset();
+}
+
+void Parser::Parser::testRESW() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("RESW 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.pseudo == RESW);
+  assert(lexer->symbolTable.get(match.resMatch) == "1");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("RESW symbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol RESW 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  lexer->reset();
+}
+
 void Parser::Parser::testBASE() {
   vector<TokenData> tokens;
   int i;
@@ -826,6 +870,8 @@ void Parser::testPseudo() {
   testSTART();
   testEND();
   testBYTE();
+  testRESB();
+  testRESW();
   testBASE();
   testLTORG();
 }
