@@ -772,6 +772,29 @@ void Parser::Parser::testBYTE() {
   lexer->reset();
 }
 
+void Parser::Parser::testBASE() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("BASE LENGTH");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.pseudo == BASE);
+  assert(lexer->symbolTable.get(match.baseMatch) == "LENGTH");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BASE 123");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(lexer->integerTable.get(match.baseMatch) == "123");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol BASE 123");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  lexer->reset();
+}
+
 void Parser::testLTORG() {
   vector<TokenData> tokens;
   int i;
@@ -803,6 +826,7 @@ void Parser::testPseudo() {
   testSTART();
   testEND();
   testBYTE();
+  testBASE();
   testLTORG();
 }
 

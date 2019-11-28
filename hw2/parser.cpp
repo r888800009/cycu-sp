@@ -98,6 +98,8 @@ void Parser::dataClear() {
   match.literal = {-1, -1};
   match.addrType = AddressingType::null_addressing;
   match.pseudo = NOT_PSEUDO;
+  match.startMatch = {-1, -1};
+  match.baseMatch = {-1, -1};
 }
 
 bool Parser::matchFormat3(const int r, int &l) {

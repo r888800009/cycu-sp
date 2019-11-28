@@ -61,6 +61,7 @@ class Parser {
 
     // start
     TokenData startMatch;
+    TokenData baseMatch;
 
     int opcode, format;
     int op1, op2;
@@ -112,6 +113,7 @@ class Parser {
   void testSTART();
   void testEND();
   void testBYTE();
+  void testBASE();
   void testLTORG();
 
   void testFmt1();
