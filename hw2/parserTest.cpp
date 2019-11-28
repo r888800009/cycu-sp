@@ -705,6 +705,63 @@ void Parser::testSTART() {
   lexer->reset();
 }
 
+void Parser::testEQU() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("SYMBOL1 EQU SSSSymbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  assert(lexer->symbolTable.get(match.symbol) == "SYMBOL1");
+  assert(match.equMatch.size() == 1);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("EQU SSSSymbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU *");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  assert(match.equMatch.size() == 1);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU 123");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  assert(match.equMatch.size() == 1);
+  lexer->reset();
+}
+
+void Parser::testEQUAdv() {
+  vector<TokenData> tokens;
+  int i;
+  tokens = lexer->lexingLine("symb EQU abc+1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU 1-avvv");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU 1*avvv");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU 1/avvv");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+}
+
 void Parser::testEND() {
   vector<TokenData> tokens;
   int i;
@@ -856,8 +913,6 @@ void Parser::testLTORG() {
 }
 
 void Parser::testPseudo() {
-  cout << "no Pseudo!!" << endl;
-
   vector<TokenData> tokens;
   int i;
 
@@ -874,6 +929,10 @@ void Parser::testPseudo() {
   testRESW();
   testBASE();
   testLTORG();
+  testEQU();
+
+  cout << "testEQUAdv disable!" << endl;
+  // testEQUAdv();
 }
 
 void Parser::testMode() {

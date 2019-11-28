@@ -63,6 +63,7 @@ class Parser {
     TokenData startMatch;
     TokenData baseMatch;
     TokenData resMatch;
+    vector<TokenData> equMatch;
 
     int opcode, format;
     int op1, op2;
@@ -118,6 +119,8 @@ class Parser {
   void testRESW();
   void testBASE();
   void testLTORG();
+  void testEQU();
+  void testEQUAdv();
 
   void testFmt1();
   void testFmt2();
