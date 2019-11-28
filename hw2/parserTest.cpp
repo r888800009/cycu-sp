@@ -829,6 +829,57 @@ void Parser::testBYTE() {
   lexer->reset();
 }
 
+void Parser::testWORD() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("WORD c'123'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 4);
+  assert(match.pseudo == WORD);
+  assert(match.stringData.type == MatchData::StringData::string_data);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("Symbol WORD c'123'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD c''");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 4);
+  assert(match.stringData.type == MatchData::StringData::string_data);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD x'1'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 4);
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD x''");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD x'fffffff'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD x'ffffff'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 4);
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("WORD 213");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.stringData.type == MatchData::StringData::integer_dec);
+  lexer->reset();
+}
+
 void Parser::testRESB() {
   vector<TokenData> tokens;
   int i;
@@ -925,6 +976,7 @@ void Parser::testPseudo() {
   testSTART();
   testEND();
   testBYTE();
+  testWORD();
   testRESB();
   testRESW();
   testBASE();

@@ -115,6 +115,7 @@ class Parser {
   void testSTART();
   void testEND();
   void testBYTE();
+  void testWORD();
   void testRESB();
   void testRESW();
   void testBASE();
