@@ -705,6 +705,27 @@ void Parser::Parser::testSTART() {
   lexer->reset();
 }
 
+void Parser::Parser::testEND() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("END FIRST");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == true && i == 2);
+  assert(match.pseudo == END);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol END FIRST");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == true && i == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("END");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == true && i == 1);
+  lexer->reset();
+}
+
 void Parser::testPseudo() {
   cout << "no Pseudo!!" << endl;
 
@@ -718,6 +739,7 @@ void Parser::testPseudo() {
   lexer->reset();
 
   testSTART();
+  testEND();
 }
 
 void Parser::testMode() {

@@ -110,6 +110,7 @@ class Parser {
   void testPseudo();
 
   void testSTART();
+  void testEND();
 
   void testFmt1();
   void testFmt2();
