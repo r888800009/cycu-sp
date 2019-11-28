@@ -658,6 +658,66 @@ void Parser::test() {
   testFmt4();
 
   testMode();
+  testPseudo();
+}
+
+void Parser::Parser::testSTART() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("START 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.pseudo == START);
+  assert(lexer->integerTable.get(match.startMatch) == "1");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("START symbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol START 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  assert(lexer->symbolTable.get(match.startMatch) == "symbol");
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol START x'1'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("START");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  // more op
+  tokens = lexer->lexingLine("symbol START 1 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("START 1 1");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+}
+
+void Parser::testPseudo() {
+  cout << "no Pseudo!!" << endl;
+
+  vector<TokenData> tokens;
+  int i;
+
+  // null token test
+  tokens = {};
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  testSTART();
 }
 
 void Parser::testMode() {

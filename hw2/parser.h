@@ -31,6 +31,19 @@ class Parser {
     immediate_addressing
   };
 
+  enum Pseudo {
+    START,
+    END,
+    BYTE,
+    WORD,
+    RESB,
+    RESW,
+    EQU,
+    BASE,
+    LTORG,
+    NOT_PSEUDO
+  };
+
   struct MatchData {
     TokenData symbol;
     struct StringData {
@@ -43,6 +56,11 @@ class Parser {
     TokenData memory, literal;
     AddressingType addrType;
     bool x;
+
+    Pseudo pseudo;
+
+    // start
+    TokenData startMatch;
 
     int opcode, format;
     int op1, op2;
@@ -69,6 +87,7 @@ class Parser {
   bool matchFormat2(const int r, int &l);
   bool matchFormat3(const int r, int &l);
   bool matchFormat4(const int r, int &l);
+  bool matchPseudo(const int r, int &l);
   bool matchInstruction(const int r, int &l);
   bool matchString(const int r, int &l);
   // note: matchInteger would not check integer range
@@ -88,6 +107,9 @@ class Parser {
   void testMemory();
   void testOp();
   void testMode();
+  void testPseudo();
+
+  void testSTART();
 
   void testFmt1();
   void testFmt2();
