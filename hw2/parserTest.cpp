@@ -726,6 +726,52 @@ void Parser::Parser::testEND() {
   lexer->reset();
 }
 
+void Parser::Parser::testBYTE() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("BYTE c'123'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.pseudo == BYTE);
+  assert(match.stringData.type == MatchData::StringData::string_data);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("Symbol BYTE c'123'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 3);
+  assert(match.stringData.type == MatchData::StringData::string_data);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BYTE c''");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.stringData.type == MatchData::StringData::string_data);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BYTE x'1'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BYTE x''");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BYTE x'fff'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("BYTE x'ff'");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  lexer->reset();
+}
+
 void Parser::testPseudo() {
   cout << "no Pseudo!!" << endl;
 
@@ -740,6 +786,7 @@ void Parser::testPseudo() {
 
   testSTART();
   testEND();
+  testBYTE();
 }
 
 void Parser::testMode() {
