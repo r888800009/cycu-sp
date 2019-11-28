@@ -112,6 +112,7 @@ class Parser {
   void testSTART();
   void testEND();
   void testBYTE();
+  void testLTORG();
 
   void testFmt1();
   void testFmt2();

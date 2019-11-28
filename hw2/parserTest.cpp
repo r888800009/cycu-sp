@@ -772,6 +772,22 @@ void Parser::Parser::testBYTE() {
   lexer->reset();
 }
 
+void Parser::testLTORG() {
+  vector<TokenData> tokens;
+  int i;
+
+  tokens = lexer->lexingLine("LTORG");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 1);
+  assert(match.pseudo == LTORG);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symbol LTORG");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  lexer->reset();
+}
+
 void Parser::testPseudo() {
   cout << "no Pseudo!!" << endl;
 
@@ -787,6 +803,7 @@ void Parser::testPseudo() {
   testSTART();
   testEND();
   testBYTE();
+  testLTORG();
 }
 
 void Parser::testMode() {
