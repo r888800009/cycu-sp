@@ -100,6 +100,8 @@ void Parser::dataClear() {
   match.pseudo = NOT_PSEUDO;
   match.startMatch = {-1, -1};
   match.baseMatch = {-1, -1};
+  match.resMatch = {-1, -1};
+  match.equMatch.clear();
 }
 
 bool Parser::matchFormat3(const int r, int &l) {
