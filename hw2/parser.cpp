@@ -104,6 +104,48 @@ void Parser::dataClear() {
   match.equMatch.clear();
 }
 
+bool Parser::matchPseudoToken(const string &pseudo, int i) {
+  if (i >= tokenString->size()) return false;
+  return isTokenEqual(tokenString->at(i), lexer->pseudoExtraTable.get(pseudo));
+}
+
+bool Parser::matchPseudo(const int r, int &l) {
+  l = r;
+  if (l >= tokenString->size()) return false;
+
+  if (matchSymbol(l) && matchPseudoToken("EQU", l + 1)) {
+    // EQU
+
+  } else {
+    // symbol
+    if (matchSymbol(l)) l++;
+    int baseR = l;
+
+    if (matchPseudoToken("START", baseR) && matchMemory(baseR + 1)) {
+      match.pseudo = START;
+      match.startMatch = match.memory;
+      l = baseR + 2;
+      return true;
+    } else if (matchPseudoToken("END", l)) {
+      match.pseudo = END;
+    } else if (matchPseudoToken("BYTE", l)) {
+      match.pseudo = BYTE;
+    } else if (matchPseudoToken("WORD", l)) {
+      match.pseudo = WORD;
+    } else if (matchPseudoToken("RESB", l)) {
+      match.pseudo = RESB;
+    } else if (matchPseudoToken("RESW", l)) {
+      match.pseudo = RESW;
+    } else if (matchPseudoToken("BASE", l)) {
+      match.pseudo = BASE;
+    } else if (matchPseudoToken("LTORG", l)) {
+      match.pseudo = LTORG;
+    }
+  }
+
+  return false;
+}
+
 bool Parser::matchFormat3(const int r, int &l) {
   l = r;
   // match opcode is fmt3
@@ -169,18 +211,11 @@ bool Parser::matchInstruction(const int r, int &l) {
 
   // instruction
   // format 1
-  // i
 
   // format 2
 
   // format 3
   // format 4
-
-  // pseudo
-
-  // BYTE X'F1'
-  // BYTE C'EOF'
-  // WORD X'FFFFFF'
 }
 
 bool Parser::matchSymbol(int i) {
@@ -199,6 +234,12 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
   // has comment or no comment at lest
   // has symbol
   // no symbol
+
+  // pseudo
+
+  // BYTE X'F1'
+  // BYTE C'EOF'
+  // WORD X'FFFFFF'
 }
 
 bool Parser::matchIntegerDec(int r) {

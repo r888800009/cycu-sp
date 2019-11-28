@@ -91,6 +91,7 @@ class Parser {
   bool matchFormat3(const int r, int &l);
   bool matchFormat4(const int r, int &l);
   bool matchPseudo(const int r, int &l);
+  bool matchPseudoToken(const string &pseudo, int i);
   bool matchInstruction(const int r, int &l);
   bool matchString(const int r, int &l);
   // note: matchInteger would not check integer range
