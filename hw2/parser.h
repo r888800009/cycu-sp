@@ -45,7 +45,7 @@ class Parser {
   };
 
   struct MatchData {
-    TokenData symbol;
+    TokenData preSymbol;
     struct StringData {
       TokenData value;
       unsigned int integer;
@@ -70,6 +70,7 @@ class Parser {
 
   } match;
 
+  TokenData tmpSymbol;
   Parser(Lexicaler *lexer, OPTab *optab);
 
   void setTokenString(vector<TokenData> *tokenString);
@@ -79,6 +80,7 @@ class Parser {
   bool matchOP(const string &mnemonic, int i);
   bool matchOP(int i);
   bool matchSymbol(int i);
+  bool matchPrefixSymbol(int i);
   int matchRegister(int i);
   int matchN(int i);
   bool matchMemory(const int r);
@@ -92,6 +94,8 @@ class Parser {
   bool matchFormat4(const int r, int &l);
   bool matchPseudo(const int r, int &l);
   bool matchPseudoToken(const string &pseudo, int i);
+  bool matchConst(const int r, int &l, const string &pseudo, const int max,
+                  Pseudo setPesudo);
   bool matchInstruction(const int r, int &l);
   bool matchString(const int r, int &l);
   // note: matchInteger would not check integer range
@@ -99,7 +103,7 @@ class Parser {
   bool matchIntegerHex(const int r, int &l);
   bool matchIntegerDec(int i);
 
-  int matchSyntax(vector<TokenData>);
+  int matchSyntax(vector<TokenData> &);
 
   void dataClear();
   void test();

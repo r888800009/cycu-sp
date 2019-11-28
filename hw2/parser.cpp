@@ -18,7 +18,8 @@ void Parser::setTokenString(vector<TokenData> *tokenString) {
 }
 
 void Parser::debug() {
-  printTokenValue(match.symbol);
+  printTokenValue(match.preSymbol);
+  printTokenValue(tmpSymbol);
   cout << endl << "token string size:" << tokenString->size() << endl;
   cout << match.opcode << ", " << match.format << endl;
 
@@ -85,7 +86,7 @@ bool Parser::matchFormat2(const int r, int &l) {
 }
 
 void Parser::dataClear() {
-  match.symbol = {-1, -1};
+  match.preSymbol = {-1, -1};
   match.opcode = -1;
   match.format = -1;
   match.op1 = -1;
@@ -109,6 +110,26 @@ bool Parser::matchPseudoToken(const string &pseudo, int i) {
   return isTokenEqual(tokenString->at(i), lexer->pseudoExtraTable.get(pseudo));
 }
 
+bool Parser::matchConst(const int r, int &l, const string &pseudo,
+                        const int max, Pseudo setPesudo) {
+  if (!matchPseudoToken(pseudo, r)) return false;
+
+  if (matchIntegerHex(l = r + 1, l) || matchString(l = r + 1, l))
+    ;
+  else if (matchIntegerDec(l = r + 1))
+    l++;
+  else
+    return false;
+
+  if (match.stringData.type != MatchData::StringData::string_data &&
+      match.stringData.integer > max)
+    return false;
+
+  match.pseudo = setPesudo;
+
+  return true;
+}
+
 bool Parser::matchPseudo(const int r, int &l) {
   l = r;
   if (l >= tokenString->size()) return false;
@@ -118,7 +139,7 @@ bool Parser::matchPseudo(const int r, int &l) {
 
   } else {
     // symbol
-    if (matchSymbol(l)) l++;
+    if (matchPrefixSymbol(l)) l++;
     int baseR = l;
 
     if (matchPseudoToken("START", baseR) && matchMemory(baseR + 1)) {
@@ -126,20 +147,43 @@ bool Parser::matchPseudo(const int r, int &l) {
       match.startMatch = match.memory;
       l = baseR + 2;
       return true;
-    } else if (matchPseudoToken("END", l)) {
+
+    } else if (matchPseudoToken("END", baseR)) {
+      l++;
       match.pseudo = END;
-    } else if (matchPseudoToken("BYTE", l)) {
-      match.pseudo = BYTE;
-    } else if (matchPseudoToken("WORD", l)) {
-      match.pseudo = WORD;
-    } else if (matchPseudoToken("RESB", l)) {
+      if (matchSymbol(baseR + 1)) {
+        match.memory = tmpSymbol;
+        l++;
+      }
+
+      return true;
+
+    } else if (matchConst(baseR, l, "BYTE", 0xff, BYTE) ||
+               matchConst(baseR, l, "WORD", 0xffffff, WORD)) {
+      return true;
+
+    } else if (matchPseudoToken("RESB", baseR) && matchIntegerDec(baseR + 1)) {
       match.pseudo = RESB;
-    } else if (matchPseudoToken("RESW", l)) {
+      match.resMatch = match.stringData.value;
+      l = baseR + 2;
+      return true;
+
+    } else if (matchPseudoToken("RESW", baseR) && matchIntegerDec(baseR + 1)) {
       match.pseudo = RESW;
-    } else if (matchPseudoToken("BASE", l)) {
+      match.resMatch = match.stringData.value;
+      l = baseR + 2;
+      return true;
+
+    } else if (matchPseudoToken("BASE", baseR) && matchMemory(baseR + 1)) {
       match.pseudo = BASE;
-    } else if (matchPseudoToken("LTORG", l)) {
+      match.baseMatch = match.memory;
+      l = baseR + 2;
+      return true;
+
+    } else if (matchPseudoToken("LTORG", baseR)) {
       match.pseudo = LTORG;
+      l = baseR + 1;
+      return true;
     }
   }
 
@@ -207,15 +251,21 @@ bool Parser::matchFormat4(const int r, int &l) {
 }
 
 bool Parser::matchInstruction(const int r, int &l) {
-  int base = r;
+  if (matchFormat1(r, l)) return true;
+  if (matchFormat2(r, l)) return true;
+  if (matchFormat3(r, l)) return true;
+  if (matchFormat4(r, l)) return true;
 
-  // instruction
-  // format 1
+  return false;
+}
 
-  // format 2
+bool Parser::matchPrefixSymbol(int i) {
+  if (matchSymbol(i)) {
+    match.preSymbol = tmpSymbol;
+    return true;
+  }
 
-  // format 3
-  // format 4
+  return false;
 }
 
 bool Parser::matchSymbol(int i) {
@@ -223,16 +273,20 @@ bool Parser::matchSymbol(int i) {
   TokenData data = tokenString->at(i);
   if (!lexer->symbolTable.exist(data)) return false;
 
-  match.symbol = data;
+  tmpSymbol = data;
   return true;
 }
 
-int Parser::matchSyntax(vector<TokenData> tokenString) {
+int Parser::matchSyntax(vector<TokenData> &tokenString) {
   dataClear();
-  // define grammar
+  int base = 0;
+
+  setTokenString(&tokenString);
 
   // has comment or no comment at lest
+
   // has symbol
+  // if (matchSymbol);
   // no symbol
 
   // pseudo
@@ -243,11 +297,10 @@ int Parser::matchSyntax(vector<TokenData> tokenString) {
 }
 
 bool Parser::matchIntegerDec(int r) {
-  int decSize = 1;
   TokenData data;
   string num;
   try {
-    if (r + decSize - 1 < tokenString->size() &&
+    if (r < tokenString->size() &&
         lexer->integerTable.exist(data = tokenString->at(r))) {
       // check format
       num = lexer->integerTable.get(data);

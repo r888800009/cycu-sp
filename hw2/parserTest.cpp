@@ -642,7 +642,7 @@ void Parser::test() {
   tokens = {{SYMBOL_TABLE, ('t' + 'e' + 's' + 't') % 100}};
   setTokenString(&tokens);
   assert(matchSymbol(0));
-  assert(isTokenEqual(tokens[0], this->match.symbol));
+  assert(isTokenEqual(tokens[0], this->tmpSymbol));
 
   testOp();
   testReg();
@@ -701,7 +701,8 @@ void Parser::testEQU() {
   tokens = lexer->lexingLine("SYMBOL1 EQU SSSSymbol");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 3);
-  assert(lexer->symbolTable.get(match.symbol) == "SYMBOL1");
+  assert(lexer->symbolTable.get(match.preSymbol) == "SYMBOL1");
+  assert(lexer->symbolTable.get(match.equMatch[0]) == "SSSSymbol");
   assert(match.equMatch.size() == 1);
   lexer->reset();
 
@@ -764,12 +765,16 @@ void Parser::testEND() {
   tokens = lexer->lexingLine("symbol END FIRST");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) == true && i == 3);
+  assert(lexer->symbolTable.get(match.preSymbol) == "symbol");
+  assert(lexer->symbolTable.get(match.memory) == "FIRST");
   lexer->reset();
 
   tokens = lexer->lexingLine("END");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) == true && i == 1);
   lexer->reset();
+
+  // Do not test get symbol for now
 }
 
 void Parser::testBYTE() {
@@ -877,7 +882,7 @@ void Parser::testRESB() {
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 2);
   assert(match.pseudo == RESB);
-  assert(lexer->symbolTable.get(match.resMatch) == "1");
+  assert(lexer->integerTable.get(match.resMatch) == "1");
   lexer->reset();
 
   tokens = lexer->lexingLine("RESB symbol");
@@ -899,7 +904,7 @@ void Parser::testRESW() {
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 2);
   assert(match.pseudo == RESW);
-  assert(lexer->symbolTable.get(match.resMatch) == "1");
+  assert(lexer->integerTable.get(match.resMatch) == "1");
   lexer->reset();
 
   tokens = lexer->lexingLine("RESW symbol");
