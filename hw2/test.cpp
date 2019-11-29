@@ -219,8 +219,8 @@ void testSymtab() {
 
   // duplicate define
   try {
-    symtab.define("aaa", 0x00, SymbolTable::absolute_address);
-    symtab.define("aaa", 0x00, SymbolTable::absolute_address);
+    symtab.define(22, 0x00, SymbolTable::absolute_address);
+    symtab.define(22, 0x00, SymbolTable::absolute_address);
     assert(false);
   } catch (Error::ASMError e) {
     assert(e == Error::duplicate_define);
@@ -228,14 +228,14 @@ void testSymtab() {
 
   // undefine symbol
   try {
-    symtab.getSymbolAddress("undefine");
+    symtab.getSymbolAddress(99);
     assert(false);
   } catch (Error::ASMError e) {
     assert(e == Error::undefine_symbol);
   }
 
   try {
-    symtab.getSymbolType("undefine");
+    symtab.getSymbolType(99);
     assert(false);
   } catch (Error::ASMError e) {
     assert(e == Error::undefine_symbol);
@@ -243,15 +243,9 @@ void testSymtab() {
 
   // define Symbol
   try {
-    symtab.define("relative_address", 0x01, SymbolTable::relative_address);
-    assert(symtab.getSymbolType("relative_address") ==
-           SymbolTable::relative_address);
-    assert(symtab.getSymbolAddress("relative_address") == 0x01);
-
-    symtab.define("absolute_address", 0x02, SymbolTable::absolute_address);
-    assert(symtab.getSymbolType("absolute_address") ==
-           SymbolTable::absolute_address);
-    assert(symtab.getSymbolAddress("absolute_address") == 0x02);
+    symtab.define(1, 0x01, SymbolTable::absolute_address);
+    assert(symtab.getSymbolType(1) == SymbolTable::absolute_address);
+    assert(symtab.getSymbolAddress(1) == 0x01);
   } catch (Error::ASMError e) {
     assert(false);
   }

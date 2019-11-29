@@ -4,29 +4,28 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
 
-#include <unordered_map>
-
 using namespace std;
 
 class SymbolTable {
  public:
-  enum Type { absolute_address, relative_address };
+  enum Type { absolute_address, symbol_reference, null_symbol };
 
  private:
   typedef struct Data {
-    int address;
-    Type addressType;
+    int value = -1;
+    Type addressType = null_symbol;
   } Data;
 
   // <string symbol name, Data>
-  unordered_map<string, Data> table;
+  Data table[100] = {0};
 
  public:
   SymbolTable();
 
-  void define(const string&, int, Type);
-  int getSymbolAddress(const string&);
-  Type getSymbolType(const string&);
+  void define(int value, int, Type);
+  int getSymbolAddress(int value);
+  void checkUndefine();
+  Type getSymbolType(int value);
 };
 
 #endif

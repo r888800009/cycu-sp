@@ -3,34 +3,29 @@
 
 #include "symtab.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "error.h"
 
 using namespace Error;
 
-SymbolTable::SymbolTable() {}
+SymbolTable::SymbolTable() { fill_n(table, 100, Data{-1, null_symbol}); }
 
-void SymbolTable::define(const string& symbol, int address, Type type) {
-  unordered_map<string, Data>::iterator it = table.find(symbol);
+void SymbolTable::define(int value, int address, Type type) {
+  if (table[value].value != -1) throw duplicate_define;
 
-  if (it != table.end()) throw duplicate_define;
-
-  table[symbol] = Data{address, type};
+  table[value] = {address, type};
 }
 
-int SymbolTable::getSymbolAddress(const string& symbol) {
-  unordered_map<string, Data>::iterator it = table.find(symbol);
-
-  if (it != table.end()) return it->second.address;
+int SymbolTable::getSymbolAddress(int value) {
+  if (table[value].value != -1) return table[value].value;
 
   throw undefine_symbol;
 }
 
-SymbolTable::Type SymbolTable::getSymbolType(const string& symbol) {
-  unordered_map<string, Data>::iterator it = table.find(symbol);
-
-  if (it != table.end()) return it->second.addressType;
+SymbolTable::Type SymbolTable::getSymbolType(int value) {
+  if (table[value].value != -1) return table[value].addressType;
 
   throw undefine_symbol;
 }
