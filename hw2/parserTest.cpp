@@ -1146,6 +1146,12 @@ void Parser::testFmt3() {
   setTokenString(&tokens);
   assert(matchFormat3(i = 0, i) && i == 5);
   lexer->reset();
+
+  // rsub
+  tokens = lexer->lexingLine("RSUB");
+  setTokenString(&tokens);
+  assert(matchFormat3(i = 0, i) && i == 1);
+  lexer->reset();
 }
 
 void Parser::testFmt4() {
