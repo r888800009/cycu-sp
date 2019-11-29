@@ -99,7 +99,7 @@ void Parser::dataClear() {
   match.literal = {-1, -1};
   match.addrType = AddressingType::null_addressing;
   match.pseudo = NOT_PSEUDO;
-  match.startMatch = {-1, -1};
+  match.startMatch = 0;
   match.baseMatch = {-1, -1};
   match.resMatch = {-1, -1};
   match.equMatch.clear();
@@ -142,9 +142,9 @@ bool Parser::matchPseudo(const int r, int &l) {
     if (matchPrefixSymbol(l)) l++;
     int baseR = l;
 
-    if (matchPseudoToken("START", baseR) && matchMemory(baseR + 1)) {
+    if (matchPseudoToken("START", baseR) && matchIntegerHex(baseR + 1)) {
       match.pseudo = START;
-      match.startMatch = match.memory;
+      match.startMatch = match.stringData.integer;
       l = baseR + 2;
       return true;
 
@@ -310,6 +310,40 @@ bool Parser::matchIntegerDec(int r) {
       match.stringData.value = data;
       match.stringData.type = MatchData::StringData::integer_dec;
       return match.stringData.integer <= 0xffffff;
+    }
+
+    // check match and range
+  } catch (invalid_argument) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  } catch (out_of_range) {
+#ifdef DEBUGING
+    cout << "do what?" << endl;
+    cout << lexer->integerTable.get(data) << endl;
+#endif
+    return false;
+  }
+
+  return false;
+}
+
+bool Parser::matchIntegerHex(int i) {
+  TokenData data;
+  string num;
+  try {
+    if (i < tokenString->size()) {
+      data = tokenString->at(i);
+      // check format
+      num = lexer->getData(data);
+      if (!regex_match(num, regex("[0-9a-fA-F]+"))) return false;
+
+      match.stringData.integer = stoi(num, nullptr, 16);
+      match.stringData.value = data;
+      match.stringData.type = MatchData::StringData::integer_hex;
+      return match.stringData.integer <= 0xffff;
     }
 
     // check match and range

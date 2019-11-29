@@ -60,7 +60,7 @@ class Parser {
     Pseudo pseudo;
 
     // start
-    TokenData startMatch;
+    unsigned int startMatch;
     TokenData baseMatch;
     TokenData resMatch;
     vector<TokenData> equMatch;
@@ -101,6 +101,7 @@ class Parser {
   // note: matchInteger would not check integer range
   // only check the size is less then 3 bytes
   bool matchIntegerHex(const int r, int &l);
+  bool matchIntegerHex(int i);
   bool matchIntegerDec(int i);
 
   int matchSyntax(vector<TokenData> &);

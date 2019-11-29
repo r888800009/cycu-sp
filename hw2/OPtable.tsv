@@ -2,7 +2,7 @@ add	18	3	0
 addf	58	3	1
 addr	90	2	1
 and	40	3	0
-clear	B4	2	1
+clear	b4	2	1
 comp	28	3	0
 compf	88	3	1
 compr	a0	2	1
@@ -32,8 +32,8 @@ mulr	98	2	1
 norm	c8	1	1
 or	44	3	0
 rd	d8	3	0
-rmo	ac	3	1
-rsub	4c	2	0
+rmo	ac	2	1
+rsub	4c	3	0
 shiftl	a4	2	1
 shiftr	a8	2	1
 sio	f0	1	1

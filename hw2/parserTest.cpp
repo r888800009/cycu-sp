@@ -152,6 +152,7 @@ void Parser::testInteger() {
   setTokenString(&tokens);
   assert(matchIntegerHex(i = 0, i) == false);
   assert(matchIntegerDec(i = 0) == false);
+  assert(matchIntegerHex(i = 0) == false);
 
   // hex
   dataClear();
@@ -333,6 +334,35 @@ void Parser::testInteger() {
   tokens = lexer->lexingLine("'123'");
   setTokenString(&tokens);
   assert(matchIntegerHex(i = 0, i) == false);
+  lexer->reset();
+
+  // hex without delimiter
+  dataClear();
+  tokens = lexer->lexingLine("0");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(0));
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  assert(match.stringData.integer == 0x0);
+  lexer->reset();
+
+  dataClear();
+  tokens = lexer->lexingLine("ffff");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(0));
+  assert(match.stringData.type == MatchData::StringData::integer_hex);
+  assert(match.stringData.integer == 0xffff);
+  lexer->reset();
+
+  dataClear();
+  tokens = lexer->lexingLine("fffff");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(0) != true);
+  lexer->reset();
+
+  dataClear();
+  tokens = lexer->lexingLine(" g g ");
+  setTokenString(&tokens);
+  assert(matchIntegerHex(0) != true);
   lexer->reset();
 }
 
@@ -669,18 +699,24 @@ void Parser::testSTART() {
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 2);
   assert(match.pseudo == START);
-  assert(lexer->integerTable.get(match.startMatch) == "1");
+  assert(match.startMatch == 1);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("START 1000");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(match.startMatch == 0x1000);
   lexer->reset();
 
   tokens = lexer->lexingLine("START symbol");
   setTokenString(&tokens);
-  assert(matchPseudo(i = 0, i) && i == 2);
+  assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
 
   tokens = lexer->lexingLine("symbol START 1");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 3);
-  assert(lexer->integerTable.get(match.startMatch) == "1");
+  assert(match.startMatch == 1);
   lexer->reset();
 
   tokens = lexer->lexingLine("symbol START x'1'");
