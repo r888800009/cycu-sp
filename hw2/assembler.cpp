@@ -11,6 +11,19 @@
 
 using namespace std;
 
+bool inRange(int i) {
+  return (0 <= i && i <= 0x7ff) || (i < 0 && (i & ~0xfff) == 0xfffff000);
+}
+
+bool testInRange() {
+  assert(inRange(-0xfff - 2) == false);
+  assert(inRange(0xfff) == false);
+  assert(inRange(-0xfff - 1) == true);
+
+  assert(inRange(0x0) == true);
+  assert(inRange(0x7ff) == true);
+}
+
 Assembler::Assembler() : parser(&lexer, &optab) {
   // lexer = Lexicaler(); Maybe not necessary?
   optab.loadOPTab("OPtable.tsv");  // OPTAB
@@ -138,6 +151,8 @@ void Assembler::test() {
   printLine(5, 1000, "COPY  START 100", "");
   printLine(10, 1000, "FIRST STL RETADR", "141033");
   cout << printStream.str();
+
+  testInRange();
 }
 
 void Assembler::setXE(bool sicxe) {
