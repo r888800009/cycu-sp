@@ -11,6 +11,7 @@
 #include "lexicaler.h"
 #include "optab.h"
 #include "parser.h"
+#include "symtab.h"
 
 using namespace std;
 
@@ -18,17 +19,34 @@ class Assembler {
   Lexicaler lexer;
   Parser parser;
   OPTab optab;
+  SymbolTable symtab;
+
+  typedef struct Literal {
+    TokenData literal;
+    int address;
+  } Literal;
+
+  vector<Literal> littab;
+
+  bool enableBase = false, sicxe = false;
   stringstream printStream;
 
-  string filename;
+  fstream fin;
+  string filename, saveName;
+  int locationCounter = 0, curLocationCounter;
+  int baseCounter = 0;
 
-  void pass1();
-  void pass2();
+  void doPseudo(int pass);
+  void genLiteral(int pass);
+  string genInstruction(int pass);
+  void pass(int pass);
+  void matchPreSymbol(const string &line);
 
  private:
+
   const int OFFSET_LINE = 6;
   const int OFFSET_LOCATION = 6;
-  const int OFFSET_STATEMENT = 30;
+  const int OFFSET_STATEMENT = 60;
   const int OFFSET_CODE = 10;
 
   string genData(int data);
@@ -37,6 +55,7 @@ class Assembler {
   string genFormat3(int opcode, Flag flag, int disp);
   string genFormat4(int opcode, Flag flag, int address);
 
+  Flag genAddressingTypeFlag();
   int flagToBinary(Flag flag);
 
   void printHeader();
@@ -45,8 +64,9 @@ class Assembler {
 
  public:
   Assembler();
+  void loadFile(const string &);
   void assembling();
-  void setFile(const string &filename);
+  void setXE(bool sicxe);
   void test();
 };
 

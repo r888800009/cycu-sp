@@ -12,6 +12,8 @@ using namespace Error;
 
 SymbolTable::SymbolTable() { fill_n(table, 100, Data{-1, null_symbol}); }
 
+void checkUndefine();
+
 void SymbolTable::define(int value, int address, Type type) {
   if (table[value].value != -1) throw duplicate_define;
 

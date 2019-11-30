@@ -134,9 +134,22 @@ bool Parser::matchPseudo(const int r, int &l) {
   l = r;
   if (l >= tokenString->size()) return false;
 
-  if (matchSymbol(l) && matchPseudoToken("EQU", l + 1)) {
-    // EQU
+  if (matchPrefixSymbol(r) && matchPseudoToken("EQU", r + 1) &&
+      r + 3 - 1 < tokenString->size()) {
+    match.equMatch.clear();
+    match.pseudo = EQU;
 
+    l = r + 3 - 1;
+    while (l < tokenString->size()) {
+      if (matchMemory(l) || matchDelimiter('+', l) || matchDelimiter('-', l) ||
+          matchDelimiter('*', l) || matchDelimiter('/', l)) {
+        match.equMatch.push_back(tokenString->at(l));
+      } else
+        break;
+      l++;
+    }
+
+    return true;
   } else {
     // symbol
     if (matchPrefixSymbol(l)) l++;
@@ -279,23 +292,35 @@ bool Parser::matchSymbol(int i) {
   return true;
 }
 
-int Parser::matchSyntax(vector<TokenData> &tokenString) {
+bool Parser::isEmpty() { return emptyLine; }
+
+int Parser::matchSyntax(vector<TokenData> tokenString) {
   dataClear();
-  int base = 0;
+  int base = 0, l = 0;
+  // has comment or no comment at lest
+  if (tokenString.size() > 0 &&
+      lexer->delimiterTable.get(tokenString.back()) == ".")
+    tokenString.pop_back();
 
   setTokenString(&tokenString);
 
-  // has comment or no comment at lest
+  if (tokenString.size() == 0) {
+    emptyLine = true;
+    return true;
+  } else
+    emptyLine = false;
 
   // has symbol
-  // if (matchSymbol);
+  if (matchPrefixSymbol(base) && matchInstruction(base + 1, l) &&
+      l == tokenString.size())
+    return true;
+
   // no symbol
+  if (matchInstruction(base, l) && l == tokenString.size()) return true;
 
-  // pseudo
+  if (matchPseudo(base, l) && l == tokenString.size()) return true;
 
-  // BYTE X'F1'
-  // BYTE C'EOF'
-  // WORD X'FFFFFF'
+  if (tokenString.size() != 0) return false;
 }
 
 bool Parser::matchIntegerDec(int r) {

@@ -22,6 +22,7 @@ class Parser {
 
   void testBeginAndEnd(vector<TokenData> &tokens, bool result);
   void debug();
+  bool emptyLine;
 
  public:
   enum AddressingType {
@@ -86,6 +87,7 @@ class Parser {
   bool matchMemory(const int r);
   bool getOPData(int format, int i);
   void setXE(bool sicxe);
+  bool isEmpty();
 
   // r; begin, l: end
   bool matchFormat1(const int r, int &l);
@@ -96,6 +98,7 @@ class Parser {
   bool matchPseudoToken(const string &pseudo, int i);
   bool matchConst(const int r, int &l, const string &pseudo, const int max,
                   Pseudo setPesudo);
+  bool matchSIC(const int r, int &l);
   bool matchInstruction(const int r, int &l);
   bool matchString(const int r, int &l);
   // note: matchInteger would not check integer range
@@ -104,7 +107,7 @@ class Parser {
   bool matchIntegerHex(int i);
   bool matchIntegerDec(int i);
 
-  int matchSyntax(vector<TokenData> &);
+  int matchSyntax(vector<TokenData>);
 
   void dataClear();
   void test();

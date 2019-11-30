@@ -563,6 +563,7 @@ void Parser::testMemory() {
   setTokenString(&tokens);
   assert(matchMemory(0));
   assert(isTokenEqual(match.memory, lexer->integerTable.get("1234")));
+  assert(match.stringData.integer == 1234);
   lexer->reset();
 
   // size
@@ -740,9 +741,15 @@ void Parser::testEQU() {
   assert(lexer->symbolTable.get(match.preSymbol) == "SYMBOL1");
   assert(lexer->symbolTable.get(match.equMatch[0]) == "SSSSymbol");
   assert(match.equMatch.size() == 1);
+  assert(match.pseudo == EQU);
   lexer->reset();
 
   tokens = lexer->lexingLine("EQU SSSSymbol");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("EQU");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
@@ -767,6 +774,11 @@ void Parser::testEQUAdv() {
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 5);
   assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU abc+");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
 
   tokens = lexer->lexingLine("symb EQU 1-avvv");
@@ -906,6 +918,7 @@ void Parser::testWORD() {
   tokens = lexer->lexingLine("WORD 213");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 2);
+  cout << i << endl;
   assert(match.stringData.type == MatchData::StringData::integer_dec);
   lexer->reset();
 }
@@ -941,6 +954,7 @@ void Parser::testRESW() {
   assert(matchPseudo(i = 0, i) && i == 2);
   assert(match.pseudo == RESW);
   assert(lexer->integerTable.get(match.resMatch) == "1");
+  assert(match.stringData.integer == 1);
   lexer->reset();
 
   tokens = lexer->lexingLine("RESW symbol");
