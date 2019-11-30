@@ -209,7 +209,10 @@ bool Parser::matchFormat3(const int r, int &l) {
   if (!getOPData(3, l)) return false;
   l++;
 
-  if (matchOP("RSUB", r)) return true;
+  if (matchOP("RSUB", r)) {
+    match.addrType = AddressingType::simple_addressing;
+    return true;
+  }
 
   if (matchMemory(l)) {
     // memory, simple addressing

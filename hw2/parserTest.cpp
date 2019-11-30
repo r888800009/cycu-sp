@@ -1165,6 +1165,7 @@ void Parser::testFmt3() {
   tokens = lexer->lexingLine("RSUB");
   setTokenString(&tokens);
   assert(matchFormat3(i = 0, i) && i == 1);
+  assert(match.addrType == AddressingType::simple_addressing);
   lexer->reset();
 }
 

@@ -356,6 +356,8 @@ string Assembler::genInstruction(int pass) {
           int baseRelocation = disp - baseCounter;
           if (optab.getOPCode("RSUB") == opcode) {
             disp = 0;
+            flag.b = 0;
+            flag.p = 0;
           } else if (parser.match.memory.type == INTEGER_REAL_TABLE &&
                      0 <= disp && disp <= 4095) {
             // disp 0 ~ 4095
