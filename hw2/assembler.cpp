@@ -5,6 +5,7 @@
 #include <cassert>
 #include <iomanip>
 #include <sstream>
+#include <stack>
 
 #include "error.h"
 #include "parser.h"
@@ -171,10 +172,14 @@ void Assembler::printHeader() {
   printStream << endl;
 }
 
+string Assembler::fill(int number, int byte) {
+  stringstream ss;
+  ss << hex << uppercase << setw(byte * 2) << setfill('0') << number;
+  return ss.str();
+}
+
 void Assembler::printLine(int line, int loc, const string &statement,
                           const string &objcode) {
-  stringstream ss;
-  ss << hex << uppercase << setw(4) << setfill('0') << loc;
   string output = " " + statement;
 
   // trim
@@ -182,8 +187,8 @@ void Assembler::printLine(int line, int loc, const string &statement,
   // output.erase(output.find_last_not_of(" ") + 1);
 
   printStream << setw(OFFSET_LINE) << right << line << setw(OFFSET_LOCATION)
-              << right << ss.str() << setw(OFFSET_STATEMENT) << left << output
-              << "|" << setw(OFFSET_CODE) << left << objcode << endl;
+              << right << fill(loc, 2) << setw(OFFSET_STATEMENT) << left
+              << output << setw(OFFSET_CODE) << left << objcode << endl;
 }
 
 void Assembler::loadFile(const string &filename) {
@@ -230,17 +235,53 @@ void Assembler::genLiteral(int pass) {
   cout << "literal not working" << endl;
 }
 
-void Assembler::doPseudo(int pass) {
+string Assembler::doPseudo(int pass) {
   assert(pass == 1 || pass == 2);
   Parser::Pseudo pseudo = parser.match.pseudo;
+  const Parser::MatchData::StringData::Type
+      string_data = Parser::MatchData::StringData::string_data,
+      int_dec = Parser::MatchData::StringData::integer_dec,
+      int_hex = Parser::MatchData::StringData::integer_hex;
+  string result = "";
+  int equAddr;
 
   switch (pseudo) {
     case Parser::Pseudo::START:
+      if (hasSTART == true) printStream << "duplicated START?" << endl;
       curLocationCounter = locationCounter = parser.match.startMatch;
+      hasSTART = true;
+      break;
+    case Parser::Pseudo::END:
+      if (hasEND == true) printStream << "duplicated END?" << endl;
+      hasEND = true;
+      genLiteral(pass);
       break;
     case Parser::Pseudo::BYTE:
+      //      printStream << "MATCH BYTE" << endl;
+      if (parser.match.stringData.type == string_data) {
+        string str = lexer.getData(parser.match.stringData.value);
+        locationCounter += str.size();
+
+        for (char c : str) result += fill(c, 1);
+      } else {
+        locationCounter += 1;
+        result = fill(parser.match.stringData.integer, 1);
+      }
       break;
     case Parser::Pseudo::WORD:
+      //    printStream << "MATCH WORD" << endl;
+      if (parser.match.stringData.type == string_data) {
+        string str = lexer.getData(parser.match.stringData.value);
+        int remainder_space = ((str.size()) % 3 + 3) % 3;
+        locationCounter += str.size() + remainder_space;
+
+        for (char c : str) result += fill(c, 1);
+        for (int i = 0; i < remainder_space; i++) result += fill(0, 1);
+      } else {
+        result = fill(parser.match.stringData.integer, 3);
+        locationCounter += 3;
+      }
+
       break;
     case Parser::Pseudo::RESB:
       locationCounter += parser.match.stringData.integer;
@@ -249,15 +290,122 @@ void Assembler::doPseudo(int pass) {
       locationCounter += parser.match.stringData.integer * 3;
       break;
     case Parser::Pseudo::EQU:
+      equAddr = doEQU(pass);
+      if (pass == 2) printStream << equAddr << endl;
       break;
     case Parser::Pseudo::BASE:
-      break;
-    case Parser::Pseudo::END:
-      genLiteral(pass);
+      enableBase = true;
+      if (pass == 2 && isTokenMemory()) baseCounter = memoryToAddr();
+
       break;
     case Parser::Pseudo::LTORG:
       genLiteral(pass);
       break;
+  }
+  return result;
+}
+
+int Assembler::doEQU(int pass) {
+  vector<TokenData> &expr = parser.match.equMatch;
+  int matchSize = expr.size();
+  int preSymbolValue = parser.match.preSymbol.value;
+  if (preSymbolValue == -1) throw Error::syntax_error;
+
+  if (matchSize == 1) {
+    try {
+      TokenData token = expr[0];
+
+      if (parser.match.memory.type == SYMBOL_TABLE) {
+        // is symbol
+        symtab.define(preSymbolValue, symtab.getSymbolAddress(token.value),
+                      SymbolTable::absolute_address);
+      } else if (pass == 2) {
+        try {
+          symtab.getSymbolAddress(preSymbolValue);
+        } catch (Error::ASMError e) {
+          // is symbol but cant solve
+          symtab.define(preSymbolValue,
+                        symtab.getSymbolAddress(parser.match.memory.value),
+                        SymbolTable::absolute_address);
+        }
+      } else if (pass == 1 && parser.match.memory.type == INTEGER_REAL_TABLE) {
+        // is number
+        symtab.define(preSymbolValue, parser.match.stringData.integer,
+                      SymbolTable::absolute_address);
+      } else if (pass == 1 &&
+                 isTokenEqual(expr.at(0), lexer.delimiterTable.get('*'))) {
+        // cur
+        symtab.define(preSymbolValue, curLocationCounter,
+                      SymbolTable::absolute_address);
+      }
+
+    } catch (Error::ASMError e) {
+      if (e == Error::undefine_symbol && pass == 1) {
+        // is symbol but cant solve
+      } else {
+        printStream << "one token error " << pass << endl;
+        throw e;
+      }
+    }
+  } else if (matchSize > 1) {
+    try {
+      // expr
+      stack<int> result;
+
+      for (int i = 0; i < matchSize; i++) {
+        TokenData token = expr[i];
+        if (token.type == SYMBOL_TABLE) {
+          // symbol
+          result.push(symtab.getSymbolAddress(token.value));
+        } else if (token.type == DELIMITER_TABLE) {
+          const int add = 2, sub = 3, mul = 4, div = 5;
+          int b = result.top();
+          result.pop();
+          int a = result.top();
+          result.pop();
+          int c;
+          // operator
+          switch (token.value) {
+            case add:  // +: (4,2)
+              c = a + b;
+              break;
+            case sub:  // -: (4,3)
+              c = a - b;
+              break;
+            case mul:  // *: (4,4)
+              c = a * b;
+              break;
+            case div:  // /: (4,5)
+              c = a / b;
+              break;
+          }
+
+          result.push(c);
+        }
+      }
+
+      symtab.define(preSymbolValue, result.top(),
+                    SymbolTable::absolute_address);
+
+    } catch (Error::ASMError e) {
+      if (e == Error::undefine_symbol && pass == 1) {
+        // is symbol but cant solve
+      } else {
+        printStream << "expr error " << pass << endl;
+        throw e;
+      }
+    }
+  }
+
+  try {
+    return symtab.getSymbolAddress(preSymbolValue);
+  } catch (Error::ASMError e) {
+    if (e == Error::undefine_symbol && pass == 1)
+      return -1;
+    else {
+      printStream << "cant get pre symbol address" << endl;
+      throw e;
+    }
   }
 }
 
@@ -289,6 +437,24 @@ Flag Assembler::genAddressingTypeFlag() {
   }
 
   return flag;
+}
+
+bool Assembler::isTokenMemory() {
+  if (parser.match.memory.type == SYMBOL_TABLE)
+    return true;
+  else if (parser.match.memory.type == INTEGER_REAL_TABLE)
+    return true;
+  else
+    return false;
+}
+
+int Assembler::memoryToAddr() {
+  if (parser.match.memory.type == SYMBOL_TABLE)
+    return symtab.getSymbolAddress(parser.match.memory.value);
+  else if (parser.match.memory.type == INTEGER_REAL_TABLE)
+    return parser.match.stringData.integer;
+  else
+    return -1;
 }
 
 string Assembler::genInstruction(int pass) {
@@ -329,12 +495,10 @@ string Assembler::genInstruction(int pass) {
       // match memory
       int disp = 0;
       TokenData literalToken = parser.match.literal;
-      if (parser.match.memory.type == SYMBOL_TABLE) {
-        disp = symtab.getSymbolAddress(parser.match.memory.value);
-      } else if (parser.match.memory.type == INTEGER_REAL_TABLE) {
-        disp = parser.match.stringData.integer;
-      } else if (literalToken.type == STRING_TABLE ||
-                 literalToken.type == INTEGER_REAL_TABLE) {
+      if (isTokenMemory())
+        disp = memoryToAddr();
+      else if (literalToken.type == STRING_TABLE ||
+               literalToken.type == INTEGER_REAL_TABLE) {
         auto it = find_if(littab.begin(), littab.end(),
                           [literalToken](const Literal &l) {
                             return isTokenEqual(l.literal, literalToken);
@@ -376,8 +540,12 @@ string Assembler::genInstruction(int pass) {
 
             flag.b = 1;
             flag.p = 0;
-          } else
+          } else {
+            printStream << "out of range: " << disp << endl;
+            printStream << "out of range: " << pcRelocation << endl;
+            printStream << "out of range: " << baseRelocation << endl;
             throw Error::syntax_error;
+          }
         } else {
           // sic
           // check range?
@@ -410,23 +578,19 @@ string Assembler::genInstruction(int pass) {
 }
 
 void Assembler::matchPreSymbol(const string &line) {
-  try {
-    if (parser.match.preSymbol.value != -1) {
-      symtab.define(parser.match.preSymbol.value, locationCounter,
-                    SymbolTable::absolute_address);
-      // printStream << "define!" << endl;
-    }
-
-  } catch (Error::ASMError e) {
-    if (e == Error::duplicate_define) {
-      printStream << "duplicate_define: " << line << endl;
-    }
+  if (parser.match.preSymbol.value != -1 &&
+      parser.match.pseudo != Parser::EQU) {
+    symtab.define(parser.match.preSymbol.value, locationCounter,
+                  SymbolTable::absolute_address);
+    // printStream << "define!" << endl;
   }
 }
 
 void Assembler::pass(int pass) {
   assert(pass == 1 || pass == 2);
   locationCounter = 0;
+  hasEND = false;
+  hasSTART = false;
 
   if (pass == 1)
     cout << "pass1" << endl;
@@ -436,6 +600,8 @@ void Assembler::pass(int pass) {
     lexer.reset();
     fin.clear();
     fin.seekg(0, ios::beg);
+
+    printHeader();
   }
 
   // loading file
@@ -450,7 +616,6 @@ void Assembler::pass(int pass) {
 
   cout << "start write: \"" << saveName << '"' << endl;
 
-  printHeader();
   while (getline(fin, line)) {
     curLocationCounter = locationCounter;
     try {
@@ -459,25 +624,31 @@ void Assembler::pass(int pass) {
 
       if (parser.matchSyntax(lexer.lexingLine(line))) {
         if (parser.isEmpty()) {
-          printStream << setw(OFFSET_LINE + OFFSET_LOCATION) << " " << line
-                      << endl;
+          if (pass == 2)
+            printStream << setw(OFFSET_LINE + OFFSET_LOCATION) << " " << line
+                        << endl;
+
           continue;
         }
 
         // pass1 handler first symbol and dupicate
+        // but not handle EQU symbol
         if (pass == 1) matchPreSymbol(line);
 
         if (parser.match.pseudo == Parser::Pseudo::NOT_PSEUDO) {
           string objcode = genInstruction(pass);
-          printLine(0, curLocationCounter, line, objcode);
+          if (pass == 2) printLine(0, curLocationCounter, line, objcode);
         } else {
-          printLine(0, curLocationCounter, line, "");
-          doPseudo(2);
+          string objcode = doPseudo(pass);
+          if (pass == 2) printLine(0, curLocationCounter, line, objcode);
         }
+
       } else
         throw Error::syntax_error;
 
     } catch (Error::ASMError e) {
+      if (e == Error::duplicate_define && pass == 1)
+        printStream << "ERROR: duplicate_define: " << line << endl;
       if (e == Error::undefine_symbol && pass == 2) {
         // undefine only work at pass2
         printStream << "ERROR: undefine_error" << endl;
@@ -486,6 +657,10 @@ void Assembler::pass(int pass) {
         printStream << "ERROR: syntax_error: " << line << endl;
     }
   }
+
+  if (hasSTART == false) printStream << "unfounded START" << endl;
+
+  if (hasEND == false) printStream << "unfounded END" << endl;
 
   cout << printStream.str();
   fout << printStream.str();

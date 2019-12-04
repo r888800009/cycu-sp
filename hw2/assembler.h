@@ -29,6 +29,7 @@ class Assembler {
   vector<Literal> littab;
 
   bool enableBase = false, sicxe = false;
+  bool hasSTART = false, hasEND = false;
   stringstream printStream;
 
   fstream fin;
@@ -36,13 +37,19 @@ class Assembler {
   int locationCounter = 0, curLocationCounter;
   int baseCounter = 0;
 
-  void doPseudo(int pass);
+  string doPseudo(int pass);
   void genLiteral(int pass);
   string genInstruction(int pass);
   void pass(int pass);
   void matchPreSymbol(const string &line);
+  string fill(int number, int byte);
+
+  int memoryToAddr();
+  bool isTokenMemory();
+  int doEQU(int pass);
 
  private:
+  vector<vector<TokenData>> lineBuffer;
 
   const int OFFSET_LINE = 6;
   const int OFFSET_LOCATION = 6;
