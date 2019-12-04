@@ -1,55 +1,55 @@
 Line    Loc Source Statement                                            Object code
 
             
-     0  1000 COPY	START	1000                                                      
-     0  1000 FIRST	STL	RETADR                                           141033    
-     0  1003 CLOOP	JSUB	RDREC                                           482039    
-     0  1006 	LDA	LENGTH                                                001036    
-     0  1009 	COMP	ZERO                                                 281030    
-     0  100C 	JEQ	ENDFIL                                                301015    
-     0  100F 	JSUB	WRREC                                                482061    
-     0  1012 	J	CLOOP                                                   3C1003    
-     0  1015 ENDFIL	LDA	EOF                                             00102A    
-     0  1018 	STA	BUFFER                                                0C1039    
-     0  101B 	LDA	THREE                                                 00102D    
-     0  101E 	STA	LENGTH                                                0C1036    
-     0  1021 	JSUB	WRREC                                                482061    
-     0  1024 	LDL	RETADR                                                081033    
-     0  1027 	RSUB                                                      4C0000    
-     0  102A EOF	BYTE	C'EOF'                                            454F46    
-     0  102D THREE	WORD	3                                               000003    
-     0  1030 ZERO	WORD	0                                                000000    
-     0  1033 RETADR	RESW	1                                                        
-     0  1036 LENGTH	RESW	1                                                        
-     0  1039 BUFFER	RESB	4096                                                     
+     2  1000 COPY	START	1000                                                      
+     3  1000 FIRST	STL	RETADR                                           141033    
+     4  1003 CLOOP	JSUB	RDREC                                           482039    
+     5  1006 	LDA	LENGTH                                                001036    
+     6  1009 	COMP	ZERO                                                 281030    
+     7  100C 	JEQ	ENDFIL                                                301015    
+     8  100F 	JSUB	WRREC                                                482061    
+     9  1012 	J	CLOOP                                                   3C1003    
+    10  1015 ENDFIL	LDA	EOF                                             00102A    
+    11  1018 	STA	BUFFER                                                0C1039    
+    12  101B 	LDA	THREE                                                 00102D    
+    13  101E 	STA	LENGTH                                                0C1036    
+    14  1021 	JSUB	WRREC                                                482061    
+    15  1024 	LDL	RETADR                                                081033    
+    16  1027 	RSUB                                                      4C0000    
+    17  102A EOF	BYTE	C'EOF'                                            454F46    
+    18  102D THREE	WORD	3                                               000003    
+    19  1030 ZERO	WORD	0                                                000000    
+    20  1033 RETADR	RESW	1                                                        
+    21  1036 LENGTH	RESW	1                                                        
+    22  1039 BUFFER	RESB	4096                                                     
             .
             .	SUBROUTINE TO READ RECORD INTO BUFFER
             .
-     0  2039 RDREC	LDX	ZERO                                             041030    
-     0  203C 	LDA	ZERO                                                  001030    
-     0  203F RLOOP	TD	INPUT                                             E0205D    
-     0  2042 	JEQ	RLOOP                                                 30203F    
-     0  2045 	RD	INPUT                                                  D8205D    
-     0  2048 	COMP	ZERO                                                 281030    
-     0  204B 	JEQ	EXIT                                                  302057    
-     0  204E 	STCH	BUFFER,X                                             549039    
-     0  2051 	TIX	MAXLEN                                                2C205E    
-     0  2054 	JLT	RLOOP                                                 38203F    
-     0  2057 EXIT	STX	LENGTH                                            101036    
-     0  205A 	RSUB                                                      4C0000    
-     0  205D INPUT	BYTE	X'F1'                                           F1        
-     0  205E MAXLEN	WORD	4096                                           001000    
+    26  2039 RDREC	LDX	ZERO                                             041030    
+    27  203C 	LDA	ZERO                                                  001030    
+    28  203F RLOOP	TD	INPUT                                             E0205D    
+    29  2042 	JEQ	RLOOP                                                 30203F    
+    30  2045 	RD	INPUT                                                  D8205D    
+    31  2048 	COMP	ZERO                                                 281030    
+    32  204B 	JEQ	EXIT                                                  302057    
+    33  204E 	STCH	BUFFER,X                                             549039    
+    34  2051 	TIX	MAXLEN                                                2C205E    
+    35  2054 	JLT	RLOOP                                                 38203F    
+    36  2057 EXIT	STX	LENGTH                                            101036    
+    37  205A 	RSUB                                                      4C0000    
+    38  205D INPUT	BYTE	X'F1'                                           F1        
+    39  205E MAXLEN	WORD	4096                                           001000    
             .
             .	SUBROUTINE TO WRITE RECORD FROM BUFFER
             .
-     0  2061 WRREC	LDX	ZERO                                             041030    
-     0  2064 WLOOP	TD	OUTPUT                                            E02079    
-     0  2067 	JEQ	WLOOP                                                 302064    
-     0  206A 	LDCH	BUFFER,X                                             509039    
-     0  206D 	WD	OUTPUT                                                 DC2079    
-     0  2070 	TIX	LENGTH                                                2C1036    
-     0  2073 	JLT	WLOOP                                                 382064    
-     0  2076 	RSUB                                                      4C0000    
-     0  2079 OUTPUT	BYTE	X'05'                                          05        
-     0  207A 	END	FIRST                                                           
+    43  2061 WRREC	LDX	ZERO                                             041030    
+    44  2064 WLOOP	TD	OUTPUT                                            E02079    
+    45  2067 	JEQ	WLOOP                                                 302064    
+    46  206A 	LDCH	BUFFER,X                                             509039    
+    47  206D 	WD	OUTPUT                                                 DC2079    
+    48  2070 	TIX	LENGTH                                                2C1036    
+    49  2073 	JLT	WLOOP                                                 382064    
+    50  2076 	RSUB                                                      4C0000    
+    51  2079 OUTPUT	BYTE	X'05'                                          05        
+    52  207A 	END	FIRST                                                           
             
