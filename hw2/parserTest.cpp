@@ -772,8 +772,7 @@ void Parser::testEQUAdv() {
   int i;
   tokens = lexer->lexingLine("symb EQU abc+1");
   setTokenString(&tokens);
-  assert(matchPseudo(i = 0, i) && i == 5);
-  assert(match.equMatch.size() == 3);
+  assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
 
   tokens = lexer->lexingLine("symb EQU abc+");
@@ -781,22 +780,78 @@ void Parser::testEQUAdv() {
   assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
 
-  tokens = lexer->lexingLine("symb EQU 1-avvv");
+  tokens = lexer->lexingLine("symb EQU abc+abc+");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU vvv-avvv");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 5);
   assert(match.equMatch.size() == 3);
   lexer->reset();
 
-  tokens = lexer->lexingLine("symb EQU 1*avvv");
+  tokens = lexer->lexingLine("symb EQU vvv*avvv");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 5);
   assert(match.equMatch.size() == 3);
   lexer->reset();
 
-  tokens = lexer->lexingLine("symb EQU 1/avvv");
+  tokens = lexer->lexingLine("symb EQU vvv/avvv");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) && i == 5);
   assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU vvv+avvv");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU vvv+avvv");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 5);
+  assert(match.equMatch.size() == 3);
+  lexer->reset();
+
+  /*
+    def get1(str):
+      i = 0
+      for c in str:
+        i += ord(c)
+      print(i%100)
+      +: (4,2)
+      -: (4,3)
+      *: (4,4)
+      /: (4,5)
+      symbol table: 5
+      aaaa: 88
+      bbbb: 92
+      cccc: 96
+      dddd: 0
+   */
+
+  // postorder
+  // aaaa bbbb cccc * dddd / +
+  vector<TokenData> postorder = {{5, 88}, {5, 92}, {5, 96}, {4, 4},
+                                 {5, 0},  {4, 5},  {4, 2}};
+  tokens = lexer->lexingLine("symb EQU aaaa+bbbb*cccc/dddd");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 9);
+  assert(match.equMatch.size() == 7);
+  assert(equal(postorder.begin(), postorder.end(), match.equMatch.begin(),
+               isTokenEqual));
+  lexer->reset();
+
+  // aaaa bbbb + cccc + dddd +
+  postorder = {{5, 88}, {5, 92}, {4, 2}, {5, 96}, {4, 2}, {5, 0}, {4, 2}};
+  tokens = lexer->lexingLine("symb EQU aaaa+bbbb+cccc+dddd");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) && i == 9);
+  assert(match.equMatch.size() == 7);
+  assert(equal(postorder.begin(), postorder.end(), match.equMatch.begin(),
+               isTokenEqual));
   lexer->reset();
 }
 
@@ -1027,8 +1082,7 @@ void Parser::testPseudo() {
   testLTORG();
   testEQU();
 
-  cout << "testEQUAdv disable!" << endl;
-  // testEQUAdv();
+  testEQUAdv();
 }
 
 void Parser::testMode() {
