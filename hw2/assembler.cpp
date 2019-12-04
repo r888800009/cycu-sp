@@ -349,17 +349,17 @@ string Assembler::genInstruction(int pass) {
         disp = it->address;
       }
 
-      if (format == 3) {
+      if (optab.getOPCode("RSUB") == opcode) {
+        disp = 0;
+        flag.b = 0;
+        flag.p = 0;
+      } else if (format == 3) {
         if (sicxe) {
           // check range
           int pcRelocation = disp - locationCounter;
           int baseRelocation = disp - baseCounter;
-          if (optab.getOPCode("RSUB") == opcode) {
-            disp = 0;
-            flag.b = 0;
-            flag.p = 0;
-          } else if (parser.match.memory.type == INTEGER_REAL_TABLE &&
-                     0 <= disp && disp <= 4095) {
+          if (parser.match.memory.type == INTEGER_REAL_TABLE && 0 <= disp &&
+              disp <= 4095) {
             // disp 0 ~ 4095
             // do nothing
             flag.b = 0;
@@ -385,20 +385,25 @@ string Assembler::genInstruction(int pass) {
           flag.b = 0b100000000000000 & disp;
           flag.p = 0b010000000000000 & disp;
           flag.e = 0b001000000000000 & disp;
+
           disp &= 0xfff;
         }
-
-        objcode = genFormat3(opcode, flag, disp);
       } else if (format == 4 && sicxe) {
+        // check range
+
+      } else
+        cout << "something worng? fmt34" << endl;
+
+      // gen code
+      if (format == 3)
+        objcode = genFormat3(opcode, flag, disp);
+      else if (format == 4 && sicxe) {
         flag.b = 0;
         flag.p = 0;
         flag.e = 1;
 
-        // check range
-
         objcode = genFormat4(opcode, flag, disp);
-      } else
-        cout << "something worng? fmt34" << endl;
+      }
     }
   }
   return objcode;
