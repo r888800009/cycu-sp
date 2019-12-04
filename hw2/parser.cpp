@@ -4,6 +4,7 @@
 #include "parser.h"
 
 #include <cassert>
+#include <stack>
 
 #include "lexicaler.h"
 
@@ -130,6 +131,24 @@ bool Parser::matchConst(const int r, int &l, const string &pseudo,
   return true;
 }
 
+bool operatorCompare(TokenData top, TokenData next) {
+  const int add = 2, sub = 3, mul = 4, div = 5;
+
+  switch (next.value) {
+    case add:        // +: (4,2)
+    case sub:        // -: (4,3)
+      return false;  // aways pop
+    case mul:        // *: (4,4)
+    case div:        // /: (4,5)
+      if (top.value == add || top.value == sub)
+        return true;  // push if +-
+      else
+        return false;  // if * next is / would pop
+  }
+
+  return false;
+}
+
 bool Parser::matchPseudo(const int r, int &l) {
   l = r;
   if (l >= tokenString->size()) return false;
@@ -138,18 +157,54 @@ bool Parser::matchPseudo(const int r, int &l) {
       r + 3 - 1 < tokenString->size()) {
     match.equMatch.clear();
     match.pseudo = EQU;
-
     l = r + 3 - 1;
-    while (l < tokenString->size()) {
-      if (matchMemory(l) || matchDelimiter('+', l) || matchDelimiter('-', l) ||
-          matchDelimiter('*', l) || matchDelimiter('/', l)) {
-        match.equMatch.push_back(tokenString->at(l));
-      } else
-        break;
+    if (r + 3 == tokenString->size() &&
+        (matchMemory(l) || matchDelimiter('*', l))) {
+      // single token
+      match.equMatch.push_back(tokenString->at(l));
       l++;
-    }
+      return true;
+    } else {
+      stack<TokenData> stack1;
 
-    return true;
+      // Expression
+      bool selectOperand = true;
+      while (l < tokenString->size()) {
+        if (matchSymbol(l) && selectOperand) {
+          match.equMatch.push_back(tokenString->at(l));
+          selectOperand = false;
+        } else if (!selectOperand &&
+                   (matchDelimiter('+', l) || matchDelimiter('-', l) ||
+                    matchDelimiter('*', l) || matchDelimiter('/', l))) {
+          TokenData token = tokenString->at(l);
+
+          while (!stack1.empty() &&
+                 operatorCompare(stack1.top(), token) == false) {
+            // + < +, - < -, * < *
+            match.equMatch.push_back(stack1.top());
+            stack1.pop();
+          }
+
+          // / > + or empty
+          stack1.push(token);
+
+          selectOperand = true;
+        } else
+          return false;
+        l++;
+      }
+
+      // error: last is operator
+      if (selectOperand == true) return false;
+
+      // pop all
+      while (!stack1.empty()) {
+        match.equMatch.push_back(stack1.top());
+        stack1.pop();
+      }
+
+      return true;
+    }
   } else {
     // symbol
     if (matchPrefixSymbol(l)) l++;

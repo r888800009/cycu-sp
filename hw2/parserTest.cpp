@@ -780,6 +780,22 @@ void Parser::testEQUAdv() {
   assert(matchPseudo(i = 0, i) == false);
   lexer->reset();
 
+  // register
+  tokens = lexer->lexingLine("symb EQU abc+a");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU +");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
+  tokens = lexer->lexingLine("symb EQU ++");
+  setTokenString(&tokens);
+  assert(matchPseudo(i = 0, i) == false);
+  lexer->reset();
+
   tokens = lexer->lexingLine("symb EQU abc+abc+");
   setTokenString(&tokens);
   assert(matchPseudo(i = 0, i) == false);
