@@ -303,7 +303,7 @@ string Assembler::doPseudo(int pass, const string &line) {
     case Parser::Pseudo::WORD:
       if (parser.match.stringData.type == string_data) {
         string str = lexer.getData(parser.match.stringData.value);
-        int remainder_space = ((str.size()) % 3 + 3) % 3;
+        int remainder_space = (6 - str.size() % 3) % 3;
         locationCounter += str.size() + remainder_space;
 
         for (char c : str) result += fill(c, 1);
