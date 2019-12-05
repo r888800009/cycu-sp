@@ -1,0 +1,45 @@
+label1      START   1000    
+            END     label1  
+            END             
+label2      BYTE    X'FF'   
+            BYTE    C'EOF'  
+            BYTE    15      
+            WORD    X'FF'   
+            WORD    C'EOF'  
+            WORD    15      
+label3      RESB    32      
+            RESW    16      
+label4      BASE    256     
+            BASE    label8  
+label5      EQU     4096    
+label6      EQU     label3  
+label7      EQU     *       
+FOR1        FIX             
+FOR2        SVC     1       
+            TIXR    A       
+            ADDR    A, B    
+            SHIFTL  A, 1    
+FOR3        ADD     #label8 
+            ADD     #16     
+            ADD     label1  
+            ADD     label8  
+            ADD     16      
+            ADD     @label8 
+            ADD     label8, X
+            ADD     =X'FF'  
+            ADD     =C'EOF' 
+label8      LTORG           
+FOR4        +ADD    #label8 
+            +ADD    #16     
+            +ADD    label8  
+            +ADD    16      
+            +ADD    @label8 
+            +ADD    label8, X
+            +ADD    =X'FF'  
+            +ADD    =C'EOF' 
+TESTBASE    RESW    700     
+            ADD     FOR4    
+COMMENT     ADD     #label8     .test
+            .               
+ERROR       ADD     lab_err 
+ERROR       ADD     ERROR   
