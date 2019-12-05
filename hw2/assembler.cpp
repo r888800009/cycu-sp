@@ -182,10 +182,6 @@ void Assembler::printLine(int line, int loc, const string &statement,
                           const string &objcode) {
   string output = " " + statement;
 
-  // trim
-  // regex_replace(output, regex("\t"), "        ");
-  // output.erase(output.find_last_not_of(" ") + 1);
-
   printStream << setw(OFFSET_LINE) << right << line << setw(OFFSET_LOCATION)
               << right << fill(loc, 2) << setw(OFFSET_STATEMENT) << left
               << output << setw(OFFSET_CODE) << left << objcode << endl;
@@ -209,30 +205,35 @@ void Assembler::loadFile(const string &filename) {
 
 void Assembler::genLiteral(int pass) {
   assert(pass == 1 || pass == 2);
-  for (int i = 0; i < littab.size(); i++) {
-    if (littab[i].address == -1) littab[i].address = curLocationCounter;
+  vector<TokenData> literalTokens;
 
-    printStream << hex << littab[i].address << " * ";
-    int type = littab[i].literal.type;
-    string litStr = lexer.getData(littab[i].literal);
-    if (type == STRING_TABLE) {
-      // n bytes
-      locationCounter += litStr.size();  //+ 1;  // string with null char
-    } else if (type == INTEGER_REAL_TABLE) {
-      int value = stoi(lexer.getData(littab[i].literal), nullptr, 16);
-      // 1 bytes
-      if (value <= 0xff)
-        locationCounter += 1;
-      else
-        locationCounter += 3;
-      printStream << hex << value;
+  if (pass == 1)
+    locationCounter = littab.genLiteral(curLocationCounter, literalTokens);
+  if (pass == 2) {
+    locationCounter = littab.genLiteralPass2(curLocationCounter, literalTokens);
+
+    for (auto i : literalTokens) {
+      string tokenData = lexer.getData(i);
+      printStream << hex << littab.getAddress(tokenData) << "\t* ";
+      if (i.type == STRING_TABLE) {
+        // n bytes
+        for (auto c : tokenData) {
+          printStream << fill(c, 1);
+        }
+      } else if (i.type == INTEGER_REAL_TABLE) {
+        int value = stoi(tokenData, nullptr, 16);
+        if (value <= 0xff)
+          // 1 bytes
+          printStream << fill(value, 1);
+        else
+          printStream << fill(value, 3);
+      }
+
+      printStream << endl;
     }
-
-    printStream << endl;
-    curLocationCounter = locationCounter;
-    //  printStream << hex << locationCounter << " *" << endl;
   }
-  cout << "literal not working" << endl;
+
+  curLocationCounter = locationCounter;
 }
 
 string Assembler::doPseudo(int pass) {
@@ -257,7 +258,6 @@ string Assembler::doPseudo(int pass) {
       genLiteral(pass);
       break;
     case Parser::Pseudo::BYTE:
-      //      printStream << "MATCH BYTE" << endl;
       if (parser.match.stringData.type == string_data) {
         string str = lexer.getData(parser.match.stringData.value);
         locationCounter += str.size();
@@ -269,7 +269,6 @@ string Assembler::doPseudo(int pass) {
       }
       break;
     case Parser::Pseudo::WORD:
-      //    printStream << "MATCH WORD" << endl;
       if (parser.match.stringData.type == string_data) {
         string str = lexer.getData(parser.match.stringData.value);
         int remainder_space = ((str.size()) % 3 + 3) % 3;
@@ -459,12 +458,10 @@ int Assembler::memoryToAddr() {
 
 string Assembler::genInstruction(int pass) {
   assert(pass == 1 || pass == 2);
-  string objcode = "======";
+  string objcode = "";
 
   int format = parser.match.format;
   Parser::Pseudo pseudo = parser.match.pseudo;
-
-  // if (parser.match.memory)
 
   locationCounter += format;
   if (!(4 >= format && format >= 1)) cout << "bug?" << format << endl;
@@ -472,13 +469,8 @@ string Assembler::genInstruction(int pass) {
   if (pass == 1) {
     // match literal
     TokenData literal = parser.match.literal;
-    if (literal.type == STRING_TABLE || literal.type == INTEGER_REAL_TABLE) {
-      auto it =
-          find_if(littab.begin(), littab.end(), [literal](const Literal &l) {
-            return isTokenEqual(l.literal, literal);
-          });
-      if (it == littab.end()) littab.push_back({literal, -1});
-    }
+    if (literal.type == STRING_TABLE || literal.type == INTEGER_REAL_TABLE)
+      littab.put(lexer.getData(literal), literal);
   } else if (pass == 2) {
     // set flag
     Flag flag = genAddressingTypeFlag();
@@ -499,18 +491,14 @@ string Assembler::genInstruction(int pass) {
         disp = memoryToAddr();
       else if (literalToken.type == STRING_TABLE ||
                literalToken.type == INTEGER_REAL_TABLE) {
-        auto it = find_if(littab.begin(), littab.end(),
-                          [literalToken](const Literal &l) {
-                            return isTokenEqual(l.literal, literalToken);
-                          });
+        littab.putPass2(lexer.getData(literalToken));
+        disp = littab.getAddress(lexer.getData(literalToken));
 
         // check
-        if (it == littab.end() || it->address == -1) {
+        if (disp == -1) {
           cout << "Not defined LTORG or END?" << endl;
           throw Error::syntax_error;
         }
-
-        disp = it->address;
       }
 
       if (optab.getOPCode("RSUB") == opcode) {
@@ -558,10 +546,8 @@ string Assembler::genInstruction(int pass) {
         }
       } else if (format == 4 && sicxe) {
         // check range
-
       } else
         cout << "something worng? fmt34" << endl;
-
       // gen code
       if (format == 3)
         objcode = genFormat3(opcode, flag, disp);
@@ -615,8 +601,10 @@ void Assembler::pass(int pass) {
   }
 
   cout << "start write: \"" << saveName << '"' << endl;
+  int lineCounter = 0;
 
   while (getline(fin, line)) {
+    lineCounter++;
     curLocationCounter = locationCounter;
     try {
       // drop writespace
@@ -637,10 +625,12 @@ void Assembler::pass(int pass) {
 
         if (parser.match.pseudo == Parser::Pseudo::NOT_PSEUDO) {
           string objcode = genInstruction(pass);
-          if (pass == 2) printLine(0, curLocationCounter, line, objcode);
+          if (pass == 2)
+            printLine(lineCounter, curLocationCounter, line, objcode);
         } else {
           string objcode = doPseudo(pass);
-          if (pass == 2) printLine(0, curLocationCounter, line, objcode);
+          if (pass == 2)
+            printLine(lineCounter, curLocationCounter, line, objcode);
         }
 
       } else

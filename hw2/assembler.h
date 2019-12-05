@@ -9,6 +9,7 @@
 
 #include "format.h"
 #include "lexicaler.h"
+#include "littab.h"
 #include "optab.h"
 #include "parser.h"
 #include "symtab.h"
@@ -20,13 +21,7 @@ class Assembler {
   Parser parser;
   OPTab optab;
   SymbolTable symtab;
-
-  typedef struct Literal {
-    TokenData literal;
-    int address;
-  } Literal;
-
-  vector<Literal> littab;
+  LiteralTable littab;
 
   bool enableBase = false, sicxe = false;
   bool hasSTART = false, hasEND = false;

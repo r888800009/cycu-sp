@@ -57,6 +57,7 @@ void LiteralTable::test() {
   vector<TokenData> genTokens1;
   pc = genLiteral(pc, genTokens1);
   assert(pc == 6);
+  assert(genTokens1.size() == 5);
 
   // test get gened
   assert(getAddress("0") == 0);
@@ -83,6 +84,7 @@ void LiteralTable::test() {
   vector<TokenData> genTokens1to2;
   pc = genLiteralPass2(pc, genTokens1to2);
   assert(pc == 6);
+  assert(genTokens1to2.size() == 5);
 
   // test again
   putPass2("4");
@@ -126,7 +128,15 @@ int LiteralTable::genLiteralPass2(int curPC, vector<TokenData>& genTokens) {
     if (pass2Wait[i]) {
       TokenData token = tableData2[i].token;
       if (token.type == STRING_TABLE) curPC += tableData2[i].value.size();
-      if (token.type == INTEGER_REAL_TABLE) curPC += 1;
+      if (token.type == INTEGER_REAL_TABLE) {
+        int value = stoi(tableData2[i].value, nullptr, 16);
+        // 1 bytes
+        if (value <= 0xff)
+          curPC += 1;
+        else
+          curPC += 3;
+      }
+
       genTokens.push_back(token);
       pass2Wait[i] = false;
     }
@@ -143,7 +153,15 @@ int LiteralTable::genLiteral(int curPC, vector<TokenData>& genTokens) {
       tableData2[i].address = curPC;
       TokenData token = tableData2[i].token;
       if (token.type == STRING_TABLE) curPC += tableData2[i].value.size();
-      if (token.type == INTEGER_REAL_TABLE) curPC += 1;
+      if (token.type == INTEGER_REAL_TABLE) {
+        int value = stoi(tableData2[i].value, nullptr, 16);
+        // 1 bytes
+        if (value <= 0xff)
+          curPC += 1;
+        else
+          curPC += 3;
+      }
+
       genTokens.push_back(token);
     }
   }
