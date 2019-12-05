@@ -27,3 +27,5 @@ test.cpp
 test.h
 parserTest.cpp
 assemblerTest.cpp
+littab.cpp
+littab.h
