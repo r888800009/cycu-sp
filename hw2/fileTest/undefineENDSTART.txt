@@ -1,0 +1,3 @@
+	var1	RESW	1
+	var2	RESB	12
+	var3  EQU  12

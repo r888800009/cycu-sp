@@ -1,0 +1,17 @@
+./fileTest/t.txt 2
+./fileTest/testSP2/input1.txt 2
+./fileTest/testSP2/input2.txt 2
+./fileTest/testSP2/test1input.txt 2
+./fileTest/testSP2/test2input.txt 1
+./fileTest/duplicate.txt 2
+./fileTest/undefineENDSTART.txt 2
+./fileTest/input_26output/SICXE_input.txt 2
+./fileTest/input_26output/SIC_input.txt 1
+./fileTest/pass2EQU.txt 2
+./fileTest/equ.txt 2
+./fileTest/rsub.txt 2
+./fileTest/rsub_sic.txt 1
+./fileTest/word_string.txt 2
+./fileTest/MY_input.txt 2
+./fileTest/literalNumber.txt 2
+

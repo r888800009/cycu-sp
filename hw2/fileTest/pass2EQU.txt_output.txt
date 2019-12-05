@@ -1,0 +1,16 @@
+Line    Loc Source Statement                                            Object code
+
+     1  2000 Start 2000                                                           
+     2  0001 ONE2 EQU ONE                                                         
+     3  0001 ONE3 EQU ONE2                                                        
+     4  0002 TWO EQU ONE + ONE3                                                   
+     5  0003 THREE EQU ONE + TWO                                                  
+     6  0004 FOUR EQU ONE + TWO + ONE                                             
+     7  0009 AAA EQU FOUR + TWO * TWO + TWO / TWO                                 
+     8  FFFD NIG EQU ONE - FOUR                                                   
+     9  FFFF NIG2 EQU ONE - TWO                                                   
+    10  0001 ONE EQU 1                                                            
+    11  2000 CUR EQU *                                                            
+    12  2000 add CUR                                                    1B2FFD    
+    13  2003 CUR2 EQU *                                                           
+    14       end                                                                  

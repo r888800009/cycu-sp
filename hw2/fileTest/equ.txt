@@ -1,0 +1,19 @@
+start 0
+A1 EQU 1
+B1 EQU 2
+C1 EQU 3
+D1 EQU 4
+cur EQU *
+
+AA1 EQU A1 + B1
+BB1 EQU A1 - B1
+CC1 EQU A1 * B1
+DD1 EQU A1 / B1
+EE1 EQU A1 + B1 - C1 * D1
+
+Error1 EQU A1 + B1 - C1 *
+Error2 EQU A1 + B1 - * DE
+Error3 EQU  + B1 - C1 * DE
+EQU 1
+
+end

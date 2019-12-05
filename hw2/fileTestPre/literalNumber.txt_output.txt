@@ -1,0 +1,21 @@
+     9       ERROR: syntax_error                                                  
+     9       add =x'FFFFFFF'                                                      
+Line    Loc Source Statement                                            Object code
+
+     1                                                                            
+     2  0000 start 0                                                              
+     3  0000 add =x'FF'                                                 1B2009    
+     4  0003 add =x'FFF'                                                1B2003    
+     5  0006 add =x'FFFF'                                               1B2004    
+     6       LTORG                                                                
+        0009 *	=X'FFF'                                                  000FFF    
+        000C *	=X'FF'                                                   FF        
+        000D *	=X'FFFF'                                                 00FFFF    
+     7  0010 add =x'FFFFF'                                              1B2006    
+     8  0013 add =x'FFFFFF'                                             1B2000    
+     9       ERROR: syntax_error                                                  
+     9       add =x'FFFFFFF'                                                      
+    10                                                                            
+    11       end                                                                  
+        0016 *	=X'FFFFFF'                                               FFFFFF    
+        0019 *	=X'FFFFF'                                                0FFFFF    

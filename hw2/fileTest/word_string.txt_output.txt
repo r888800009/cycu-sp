@@ -1,0 +1,8 @@
+unfounded START
+unfounded END
+Line    Loc Source Statement                                            Object code
+
+     1  0000 WORD c'12'                                                 313200    
+     2  0003 WORD c'1221'                                               313232310000
+unfounded START
+unfounded END

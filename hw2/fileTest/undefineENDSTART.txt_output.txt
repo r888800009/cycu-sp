@@ -1,0 +1,9 @@
+unfounded START
+unfounded END
+Line    Loc Source Statement                                            Object code
+
+     1  0000 	var1	RESW	1                                                         
+     2  0003 	var2	RESB	12                                                        
+     3  000C 	var3  EQU  12                                                       
+unfounded START
+unfounded END

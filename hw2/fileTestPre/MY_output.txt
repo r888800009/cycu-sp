@@ -1,0 +1,53 @@
+    43       ERROR: duplicate_define                                              
+    43       ERROR       ADD     ERROR                                            
+    43       ERROR       ADD     ERROR                                            
+Line    Loc Source Statement                                            Object code
+
+     1  1000 label1      START   1000                                             
+     2  1000 label2      BYTE    X'FF'                                  FF        
+     3  1001             BYTE    C'EOF'                                 454F46    
+     4  1004             BYTE    15                                     0F        
+     5  1005             WORD    X'FF'                                  0000FF    
+     6  1008             WORD    C'EOF'                                 454F46    
+     7  100B             WORD    15                                     00000F    
+     8  100E label3      RESB    32                                               
+     9  102E             RESW    16                                               
+    10  105E label4      BASE    256                                              
+    11  105E             BASE    label8                                           
+    12  1000 label5      EQU     4096                                             
+    13  100E label6      EQU     label3                                           
+    14  105E label7      EQU     *                                                
+    15  105E FOR1        FIX                                            C4        
+    16  105F FOR2        SVC     1                                      B010      
+    17  1061             TIXR    A                                      B800      
+    18  1063             ADDR    A, B                                   9003      
+    19  1065             SHIFTL  A, 1                                   A400      
+    20  1067 FOR3        ADD     #label8                                192018    
+    21  106A             ADD     #16                                    190010    
+    22  106D             ADD     label1                                 1B2F90    
+    23  1070             ADD     label8                                 1B200F    
+    24  1073             ADD     16                                     1B0010    
+    25  1076             ADD     @label8                                1A2009    
+    26  1079             ADD     label8, X                              1BA006    
+    27  107C             ADD     =X'FF'                                 1B2006    
+    28  107F             ADD     =C'EOF'                                1B2000    
+    29       label8      LTORG                                                    
+        1082 *	=C'EOF'                                                  454F46    
+        1085 *	=X'FF'                                                   FF        
+    30  1086 FOR4        +ADD    #label8                                19101082  
+    31  108A             +ADD    #16                                    19100010  
+    32  108E             +ADD    label8                                 1B101082  
+    33  1092             +ADD    16                                     1B100010  
+    34  1096             +ADD    @label8                                1A101082  
+    35  109A             +ADD    label8, X                              1B901082  
+    36  109E             +ADD    =X'FF'                                 1B101085  
+    37  10A2             +ADD    =C'EOF'                                1B101082  
+    38  10A6 TESTBASE    RESW    700                                              
+    39  18DA             ADD     FOR4                                   1B27A9    
+    40  18DD COMMENT     ADD     #label8     .test                      1927A2    
+    41                   .                                                        
+    42       ERROR: undefine_error                                                
+    42       ERROR       ADD     lab_err                                          
+    42       ERROR       ADD     lab_err                                          
+    43  18E3 ERROR       ADD     ERROR                                  1B2FFA    
+    44                   END     label1                                           

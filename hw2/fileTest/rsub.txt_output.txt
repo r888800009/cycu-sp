@@ -1,0 +1,6 @@
+Line    Loc Source Statement                                            Object code
+
+     1  0000 start 0                                                              
+     2  0000 +rsub                                                      4F100000  
+     3  0004 rsub                                                       4F0000    
+     4       end                                                                  
