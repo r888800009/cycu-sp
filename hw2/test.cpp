@@ -9,6 +9,7 @@
 #include "assembler.h"
 #include "error.h"
 #include "lexicaler.h"
+#include "littab.h"
 #include "optab.h"
 #include "parser.h"
 #include "symtab.h"
@@ -278,12 +279,18 @@ void testParser() {
   paser.test();
 }
 
+void testLiteralTable() {
+  LiteralTable table;
+  table.test();
+}
+
 void test() {
   testHashTable();
   testLoadingTable();
   testLexer();
   testOPTab();
   testSymtab();
+  testLiteralTable();
   testParser();
   testAsm();
 }
