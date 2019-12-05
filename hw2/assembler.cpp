@@ -174,6 +174,11 @@ void Assembler::printHeader() {
 
 string Assembler::fill(int number, int byte) {
   stringstream ss;
+  if (byte == 1) number &= 0xff;
+  if (byte == 2) number &= 0xffff;
+  if (byte == 3) number &= 0xffffff;
+  if (byte == 4) number &= 0xffffffff;
+
   ss << hex << uppercase << setw(byte * 2) << setfill('0') << number;
   return ss.str();
 }
@@ -426,6 +431,9 @@ int Assembler::doEQU(int pass) {
     } catch (Error::ASMError e) {
       if (e == Error::undefine_symbol && pass == 1) {
         // is symbol but cant solve
+      } else if (e == Error::duplicate_define && pass == 2) {
+        // duplicate found in pass 1
+        // so pass2 ignore the error
       } else {
         printStream << "expr error " << pass << endl;
         throw e;
