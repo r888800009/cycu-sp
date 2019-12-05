@@ -32,7 +32,7 @@ class Assembler {
   int locationCounter = 0, curLocationCounter;
   int baseCounter = 0;
 
-  string doPseudo(int pass);
+  string doPseudo(int pass, const string &line);
   void genLiteral(int pass);
   string genInstruction(int pass);
   void pass(int pass);
@@ -60,9 +60,16 @@ class Assembler {
   Flag genAddressingTypeFlag();
   int flagToBinary(Flag flag);
 
+  int lineCounter = 0;
   void printHeader();
   void printLine(int line, int loc, const string &statement,
                  const string &objcode);
+
+  void printLineNoLineNumber(int loc, const string &statement,
+                             const string &objcode);
+
+  void printLineNoAddress(int line, const string &statement,
+                          const string &objcode);
 
  public:
   Assembler();

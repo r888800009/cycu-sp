@@ -187,6 +187,23 @@ void Assembler::printLine(int line, int loc, const string &statement,
               << output << setw(OFFSET_CODE) << left << objcode << endl;
 }
 
+void Assembler::printLineNoAddress(int line, const string &statement,
+                                   const string &objcode) {
+  string output = " " + statement;
+
+  printStream << setw(OFFSET_LINE) << right << line << setw(OFFSET_LOCATION)
+              << right << " " << setw(OFFSET_STATEMENT) << left << output
+              << setw(OFFSET_CODE) << left << objcode << endl;
+}
+void Assembler::printLineNoLineNumber(int loc, const string &statement,
+                                      const string &objcode) {
+  string output = " " + statement;
+
+  printStream << setw(OFFSET_LINE) << right << " " << setw(OFFSET_LOCATION)
+              << right << fill(loc, 2) << setw(OFFSET_STATEMENT) << left
+              << output << setw(OFFSET_CODE) << left << objcode << endl;
+}
+
 void Assembler::loadFile(const string &filename) {
   this->filename = filename;
   cout << "Loading file: \"" << filename << '"' << endl;
@@ -214,29 +231,31 @@ void Assembler::genLiteral(int pass) {
 
     for (auto i : literalTokens) {
       string tokenData = lexer.getData(i);
-      printStream << hex << littab.getAddress(tokenData) << "\t* ";
+      string statment = "*\t";
+      string objcode = "";
       if (i.type == STRING_TABLE) {
         // n bytes
-        for (auto c : tokenData) {
-          printStream << fill(c, 1);
-        }
+        for (auto c : tokenData) objcode += fill(c, 1);
+        statment += "=C'" + tokenData + "'";
+
       } else if (i.type == INTEGER_REAL_TABLE) {
         int value = stoi(tokenData, nullptr, 16);
         if (value <= 0xff)
           // 1 bytes
-          printStream << fill(value, 1);
+          objcode = fill(value, 1);
         else
-          printStream << fill(value, 3);
+          objcode = fill(value, 3);
+        statment += "=X'" + tokenData + "'";
       }
 
-      printStream << endl;
+      printLineNoLineNumber(littab.getAddress(tokenData), statment, objcode);
     }
   }
 
   curLocationCounter = locationCounter;
 }
 
-string Assembler::doPseudo(int pass) {
+string Assembler::doPseudo(int pass, const string &line) {
   assert(pass == 1 || pass == 2);
   Parser::Pseudo pseudo = parser.match.pseudo;
   const Parser::MatchData::StringData::Type
@@ -245,6 +264,14 @@ string Assembler::doPseudo(int pass) {
       int_hex = Parser::MatchData::StringData::integer_hex;
   string result = "";
   int equAddr;
+
+  // print first
+  if (pass == 2) {
+    if (pseudo == Parser::Pseudo::LTORG || pseudo == Parser::Pseudo::END)
+      printLineNoAddress(lineCounter, line, result);
+    else
+      ;  // null
+  }
 
   switch (pseudo) {
     case Parser::Pseudo::START:
@@ -290,7 +317,8 @@ string Assembler::doPseudo(int pass) {
       break;
     case Parser::Pseudo::EQU:
       equAddr = doEQU(pass);
-      if (pass == 2) printStream << equAddr << endl;
+      if (pass == 2) printLine(lineCounter, equAddr, line, "");
+
       break;
     case Parser::Pseudo::BASE:
       enableBase = true;
@@ -300,6 +328,15 @@ string Assembler::doPseudo(int pass) {
     case Parser::Pseudo::LTORG:
       genLiteral(pass);
       break;
+  }
+
+  // last print
+  if (pass == 2) {
+    if (pseudo == Parser::Pseudo::LTORG || pseudo == Parser::Pseudo::END ||
+        pseudo == Parser::Pseudo::EQU)
+      ;  // null
+    else
+      printLine(lineCounter, curLocationCounter, line, result);
   }
   return result;
 }
@@ -601,9 +638,9 @@ void Assembler::pass(int pass) {
   }
 
   cout << "start write: \"" << saveName << '"' << endl;
-  int lineCounter = 0;
+  lineCounter = 0;
 
-  while (getline(fin, line)) {
+  while (getline(fin, line) && hasEND == false) {
     lineCounter++;
     curLocationCounter = locationCounter;
     try {
@@ -612,10 +649,7 @@ void Assembler::pass(int pass) {
 
       if (parser.matchSyntax(lexer.lexingLine(line))) {
         if (parser.isEmpty()) {
-          if (pass == 2)
-            printStream << setw(OFFSET_LINE + OFFSET_LOCATION) << " " << line
-                        << endl;
-
+          if (pass == 2) printLineNoAddress(lineCounter, line, "");
           continue;
         }
 
@@ -628,23 +662,25 @@ void Assembler::pass(int pass) {
           if (pass == 2)
             printLine(lineCounter, curLocationCounter, line, objcode);
         } else {
-          string objcode = doPseudo(pass);
-          if (pass == 2)
-            printLine(lineCounter, curLocationCounter, line, objcode);
+          string objcode = doPseudo(pass, line);
         }
 
       } else
         throw Error::syntax_error;
 
     } catch (Error::ASMError e) {
-      if (e == Error::duplicate_define && pass == 1)
-        printStream << "ERROR: duplicate_define: " << line << endl;
+      if (e == Error::duplicate_define && pass == 1) {
+        printLineNoAddress(lineCounter, "ERROR: duplicate_define", "");
+        printLineNoAddress(lineCounter, line, "");
+      }
+
       if (e == Error::undefine_symbol && pass == 2) {
         // undefine only work at pass2
-        printStream << "ERROR: undefine_error" << endl;
-        printStream << line << endl;
+        printLineNoAddress(lineCounter, "ERROR: undefine_error", "");
+        printLineNoAddress(lineCounter, line, "");
       } else if (e == Error::syntax_error)
-        printStream << "ERROR: syntax_error: " << line << endl;
+        printLineNoAddress(lineCounter, "ERROR: syntax_error", "");
+      printLineNoAddress(lineCounter, line, "");
     }
   }
 
