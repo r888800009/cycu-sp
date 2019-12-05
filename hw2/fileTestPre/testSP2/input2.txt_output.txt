@@ -20,9 +20,9 @@ Line    Loc Source Statement                                            Object c
     18  0030 RETADR	 RESW	 1                                                      
     19  0033 LENGTH	 RESW	 1                                                      
     20  0036 BUFFER	 RESB	 4096                                                   
-            .
-            .	 SUBROUTINE TO READ RECORD INTO BUFFER
-            .
+    21       .                                                                    
+    22       .	 SUBROUTINE TO READ RECORD INTO BUFFER                             
+    23       .                                                                    
     24  1036 RDREC	 CLEAR	 X                                            B410      
     25  1038 	 CLEAR	 A                                                 B400      
     26  103A 	 CLEAR	 S                                                 B440      
@@ -38,9 +38,9 @@ Line    Loc Source Statement                                            Object c
     36  1056 EXIT	 STX	 LENGTH                                          134000    
     37  1059 	 RSUB                                                     4F0000    
     38  105C INPUT	 BYTE	 X'F1'                                         F1        
-            .
-            .	 SUBROUTINE TO WRITE RECORD FROM BUFFER
-            .
+    39       .                                                                    
+    40       .	 SUBROUTINE TO WRITE RECORD FROM BUFFER                            
+    41       .                                                                    
     42  105D WRREC	 CLEAR	 X                                            B410      
     43  105F 	 LDT	 LENGTH                                              774000    
     44  1062 WLOOP	 TD	 OUTPUT                                          E32011    
@@ -51,4 +51,4 @@ Line    Loc Source Statement                                            Object c
     49  1070 	 JLT	 WLOOP                                               3B2FEF    
     50  1073 	 RSUB                                                     4F0000    
     51  1076 OUTPUT	 BYTE	 X'05'                                        05        
-    52  1077 	 END	 FIRST                                                         
+    52       	 END	 FIRST                                                         

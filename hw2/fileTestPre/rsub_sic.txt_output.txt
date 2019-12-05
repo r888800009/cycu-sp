@@ -2,4 +2,4 @@ Line    Loc Source Statement                                            Object c
 
      1  0000 start 0                                                              
      2  0000 rsub                                                       4C0000    
-     3  0003 end                                                                  
+     3       end                                                                  

@@ -1,6 +1,6 @@
 Line    Loc Source Statement                                            Object code
 
-            
+     1                                                                            
      2  1000 COPY	START	1000                                                      
      3  1000 FIRST	STL	RETADR                                           141033    
      4  1003 CLOOP	JSUB	RDREC                                           482039    
@@ -22,9 +22,9 @@ Line    Loc Source Statement                                            Object c
     20  1033 RETADR	RESW	1                                                        
     21  1036 LENGTH	RESW	1                                                        
     22  1039 BUFFER	RESB	4096                                                     
-            .
-            .	SUBROUTINE TO READ RECORD INTO BUFFER
-            .
+    23       .                                                                    
+    24       .	SUBROUTINE TO READ RECORD INTO BUFFER                              
+    25       .                                                                    
     26  2039 RDREC	LDX	ZERO                                             041030    
     27  203C 	LDA	ZERO                                                  001030    
     28  203F RLOOP	TD	INPUT                                             E0205D    
@@ -39,9 +39,9 @@ Line    Loc Source Statement                                            Object c
     37  205A 	RSUB                                                      4C0000    
     38  205D INPUT	BYTE	X'F1'                                           F1        
     39  205E MAXLEN	WORD	4096                                           001000    
-            .
-            .	SUBROUTINE TO WRITE RECORD FROM BUFFER
-            .
+    40       .                                                                    
+    41       .	SUBROUTINE TO WRITE RECORD FROM BUFFER                             
+    42       .                                                                    
     43  2061 WRREC	LDX	ZERO                                             041030    
     44  2064 WLOOP	TD	OUTPUT                                            E02079    
     45  2067 	JEQ	WLOOP                                                 302064    
@@ -51,5 +51,4 @@ Line    Loc Source Statement                                            Object c
     49  2073 	JLT	WLOOP                                                 382064    
     50  2076 	RSUB                                                      4C0000    
     51  2079 OUTPUT	BYTE	X'05'                                          05        
-    52  207A 	END	FIRST                                                           
-            
+    52       	END	FIRST                                                           
