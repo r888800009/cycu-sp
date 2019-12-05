@@ -20,6 +20,12 @@ void SymbolTable::define(int value, int address, Type type) {
   table[value] = {address, type};
 }
 
+void SymbolTable::update(int value, int address, Type type) {
+  if (table[value].addressType == null_symbol) throw undefine_symbol;
+
+  table[value] = {address, type};
+}
+
 int SymbolTable::getSymbolAddress(int value) {
   if (table[value].addressType != null_symbol) return table[value].value;
 

@@ -23,6 +23,7 @@ class SymbolTable {
   SymbolTable();
 
   void define(int value, int, Type);
+  void update(int value, int, Type);
   int getSymbolAddress(int value);
   void checkUndefine();
   Type getSymbolType(int value);

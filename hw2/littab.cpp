@@ -102,7 +102,10 @@ void LiteralTable::test() {
 }
 
 TokenData LiteralTable::put(const string& value, TokenData token) {
-  int hash_value = tableData1.put(value).value;
+  int hash_value = tableData1.get(value).value;
+  if (hash_value != -1 && !tableData2[hash_value].empty) return {-1, -1};
+
+  hash_value = tableData1.put(value).value;
   tableData2[hash_value].empty = false;
   tableData2[hash_value].gen = false;
   tableData2[hash_value].address = -1;
@@ -112,14 +115,18 @@ TokenData LiteralTable::put(const string& value, TokenData token) {
 
 int LiteralTable::getAddress(const string& value) {
   int hash_value = tableData1.get(value).value;
-  if (tableData2[hash_value].empty || !tableData2[hash_value].gen) return -1;
+  if (hash_value != -1 && tableData2[hash_value].empty ||
+      !tableData2[hash_value].gen)
+    return -1;
 
   return tableData2[hash_value].address;
 }
 
 void LiteralTable::putPass2(const string& value) {
   int hash_value = tableData1.get(value).value;
-  if (tableData2[hash_value].empty || !tableData2[hash_value].gen) return;
+  if (hash_value != -1 && tableData2[hash_value].empty ||
+      !tableData2[hash_value].gen)
+    return;
   pass2Wait[hash_value] = true;
 }
 

@@ -228,6 +228,7 @@ void Assembler::loadFile(const string &filename) {
 void Assembler::genLiteral(int pass) {
   assert(pass == 1 || pass == 2);
   vector<TokenData> literalTokens;
+  int preLocCounter = curLocationCounter;
 
   if (pass == 1)
     locationCounter = littab.genLiteral(curLocationCounter, literalTokens);
@@ -238,6 +239,7 @@ void Assembler::genLiteral(int pass) {
       string tokenData = lexer.getData(i);
       string statment = "*\t";
       string objcode = "";
+
       if (i.type == STRING_TABLE) {
         // n bytes
         for (auto c : tokenData) objcode += fill(c, 1);
@@ -253,7 +255,8 @@ void Assembler::genLiteral(int pass) {
         statment += "=X'" + tokenData + "'";
       }
 
-      printLineNoLineNumber(littab.getAddress(tokenData), statment, objcode);
+      if (littab.getAddress(tokenData) >= preLocCounter)
+        printLineNoLineNumber(littab.getAddress(tokenData), statment, objcode);
     }
   }
 
@@ -267,6 +270,8 @@ string Assembler::doPseudo(int pass, const string &line) {
       string_data = Parser::MatchData::StringData::string_data,
       int_dec = Parser::MatchData::StringData::integer_dec,
       int_hex = Parser::MatchData::StringData::integer_hex;
+
+  const int preSymbolValue = parser.match.preSymbol.value;
   string result = "";
   int equAddr;
 
@@ -281,7 +286,13 @@ string Assembler::doPseudo(int pass, const string &line) {
   switch (pseudo) {
     case Parser::Pseudo::START:
       if (hasSTART == true) printStream << "duplicated START?" << endl;
+
       curLocationCounter = locationCounter = parser.match.startMatch;
+
+      if (preSymbolValue != -1)
+        symtab.update(preSymbolValue, curLocationCounter,
+                      SymbolTable::absolute_address);
+
       hasSTART = true;
       break;
     case Parser::Pseudo::END:
@@ -383,6 +394,9 @@ int Assembler::doEQU(int pass) {
     } catch (Error::ASMError e) {
       if (e == Error::undefine_symbol && pass == 1) {
         // is symbol but cant solve
+      } else if (e == Error::duplicate_define && pass == 2) {
+        // duplicate found in pass 1
+        // so pass2 ignore the error
       } else {
         printStream << "one token error " << pass << endl;
         throw e;
