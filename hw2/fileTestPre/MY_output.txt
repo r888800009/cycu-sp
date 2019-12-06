@@ -43,8 +43,8 @@ Line    Loc Source Statement                                            Object c
     36  109E             +ADD    =X'FF'                                 1B101085  
     37  10A2             +ADD    =C'EOF'                                1B101082  
     38  10A6 TESTBASE    RESW    700                                              
-    39  18DA             ADD     FOR4                                   1B27A9    
-    40  18DD COMMENT     ADD     #label8     .test                      1927A2    
+    39  18DA             ADD     FOR4                                   1B4004    
+    40  18DD COMMENT     ADD     #label8     .test                      194000    
     41                   .                                                        
     42       ERROR: undefine_error                                                
     42       ERROR       ADD     lab_err                                          

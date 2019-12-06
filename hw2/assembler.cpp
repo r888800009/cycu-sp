@@ -12,14 +12,14 @@
 
 using namespace std;
 
-bool inRange(int i) {
-  return (0 <= i && i <= 0x7ff) || (i < 0 && (i & ~0xfff) == 0xfffff000);
-}
+bool inRange(int i) { return ((int)0xfffff800 <= i && i <= 0x7ff); }
 
 bool testInRange() {
   assert(inRange(-0xfff - 2) == false);
   assert(inRange(0xfff) == false);
-  assert(inRange(-0xfff - 1) == true);
+  assert(inRange((int)0xfffff7ff) == false);
+  assert(inRange((int)0xfffff800) == true);
+  assert(inRange((int)0x000) == true);
 
   assert(inRange(0x0) == true);
   assert(inRange(0x7ff) == true);
