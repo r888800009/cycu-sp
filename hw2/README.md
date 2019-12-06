@@ -289,10 +289,10 @@ Assembler處理時發現定義此flag，產生出來的object code會將`x`設�
 ### 特例
 format2幾個指令格式比較特別，並且根據back書中定義產生
 
-- `CLEAR r1`: `r2 = 0`
-- `SHIFTL r1, n`與`SHIFTR r1, n`: `r2`會設為`n - 1`
-- `SVC n`: `r1 = n`, `r2 = 0`
-- `TIXR r1`: `r2 = 0`
+- `CLEAR r1`時`r2 = 0`
+- `SHIFTL r1, n`與`SHIFTR r1, n`時`r2`會設為`n - 1`
+- `SVC n`時`r1 = n`, `r2 = 0`
+- `TIXR r1`時`r2 = 0`
 
 format3的`RSUB`也需要特別提出來解決，並且simple定址，
 
