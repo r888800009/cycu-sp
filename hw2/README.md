@@ -302,7 +302,7 @@ format3的`RSUB`也需要特別提出來解決，並且simple定址，
 Assembler則實做後序式計算機來計算地址。
 
 ## 未完成的功能
-- 由於作業只需要輸出Object code的hex，因此尚未支援轉成二進位的機器碼檔案obj file的功能。
+- 由於作業只需要輸出Assembler Listing，因此尚未支援轉成二進位的機器碼檔案obj file的功能。
 - literal中`=x'1'`與`=c'1'`可能有所衝突，使用相同的地址但兩個objcode不應該相同。
 - `EQU`與其他指令不能處理負號Symbol(`- LABLE`)，如`sym3 equ -sym1 + sym2`
 - 多重pass的`EQU`
