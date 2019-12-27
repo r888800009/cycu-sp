@@ -1,0 +1,12 @@
+	PROGRAM A1;
+	VARIABLE INTEGER :X ,Y,I ;
+    	DIMENSION INTEGER:A(12);
+	LABEL L91,L92;
+    	I=1;
+    	X=5;
+    	Y=11
+L91 	IF X GT Y THEN GTO L92 ELSE X=X+2;
+   	A(I)=X;
+    	I=I+1;
+    	GTO L91;
+L92 	ENP;
