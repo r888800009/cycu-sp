@@ -7,6 +7,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "token.h"
+
+#define TEMP_TABLE 0
 #define DELIMITER_TABLE 1
 #define RESERVED_WORD_TABLE 2
 #define INTEGER_TABLE 3
@@ -18,10 +21,6 @@
 #define HASHTABLE_SIZE 100
 
 using namespace std;
-
-typedef struct TokenData {
-  int type, value;
-} TokenData;
 
 bool isTokenEqual(TokenData t1, TokenData t2);
 

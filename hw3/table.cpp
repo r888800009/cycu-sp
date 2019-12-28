@@ -112,8 +112,12 @@ TokenData HashTable::put(const string& token) {
 
   while (tableData[indexStep(index, step)].empty == false) {
     if (step >= HASHTABLE_SIZE) throw "Full table";
-    if (tableData[indexStep(index, step)].value == token)
+    if (tableData[indexStep(index, step)].value == token) {
+#ifdef DEEBUG
+      cout << "hash:" << indexStep(index, step) << " value: " << token;
+#endif
       return {this->tableID, indexStep(index, step)};
+    }
     step++;
   }
 
@@ -127,12 +131,14 @@ TokenData HashTable::put(const string& token) {
 }
 
 string LoadingTable::get(TokenData data) {
-  if (data.type == tableID) return revTableData[data.value];
+  if (data.type == tableID && tableData.size() > data.value && data.value >= 0)
+    return revTableData[data.value];
   return "";
 }
 
 string HashTable::get(TokenData data) {
-  if (data.type == tableID) return tableData[data.value].value;
+  if (data.type == tableID && HASHTABLE_SIZE > data.value && data.value >= 0)
+    return tableData[data.value].value;
   return "";
 }
 
