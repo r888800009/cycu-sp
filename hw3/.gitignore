@@ -1,0 +1,5 @@
+main.tab.cpp
+main.tab.hpp
+lex.yy.c
+lex.yy.o
+main.output
