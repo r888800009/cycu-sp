@@ -22,7 +22,7 @@ extern "C"
         void yyrestart(FILE *pt);
 }
 
-enum Check {check_disable, check_semicolon, check_brackets} check;
+enum Check {check_disable, check_semicolon, check_brackets ,check_ens, check_enp} check;
 extern FILE *yyin, *yyout;
 
 vector<int> argRegister;
@@ -144,12 +144,17 @@ program:
        main_program subroutine_deck;
 
 main_program:
-            program_heading block enp semicolon{
+            program_heading block {check = check_enp;} enp{check =check_disable;} semicolon{
               defineReserved({RESERVED_WORD_TABLE, 6});
               pop_scope();
             };
 
-enp: label ENP | ENP;
+error_enp: label ENS | ENS;
+
+enp: label ENP | ENP | error_enp {
+   yyerror("Do you mean ENP?");
+   YYABORT;
+ };
 
 program_heading:
                PROGRAM identifier {must_undefined($2);}
@@ -453,13 +458,18 @@ subroutine_deck: %empty
 subroutine_declaration_list:
                            subroutine_declaration|
                            subroutine_declaration_list subroutine_declaration;
-
-subroutine_declaration: subroutine_heading block ens {
+subroutine_declaration: subroutine_heading block {check = check_ens;} ens {
+                        check =check_disable;
                         defineReserved({RESERVED_WORD_TABLE, 7});
                         pop_scope();
                       } semicolon;
 
-ens: ENS | label ENS;
+error_ens: label ENP| ENP;
+
+ens: ENS | label ENS| error_ens {
+   yyerror("Do you mean ENS?");
+   YYABORT;
+ };
 
 subroutine_heading: SUBROUTINE identifier {
                       if (!isSubroutine($2, -1, lineno)) {
