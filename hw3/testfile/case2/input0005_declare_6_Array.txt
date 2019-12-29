@@ -1,0 +1,7 @@
+	PROGRAM A1;
+	VARIABLE INTEGER: in, in2 ;
+	ENP ;
+
+	SUBROUTINE A2(BOOLEAN: b1(), CHARACTER: c1(), c2, INTEGER: i1(), i2, i3(), REAL: r1, r2(), r3(), r4);
+	VARIABLE INTEGER: in, in2 ;
+	ENS;

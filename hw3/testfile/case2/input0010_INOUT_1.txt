@@ -1,0 +1,10 @@
+	PROGRAM A1;
+	VARIABLE INTEGER: i1, i2, i3 ;
+	DIMENSION INTEGER: D(20), D1(34,50), D2( 200, 40, 60 ) ;
+	INPUT i1 ;
+	OUTPUT i2 ;
+	INPUT D( 6 ) ;
+	OUTPUT D1( i2, 7 ) ;
+	INPUT D( i3 ) ;
+	OUTPUT D2( 8, i1, i2 ) ;
+	ENP ;

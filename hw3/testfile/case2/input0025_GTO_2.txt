@@ -1,0 +1,14 @@
+	PROGRAM A1 ;
+	VARIABLE INTEGER: X ;
+	LABEL	L1, L2, L3, L4, L5 ;
+	GTO L1 ;
+L1	X=1 ;
+	GTO L2 ;
+L2	X=2 ;
+	GTO L3 ;
+L3	X=3 ;
+	GTO L4 ;
+L4	X=4 ;
+	GTO L5 ;
+L5	X=5 ;
+	ENP ;

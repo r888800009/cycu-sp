@@ -1,0 +1,10 @@
+	PROGRAM A1 ;
+	LABEL	L1, L2, L3;
+	LABEL	L4, L5, L6;
+L2	GTO L1 ;
+	GTO L2 ;
+L4	GTO L1 ;
+L6	GTO L1 ;
+	GTO L4 ;
+	GTO L6 ;
+L1	ENP ;

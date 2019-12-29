@@ -1,0 +1,17 @@
+	PROGRAM A1 ;
+	VARIABLE INTEGER: i1, i2, i3 ;
+	LABEL L1 ;
+	CALL A2( -10 );
+	LABEL L2 ;
+	CALL A3( 10+10, 10-10, 10*10, 10/10, 10↑10 );
+	LABEL L3 ;
+	CALL A2( -i1 );
+	LABEL L4 ;
+	CALL A3( i1+i2, i1-i2, i1*i2, i1/i2, i1↑i2 );
+	ENP;
+
+	SUBROUTINE A2(INTEGER: f1);
+	ENS;
+	
+	SUBROUTINE A3(INTEGER: f1, f2, f3, f4, f5);
+	ENS;

@@ -1,0 +1,28 @@
+	PROGRAM A1 ;
+	VARIABLE INTEGER: i1, i2, i3 ;
+	VARIABLE REAL: r1, r2, r3 ;
+	LABEL L1 ;
+	CALL A2( 10+20*30-40/50, 10*20-30+40/50, 10+20*30/40-50 ) ;
+	LABEL L2 ;
+	CALL A2( -i1-20-i3*40/50, i1/20+i3*40↑50, i1↑20↑i3↑40↑50 ) ;
+	LABEL L3 ;
+	CALL A3( r1+2.2*r3-0.4/5.01, r1*2.2-r3+0.4/5.01, r1/2.2+r3*0.4↑5.01 ) ;
+	LABEL L4 ;
+	CALL A4( 10+20*30-(40/((50-10)*20)-30)+40/(50-(10+20)*30)/40-50 ) ;
+	LABEL L5 ;
+	CALL A4( -i1-(20-i3)*(40/50+i1/(20+i3))*40↑(50-i1)↑20↑i3↑(40↑50+10) ) ;
+	LABEL L6 ;
+	CALL A4( (10+20*30-40)/(50+10)*20-30+(40/50-(10+20)*30/40-50) ) ;
+	LABEL L7 ;
+	CALL A4( -(i1-20-i3)*40/(50-i1/20+i3*40↑(50+i1)↑20)↑i3↑40↑50 ) ;
+	ENP;
+
+	SUBROUTINE A2(INTEGER: f1, f2, f3);
+	ENS;
+
+	SUBROUTINE A3(REAL: f1, f2, f3);
+	ENS;
+	
+	SUBROUTINE A4(INTEGER: f1);
+	ENS;
+	

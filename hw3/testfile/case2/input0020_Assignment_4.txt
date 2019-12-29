@@ -1,0 +1,16 @@
+	PROGRAM A1 ;
+	VARIABLE INTEGER: i1, i2, i3 ;
+	DIMENSION INTEGER: A1( 1000 ), A2( 1000, 2000 ), A3( 1000, 2000, 3000 ) ;
+	LABEL L1 ;
+	A1(11) = 10+20*30-40/50 ;
+	LABEL L2 ;
+	A1(i1) = 10*20-30+40/50 ;
+	LABEL L3 ;
+	A2(22,33) = 10+20*30/40-50 ;
+	LABEL L4 ;
+	A2(i1,i2) = -i1-20-i3*40/50 ;
+	LABEL L5 ;
+	A3(44,55,66) = i1/20+i3*40↑50 ;
+	LABEL L6 ;
+	A3(i1,i2,i3) = (i1-i2)↑2+i3 ;
+	ENP ;

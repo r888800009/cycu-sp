@@ -1,0 +1,12 @@
+	PROGRAM A1;
+	VARIABLE INTEGER: i1, i2, i3 ;
+	DIMENSION INTEGER: Arr( 1000, 2000, 3000, 4000, 5000 ) ;
+	INPUT Arr( 123, 456, i1, i2, i3 ) ;
+	OUTPUT Arr( i1, i2, i3, 123, 456 ) ;
+	ENP ;
+
+	SUBROUTINE A2(INTEGER: i1, i2, i3 );
+	DIMENSION INTEGER: Arr( 1000, 2000, 3000, 4000, 5000 ) ;
+	INPUT Arr( i1, 123, i2, 456, i3 ) ;
+	OUTPUT Arr( i1, i2, 123, i3, 456 ) ;
+	ENP ;

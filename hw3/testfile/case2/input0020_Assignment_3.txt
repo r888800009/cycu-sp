@@ -1,0 +1,14 @@
+	PROGRAM A1 ;
+	VARIABLE INTEGER: X, i1, i2, i3 ;
+	DIMENSION INTEGER: D1( 1000 ), D2( 1000, 2000 ), D3( 1000, 2000, 3000 ) ;
+	LABEL L1 ;
+	X = D2(i1,i2)+2.7;
+	LABEL L2 ;
+	X = D1(1)/D2(2,3)↑D3(4,5,6) ;
+	LABEL L3 ;
+	X = 10+D3(1,2,3)-20*D3(4,5,6) ;
+	LABEL L4 ;
+	X = D2(1,2)*(D1(i1)-D3(i1,i2,i3))+10 ;
+	LABEL L5 ;
+	X = (10+D1(i1)-(20+D2(30,40)↑D3(50,60,i3))) ;
+	ENP ;
