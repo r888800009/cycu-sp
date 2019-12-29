@@ -260,6 +260,7 @@ assign_statement: variable '=' {push_bracket();} expression {
                     assignArray($4, $1.token, $1.index);
                   else if (!isArray($1))
                     assignVar($4, $1.token);
+                  pop_bracket();
                 };
 
 variable: identifier {
@@ -548,7 +549,7 @@ void assignVar(TokenData source, TokenData dest) {
 }
 
 void assignArray(TokenData source, TokenData dest, TokenData destIndex) {
-  addQForm({
+  addDelayQForm({
     {DELIMITER_TABLE, 4},
     source,
     dest,
@@ -633,8 +634,8 @@ TokenData pop_bracket() {
     addQForm(data);
     delayQFormQueue.pop();
   }
-
-  bracketDeep--;
+  if (bracketDeep > 1)
+    bracketDeep--;
   return lastToken;
 }
 
