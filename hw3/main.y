@@ -153,7 +153,7 @@ enp: label ENP | ENP;
 
 program_heading:
                PROGRAM identifier {must_undefined($2);}
-               semicolon { push_scope(defineID($2, get_scope(), -1, -1).value);};
+               semicolon { push_scope(defineID($2, -1, -1, -1).value);};
 
 identifier: IDENTIFIER { $$ = $1; /*add_identifier($1);*/};
 
@@ -289,11 +289,10 @@ variable_sub_list: variable_sub {
                  | variable_sub_list ',' variable_sub
                  {
                     // variable_sub - 1
-                    TokenData sub1 = getTemper();
-                    addQForm({{DELIMITER_TABLE, 6}, $3 ,{INTEGER_TABLE, add_integer("1")}, sub1 });
+                    TokenData sub1 = getDelayReg();
+                    addDelayQForm({{DELIMITER_TABLE, 6}, $3 ,{INTEGER_TABLE, add_integer("1")}, sub1 });
 
                     // (variable_sub - 1) * variable_sub_list.size
-                    TokenData mul1 = getTemper();
 
                     if (arrayIndex >= arraySize) {
                       stringstream ss;
@@ -302,14 +301,21 @@ variable_sub_list: variable_sub {
                       YYABORT;
                     }
 
-                    string sizeStr = to_string(infoTab.at(arrayBegin + arrayIndex - 1));
+                    TokenData mul1;
+                    int index = arrayIndex;
+                    while (index > 0) {
+                      mul1 = getDelayReg();
+                      string sizeStr = to_string(infoTab.at(arrayBegin + index - 1));
+                      addDelayQForm({{DELIMITER_TABLE, 7}, sub1 ,{INTEGER_TABLE, add_integer(sizeStr)}, mul1 });
+                      sub1 = mul1;
+                      index--;
+                    }
+
                     arrayIndex++;
 
-                    addQForm({{DELIMITER_TABLE, 7}, sub1 ,{INTEGER_TABLE, add_integer(sizeStr)}, mul1 });
-
                     // (variable_sub - 1) * variable_sub_list.size + variable_sub_list
-                    $$ = getTemper();
-                    addQForm({{DELIMITER_TABLE, 5}, $1, mul1, $$});
+                    $$ = getDelayReg();
+                    addDelayQForm({{DELIMITER_TABLE, 5}, $1, mul1, $$});
                  };
 
 variable_sub: unsigned_integer {
@@ -362,7 +368,7 @@ multiplying_operator:'*' {$$ = {DELIMITER_TABLE, 7};}
 
 factor: variable {
                   if (isArray($1)) {
-                   $$ = getTemper();
+                   $$ = getDelayReg();
                    getArray($1.token, $1.index, $$);
                   } else if (!isArray($1))
                     $$ = $1.token;
@@ -551,7 +557,7 @@ void assignArray(TokenData source, TokenData dest, TokenData destIndex) {
 }
 
 void getArray(TokenData source, TokenData sourceIndex, TokenData dest) {
-  addQForm({
+  addDelayQForm({
     {DELIMITER_TABLE, 4},
     source,
     sourceIndex,
