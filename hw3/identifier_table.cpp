@@ -101,3 +101,8 @@ TokenData getID(const string& id, int scope) {
   int index = getIDIndex(id, scope, true);
   return {IDENTIFIER_TABLE, index};
 }
+
+int getPointer(const string& id, int scope) {
+  int index = getIDIndex(id, scope, true);
+  return idTableData[index].pointer;
+}

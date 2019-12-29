@@ -5,6 +5,7 @@
 #include "quadruple.h"
 #include "identifier_table.h"
 #include <vector>
+#include <sstream>
 
 extern "C"
 {
@@ -23,6 +24,9 @@ enum Check {check_disable, check_semicolon, check_brackets} check;
 extern FILE *yyin, *yyout;
 
 vector<int> argRegister;
+vector<int> infoTab;
+int arrayBegin, arrayIndex;
+int arraySize;
 
 int lineno = 1;
 
@@ -207,16 +211,51 @@ variable: identifier {
           must_defined($1);
           $$ = {getID($1, get_scope()), {-1,-1}};
         }
-        | identifier bracket_left variable_sub_list
+        | identifier
+        {
+          infoTab = getInfoTable();
+          arrayBegin = getPointer($1, get_scope());
+          arrayBegin++; // type to dim
+          arraySize = infoTab.at(arrayBegin);
+          arrayBegin++; // dim to item1
+          arrayIndex = 0;
+        }
+        bracket_left
+        variable_sub_list
         bracket_right {
           must_defined($1);
-          $$ = {getID($1, get_scope()), $3};
+          $$ = {getID($1, get_scope()), $4};
         };
 
 variable_sub_list: variable_sub {
                     $$ = $1;
+                    arrayIndex++;
                  }
-                 | variable_sub_list ',' variable_sub;
+                 | variable_sub_list ',' variable_sub
+                 {
+                    // variable_sub - 1
+                    TokenData sub1 = getTemper();
+                    addQForm({{DELIMITER_TABLE, 6}, $3 ,{INTEGER_TABLE, add_integer("1")}, sub1 });
+
+                    // (variable_sub - 1) * variable_sub_list.size
+                    TokenData mul1 = getTemper();
+
+                    if (arrayIndex >= arraySize) {
+                      stringstream ss;
+                      ss << "array dim error size is " << arraySize;
+                      yyerror(ss.str().c_str());
+                      YYABORT;
+                    }
+
+                    string sizeStr = to_string(infoTab.at(arrayBegin + arrayIndex - 1));
+                    arrayIndex++;
+
+                    addQForm({{DELIMITER_TABLE, 7}, sub1 ,{INTEGER_TABLE, add_integer(sizeStr)}, mul1 });
+
+                    // (variable_sub - 1) * variable_sub_list.size + variable_sub_list
+                    $$ = getTemper();
+                    addQForm({{DELIMITER_TABLE, 5}, $1, mul1, $$});
+                 };
 
 variable_sub: unsigned_integer {
               $$ = {INTEGER_TABLE, add_integer($1)};
@@ -508,10 +547,10 @@ void yyerror(char const *s) {
   printQForm(yyout);
   switch (check) {
     case check_semicolon:
-      fprintf(yyout, "syntax error line %d: ';' not found?\n", lineno - 1);
+      fprintf(yyout, "%s line %d: ';' not found?\n",s ,lineno - 1);
       break;
     case check_brackets:
-      fprintf(yyout, "syntax error line %d: ')' not found?\n", lineno);
+      fprintf(yyout, "%s line %d: ')' not found?\n",s ,lineno);
       break;
     default:
       fprintf(yyout, "%s line %d\n", s, lineno);

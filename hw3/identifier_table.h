@@ -29,6 +29,8 @@ TokenData defineSubroutine(const string& id, int scope, int pointer);
 string getIDString(TokenData token);
 TokenData getID(const string& id, int scope);
 
+int getPointer(const string& id, int scope);
+
 int hasSubRoutineUndefine();
 
 #endif
