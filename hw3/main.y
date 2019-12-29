@@ -110,10 +110,13 @@ program:
        main_program subroutine_deck;
 
 main_program:
-            program_heading block ENP {
+            program_heading block enp semicolon{
               defineReserved({RESERVED_WORD_TABLE, 6});
               pop_scope();
-            } semicolon;
+            };
+
+enp: label ENP | ENP;
+
 program_heading:
                PROGRAM identifier {must_undefined($2);}
                semicolon { push_scope(defineID($2, get_scope(), -1, -1).value);};
@@ -126,7 +129,7 @@ block_sub:
      array_declaration_part|
      variable_declaration_part|
      label_declaration_part|
-     statement_part;
+     statement;
 
 array_declaration_part: array_declaration_part_sub_list;
 
@@ -194,10 +197,6 @@ label_list: label {
           };
 
 label: identifier {$$ = $1;};
-statement_part: statement_list;
-statement_list:
-              statement |
-              statement_list statement;
 
 statement: unlabelled_statement semicolon |
          label unlabelled_statement semicolon;
@@ -404,10 +403,12 @@ subroutine_declaration_list:
                            subroutine_declaration|
                            subroutine_declaration_list subroutine_declaration;
 
-subroutine_declaration: subroutine_heading block ENS {
+subroutine_declaration: subroutine_heading block ens {
                         defineReserved({RESERVED_WORD_TABLE, 7});
                         pop_scope();
                       } semicolon;
+
+ens: ENS | label ENS;
 
 subroutine_heading: SUBROUTINE identifier {
                       if (!isSubroutine($2, -1, lineno)) {
@@ -564,8 +565,8 @@ int main ()
 }
 
 void yyerror(char const *s) {
-  //printf("syntax error line %d: '%s'\n", lineno, s);
   printQForm(yyout);
+  //fprintf(yyout, "syntax error line %d: '%s'\n", lineno, yylval.intStr); // debug line
   switch (check) {
     case check_semicolon:
       fprintf(yyout, "%s line %d: ';' not found?\n",s ,lineno - 1);
