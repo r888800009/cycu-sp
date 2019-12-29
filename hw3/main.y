@@ -6,6 +6,8 @@
 #include "identifier_table.h"
 #include <vector>
 #include <sstream>
+#include <queue>
+#include <map>
 
 extern "C"
 {
@@ -29,6 +31,38 @@ int arrayBegin, arrayIndex;
 int arraySize;
 
 int lineno = 1;
+int bracketDeep = 0;
+
+int delayTmpRegIndex;
+int delayTmpIndex;
+map<int, TokenData> delayTmpMap;
+
+typedef struct DelayQForm {
+  QuadrupleForm qform;
+  int bracketDeep;
+  int index;
+  bool operator<(const DelayQForm& dqform) const
+  {
+    if (bracketDeep == dqform.bracketDeep)
+      return index > dqform.index;
+
+    return bracketDeep < dqform.bracketDeep;
+  }
+
+  bool operator==(const DelayQForm& dqform) const
+  {
+    return bracketDeep == dqform.bracketDeep;
+  }
+} DelayQForm;
+
+priority_queue<DelayQForm> delayQFormQueue;
+
+void push_bracket();
+TokenData pop_bracket();
+void addDelayQForm(QuadrupleForm qform);
+TokenData getDelayReg();
+bool isDelayRegToken(TokenData token);
+
 
 int dataType; // compiler.h TYPE_*
 
@@ -208,14 +242,24 @@ statement_I : empty_statement |
             assign_statement |
             call_statement |
             IO_statement|
-            go_to_statement;
+            go_to_statement ;
 
 empty_statement: %empty ;
-assign_statement: variable '=' expression {
+assign_statement: variable '=' {push_bracket();} expression {
+                  pop_bracket();
+                  if (isDelayRegToken($4)) {
+                    auto it = delayTmpMap.find($4.value);
+                    if (it == delayTmpMap.end())
+                      cout << "Error! $4 not set"  <<endl;
+                    else {
+                      $4 = it->second;
+                    }
+                  }
+
                   if (isArray($1))
-                    assignArray($3, $1.token, $1.index);
+                    assignArray($4, $1.token, $1.index);
                   else if (!isArray($1))
-                    assignVar($3, $1.token);
+                    assignVar($4, $1.token);
                 };
 
 variable: identifier {
@@ -278,8 +322,8 @@ variable_sub: unsigned_integer {
 
 expression: simple_expression {$$ = $1;}|
           simple_expression relational_operator simple_expression {
-            $$ = getTemper();
-            addQForm({$2, $1, $3, $$});
+            $$ = getDelayReg();
+            addDelayQForm({$2, $1, $3, $$});
           };
 
 relational_operator:EQ {$$ = {RESERVED_WORD_TABLE, 8};}
@@ -291,11 +335,11 @@ relational_operator:EQ {$$ = {RESERVED_WORD_TABLE, 8};}
 
 simple_expression: term {$$ = $1;} |
                  sign term {
-                  $$ = getTemper();
-                  addQForm({$1, {INTEGER_TABLE, add_integer("0")}, $2, $$ });}
+                  $$ = getDelayReg();
+                  addDelayQForm({$1, {INTEGER_TABLE, add_integer("0")}, $2, $$ });}
                   |simple_expression adding_operator term {
-                  $$ = getTemper();
-                  addQForm({$2, $1, $3, $$});
+                  $$ = getDelayReg();
+                  addDelayQForm({$2, $1, $3, $$});
                  };
 
 adding_operator:'+' {$$ = {DELIMITER_TABLE, 5};}
@@ -304,12 +348,12 @@ adding_operator:'+' {$$ = {DELIMITER_TABLE, 5};}
 
 term: factor {$$ = $1;}
     | term multiplying_operator term {
-                  $$ = getTemper();
-                  addQForm({$2, $1, $3, $$});
+                  $$ = getDelayReg();
+                  addDelayQForm({$2, $1, $3, $$});
                  }
     |term POW term {
-                  $$ = getTemper();
-                  addQForm({{DELIMITER_TABLE, 9}, $1, $3, $$});
+                  $$ = getDelayReg();
+                  addDelayQForm({{DELIMITER_TABLE, 9}, $1, $3, $$});
                  }
 
 multiplying_operator:'*' {$$ = {DELIMITER_TABLE, 7};}
@@ -324,7 +368,7 @@ factor: variable {
                     $$ = $1.token;
       }
       | unsigned_constant {$$ = $1;}
-      | bracket_left expression bracket_right {$$ = $2;};
+      | bracket_left {push_bracket();} expression bracket_right {$$ = $3; pop_bracket();};
 
 unsigned_constant: unsigned_number {$$ = $1;}
                  | constant_identifier {$$ = $1;};
@@ -383,7 +427,7 @@ constant:
 
 IO_statement: INPUT variable| OUTPUT variable;
 number_size: unsigned_integer;
-go_to_statement: GTO label;
+go_to_statement: GTO label { cout << "GTO not work!" << endl;};
 
 if_statement: IF condition THEN statement_I
             | IF condition THEN statement_I ELSE statement_I;
@@ -526,8 +570,70 @@ int init()
 {
   check = check_disable;
   lineno = 1;
+  bracketDeep = 0;
+  delayTmpRegIndex = 0;
+  delayTmpIndex = 0;
   yyrestart(fptr);
   resetCompiler();
+  delayQFormQueue = priority_queue<DelayQForm> ();
+}
+
+void addDelayQForm(QuadrupleForm qform) {
+  delayQFormQueue.push({qform, bracketDeep, delayTmpIndex++});
+}
+
+void push_bracket() {
+  bracketDeep++;
+  delayTmpIndex = 0;
+}
+
+bool isDelayRegToken(TokenData token){
+  return token.type == DELAY_TMPER_REGISTER;
+}
+
+TokenData pop_bracket() {
+  TokenData lastToken;
+  QForm data;
+  while (!delayQFormQueue.empty() && delayQFormQueue.top().bracketDeep == bracketDeep) {
+    data = delayQFormQueue.top().qform;
+    // check op1
+    if (isDelayRegToken(data.opd1)) {
+      auto it = delayTmpMap.find(data.opd1.value);
+      if (it == delayTmpMap.end())
+        cout << "Error! opd1 not set"  <<endl;
+      else {
+        data.opd1 = it->second;
+      }
+    }
+    // check op2
+    if (isDelayRegToken(data.opd2)) {
+      auto it = delayTmpMap.find(data.opd2.value);
+      if (it == delayTmpMap.end())
+        cout << "Error! opd2 not set"  <<endl;
+      else {
+        data.opd2 = it->second;
+      }
+    }
+
+    // gen result op
+    if (isDelayRegToken(data.result)) {
+        TokenData reg = getTemper();
+        delayTmpMap[data.result.value] = reg;
+        data.result = reg;
+    }
+
+    // gen code
+    lastToken = data.result;
+    addQForm(data);
+    delayQFormQueue.pop();
+  }
+
+  bracketDeep--;
+  return lastToken;
+}
+
+TokenData getDelayReg() {
+  return {DELAY_TMPER_REGISTER, delayTmpRegIndex++};
 }
 
 int main ()

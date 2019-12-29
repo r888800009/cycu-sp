@@ -18,6 +18,8 @@
 #define QUADRUPLE_TABLE 6
 #define INFORMATION_TABLE 7
 
+#define DELAY_TMPER_REGISTER 8
+
 #define HASHTABLE_SIZE 100
 
 using namespace std;
