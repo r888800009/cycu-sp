@@ -47,6 +47,9 @@ VARIABLE {return VARIABLE;}
 
 {id} {
   yylval.idStr = strdup(yytext);
+  if (strcmp(yytext, "LABLE") == 0)
+    warning("do you mean LABEL?");
+
   return IDENTIFIER;
 }
 
@@ -61,3 +64,7 @@ VARIABLE {return VARIABLE;}
   return yytext[0];
 }
 %%
+
+void warning(const char *str) {
+  fprintf(yyout, "Warning line %d: %s\n", lineno, str);
+}
