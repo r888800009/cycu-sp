@@ -56,5 +56,8 @@ VARIABLE {return VARIABLE;}
 }
 
 {nl} {lineno++;}
-. {return yytext[0];}
+. {
+  yylval.lastChar = yytext[0];
+  return yytext[0];
+}
 %%

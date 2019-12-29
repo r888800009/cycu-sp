@@ -40,6 +40,7 @@ void assignArray(TokenData source, TokenData dest, TokenData destIndex);
 void getArray(TokenData source, TokenData sourceIndex, TokenData dest);
 void eqaltion(TokenData op1, TokenData op2, TokenData dest);
 bool isArray(ArrayToken token);
+void defineLabel(const string &id);
 
 #define must_defined(str) {\
   if (!isIDDefined(str, get_scope())) {\
@@ -68,6 +69,7 @@ bool isArray(ArrayToken token);
   char *intStr;
   char *floatStr;
   char *idStr;
+  char lastChar;
   int dataType;
   TokenData token;
   ArrayToken arrayToken;
@@ -179,7 +181,14 @@ identifier_list: identifier {
 label_declaration_part:
                       LABEL label_list semicolon;
 
-label_list: label {must_undefined($1);} | label_list ',' label {must_undefined($3);};
+label_list: label {
+            must_undefined($1);
+            defineLabel($1);
+          } 
+          | label_list ',' label {
+            must_undefined($3);
+            defineLabel($3);
+          };
 
 label: identifier {$$ = $1;};
 statement_part: statement_list;
@@ -466,6 +475,15 @@ void defineArray(const string &id, int pointer) {
    });
 }
 
+void defineLabel(const string &id) {
+  addQForm({
+    defineID(id, get_scope(), TYPE_LABEL, -1),
+    NULL_TOKEN,
+    NULL_TOKEN,
+    NULL_TOKEN
+   });
+}
+
 void assignVar(TokenData source, TokenData dest) {
   addQForm({
     {DELIMITER_TABLE, 4},
@@ -548,6 +566,7 @@ void yyerror(char const *s) {
   switch (check) {
     case check_semicolon:
       fprintf(yyout, "%s line %d: ';' not found?\n",s ,lineno - 1);
+      fprintf(yyout, "(or line %d has some problem)\n", lineno);
       break;
     case check_brackets:
       fprintf(yyout, "%s line %d: ')' not found?\n",s ,lineno);
