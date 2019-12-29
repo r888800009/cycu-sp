@@ -437,7 +437,32 @@ constant:
         };
 
 
-IO_statement: INPUT variable| OUTPUT variable;
+IO_statement: INPUT variable {
+              TokenData t; 
+              pop_bracket();
+              if (isArray($2)) {
+                t = getTemper();
+                 getArray($2.token, $2.index, t);
+              } else if (!isArray($2))
+                t = $2.token;
+              pop_bracket();
+
+              addQForm({{RESERVED_WORD_TABLE, 13}, NULL_TOKEN, NULL_TOKEN, t });
+            }
+            | OUTPUT variable {
+              TokenData t; 
+
+              pop_bracket();
+              if (isArray($2)) {
+                t = getTemper();
+                 getArray($2.token, $2.index, t);
+              } else if (!isArray($2))
+                t = $2.token;
+              pop_bracket();
+
+              addQForm({{RESERVED_WORD_TABLE, 20}, NULL_TOKEN, NULL_TOKEN, t });
+            };
+
 number_size: unsigned_integer;
 go_to_statement: GTO label { cout << "GTO not work!" << endl;};
 

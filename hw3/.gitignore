@@ -3,3 +3,7 @@ main.tab.hpp
 lex.yy.c
 lex.yy.o
 main.output
+tmpout
+peda-session-a.out.txt
+a.out
+.gdb_history

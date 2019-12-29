@@ -90,9 +90,11 @@ string printSource(QuadrupleForm qform) {
             {infoTab.at(argBegin + i * 2), infoTab.at(argBegin + i * 2 + 1)});
       }
       ss << ")";
-    } else if (opr.type == RESERVED_WORD_TABLE)
+    } else if (opr.type == RESERVED_WORD_TABLE) {
       ss << getString(opr);
-    else if (opr.type == DELIMITER_TABLE)
+      if (!isTokenEqual(result, NULL_TOKEN)) ss << " " << getString(result);
+
+    } else if (opr.type == DELIMITER_TABLE)
       ss << getString(result) << " = " << getString(opd1) << getString(opr)
          << getString(opd2);
   }
