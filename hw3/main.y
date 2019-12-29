@@ -79,9 +79,6 @@ void defineLabel(const string &id);
 %token IF INPUT INTEGER LABEL OUTPUT REAL
 %token SUBROUTINE THEN VARIABLE
 
-%left OR
-%left AND
-%left EQ NE GE GT LE LT
 
 %token <intStr> UNSIGNED_INTEGER
 %token <floatStr> UNSIGNED_REAL
@@ -94,11 +91,17 @@ void defineLabel(const string &id);
 %type <token> expression simple_expression term sign factor unsigned_constant unsigned_number unsigned_real
 %type <token> subroutine_identifier argument_list argument constant constant_identifier
 
+%nonassoc ';'
+
+%left OR
+%left AND
+%left EQ NE GE GT LE LT
+
 %right '='
 %left '+' '-'
 %left '*' '/'
 %right POW
-%nonassoc ';'
+%left '(' ')'
 
 %start program
 
