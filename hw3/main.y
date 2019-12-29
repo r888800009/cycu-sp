@@ -252,20 +252,11 @@ statement_I : empty_statement |
 empty_statement: %empty ;
 assign_statement: variable '=' {push_bracket();} expression {
                   pop_bracket();
-                  if (isDelayRegToken($4)) {
-                    auto it = delayTmpMap.find($4.value);
-                    if (it == delayTmpMap.end())
-                      cout << "Error! $4 not set"  <<endl;
-                    else {
-                      $4 = it->second;
-                    }
-                  }
 
                   if (isArray($1))
                     assignArray($4, $1.token, $1.index);
                   else if (!isArray($1))
                     assignVar($4, $1.token);
-                  pop_bracket();
                 };
 
 variable: identifier {
@@ -295,8 +286,8 @@ variable_sub_list: variable_sub {
                  | variable_sub_list ',' variable_sub
                  {
                     // variable_sub - 1
-                    TokenData sub1 = getDelayReg();
-                    addDelayQForm({{DELIMITER_TABLE, 6}, $3 ,{INTEGER_TABLE, add_integer("1")}, sub1 });
+                    TokenData sub1 = getTemper();
+                    addQForm({{DELIMITER_TABLE, 6}, $3 ,{INTEGER_TABLE, add_integer("1")}, sub1 });
 
                     // (variable_sub - 1) * variable_sub_list.size
 
@@ -310,9 +301,9 @@ variable_sub_list: variable_sub {
                     TokenData mul1;
                     int index = arrayIndex;
                     while (index > 0) {
-                      mul1 = getDelayReg();
+                      mul1 = getTemper();
                       string sizeStr = to_string(infoTab.at(arrayBegin + index - 1));
-                      addDelayQForm({{DELIMITER_TABLE, 7}, sub1 ,{INTEGER_TABLE, add_integer(sizeStr)}, mul1 });
+                      addQForm({{DELIMITER_TABLE, 7}, sub1 ,{INTEGER_TABLE, add_integer(sizeStr)}, mul1 });
                       sub1 = mul1;
                       index--;
                     }
@@ -320,8 +311,8 @@ variable_sub_list: variable_sub {
                     arrayIndex++;
 
                     // (variable_sub - 1) * variable_sub_list.size + variable_sub_list
-                    $$ = getDelayReg();
-                    addDelayQForm({{DELIMITER_TABLE, 5}, $1, mul1, $$});
+                    $$ = getTemper();
+                    addQForm({{DELIMITER_TABLE, 5}, $1, mul1, $$});
                  };
 
 variable_sub: unsigned_integer {
@@ -537,7 +528,7 @@ bracket_right: ')' {check = check_disable;};
 using namespace std;
 
 FILE *fptr;
-
+QuadrupleForm checkQForm(QuadrupleForm data);
 void defineVar(const string &id) {
   addQForm({
     defineID(id, get_scope(), dataType, -1),
@@ -575,30 +566,61 @@ void defineLabel(const string &id) {
 }
 
 void assignVar(TokenData source, TokenData dest) {
-  addQForm({
+  addQForm(checkQForm({
     {DELIMITER_TABLE, 4},
     source,
     NULL_TOKEN,
     dest 
-   });
+   }));
+}
+
+QuadrupleForm checkQForm(QuadrupleForm data) {
+  // check op1
+  if (isDelayRegToken(data.opd1)) {
+    auto it = delayTmpMap.find(data.opd1.value);
+    if (it == delayTmpMap.end())
+      cout << "Error! opd1 not set"  <<endl;
+    else {
+      data.opd1 = it->second;
+    }
+  }
+
+  // check op2
+  if (isDelayRegToken(data.opd2)) {
+    auto it = delayTmpMap.find(data.opd2.value);
+    if (it == delayTmpMap.end())
+      cout << "Error! opd2 not set"  <<endl;
+    else {
+      data.opd2 = it->second;
+    }
+  }
+
+  // gen result op
+  if (isDelayRegToken(data.result)) {
+      TokenData reg = getTemper();
+      delayTmpMap[data.result.value] = reg;
+      data.result = reg;
+  }
+
+  return data;
 }
 
 void assignArray(TokenData source, TokenData dest, TokenData destIndex) {
-  addDelayQForm({
+  addQForm(checkQForm({
     {DELIMITER_TABLE, 4},
     source,
     dest,
     destIndex
-   });
+   }));
 }
 
 void getArray(TokenData source, TokenData sourceIndex, TokenData dest) {
-  addDelayQForm({
+  addQForm(checkQForm({
     {DELIMITER_TABLE, 4},
     source,
     sourceIndex,
     dest
-   });
+   }));
 }
 
 bool isArray(ArrayToken token) {
@@ -638,31 +660,7 @@ TokenData pop_bracket() {
   QForm data;
   while (!delayQFormQueue.empty() && delayQFormQueue.top().bracketDeep == bracketDeep) {
     data = delayQFormQueue.top().qform;
-    // check op1
-    if (isDelayRegToken(data.opd1)) {
-      auto it = delayTmpMap.find(data.opd1.value);
-      if (it == delayTmpMap.end())
-        cout << "Error! opd1 not set"  <<endl;
-      else {
-        data.opd1 = it->second;
-      }
-    }
-    // check op2
-    if (isDelayRegToken(data.opd2)) {
-      auto it = delayTmpMap.find(data.opd2.value);
-      if (it == delayTmpMap.end())
-        cout << "Error! opd2 not set"  <<endl;
-      else {
-        data.opd2 = it->second;
-      }
-    }
-
-    // gen result op
-    if (isDelayRegToken(data.result)) {
-        TokenData reg = getTemper();
-        delayTmpMap[data.result.value] = reg;
-        data.result = reg;
-    }
+    data = checkQForm(data);
 
     // gen code
     lastToken = data.result;
