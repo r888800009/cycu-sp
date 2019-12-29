@@ -303,11 +303,11 @@ adding_operator:'+' {$$ = {DELIMITER_TABLE, 5};}
                |OR {$$ = {RESERVED_WORD_TABLE, 19};};
 
 term: factor {$$ = $1;}
-    | term multiplying_operator factor {
+    | term multiplying_operator term {
                   $$ = getTemper();
                   addQForm({$2, $1, $3, $$});
                  }
-    | factor POW term {
+    |term POW term {
                   $$ = getTemper();
                   addQForm({{DELIMITER_TABLE, 9}, $1, $3, $$});
                  }
@@ -532,24 +532,30 @@ int init()
 
 int main ()
 {
-  string filename;
+  string filename, writeName;
 
   while (cin >> filename) {
     cout << "read file: \"" << filename <<
     "\"" << endl;
+    writeName = filename + ".output";
+    cout << "write file\"" << writeName <<
+    "\"" << endl;
 
     fptr = fopen(filename.c_str() ,"r");
-    //fptr = fopen("testfile/e1.txt" ,"r");
-    //fptr = fopen("e2.txt" ,"r");
-    //fptr = fopen("testfile/input.txt" ,"r");
-    //fptr = fopen("tet.txt" ,"r");
+    FILE* outpt =  fopen(writeName.c_str() ,"w");
     if (!fptr) {
       printf("file read error\n");
       continue;
     }
 
+    if (!outpt) {
+      printf("write file error\n");
+      continue;
+    }
+
     init();
     yyin = fptr;
+    yyout = outpt;
 
     if(yyparse() == 0) {
       printQForm(yyout);
@@ -559,6 +565,16 @@ int main ()
     }
 
     fclose(yyin);
+    fclose(outpt);
+
+    // print outfile
+    fptr = fopen(writeName.c_str() ,"r");
+    char buf[100];
+    while (fgets(buf, sizeof(buf), fptr) != NULL) {
+        cout << buf;
+    }
+
+    fclose(fptr);
   }
 
   return 0;
