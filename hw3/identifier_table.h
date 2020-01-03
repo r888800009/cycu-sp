@@ -35,4 +35,8 @@ int hasSubRoutineUndefine();
 string getGTOString(TokenData token);
 bool hasLabel(TokenData token);
 
+bool defineLabelStatement(const string& id, int scope, int pointer);
+bool referenceLabel(const string& id, int scope, int pointer);
+bool checkLabel();
+
 #endif

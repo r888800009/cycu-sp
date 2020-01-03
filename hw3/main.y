@@ -248,7 +248,13 @@ label_list: label {
 label: identifier {$$ = $1;};
 
 statement: unlabelled_statement semicolon |
-         label unlabelled_statement semicolon;
+         label { 
+                if(!defineLabelStatement($1, get_scope(), getQFormNext())) {
+                    yyerror("define label statement error");
+                    YYABORT;
+                  }
+            }
+         unlabelled_statement semicolon;
 
 unlabelled_statement:
                     statement_I |if_statement;
@@ -460,7 +466,12 @@ IO_statement: INPUT variable {
             };
 
 go_to_statement: GTO label {
-                 addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN });
+                 int pointer = addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN});
+                 if(!referenceLabel($2, get_scope(),  pointer)) {
+                   yyerror("reference label error");
+                   YYABORT;
+                 }
+
                  cout << "GTO not work!" << endl;
                };
 

@@ -134,9 +134,6 @@ string printSource(QuadrupleForm qform) {
       else {
         ss << getString(result) << " = " << getString(opd1) << " "
            << getString(opr) << " " << getString(opd2);
-        // ss << getString(opr);
-        // if (!isTokenEqual(result, NULL_TOKEN)) ss << " " <<
-        // getString(result);
       }
 
     } else if (opr.type == DELIMITER_TABLE)

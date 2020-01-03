@@ -4,9 +4,13 @@
 #include "identifier_table.h"
 
 #include <sstream>
+#include <vector>
+
+#include "quadruple.h"
 
 IDData idTableData[HASHTABLE_SIZE];
 int firstUndefineLine[HASHTABLE_SIZE];
+vector<int> undefineGTO[HASHTABLE_SIZE];
 
 string getGTOString(TokenData token) {
   stringstream ss;
@@ -40,6 +44,7 @@ bool hasLabel(TokenData token) {
 void resetIDTable() {
   fill_n(idTableData, HASHTABLE_SIZE, IDData{"", -1, -1, -1, false});
   fill_n(firstUndefineLine, HASHTABLE_SIZE, -1);
+  for (int i = 0; i < HASHTABLE_SIZE; i++) undefineGTO[i].clear();
 }
 
 int hasSubRoutineUndefine() {
@@ -136,4 +141,47 @@ TokenData getID(const string& id, int scope) {
 int getPointer(const string& id, int scope) {
   int index = getIDIndex(id, scope, true);
   return idTableData[index].pointer;
+}
+
+bool defineLabelStatement(const string& id, int scope, int pointer) {
+  if (isIDDefined(id, scope)) {
+    int index = getIDIndex(id, scope, true);
+
+    if (idTableData[index].type != TYPE_LABEL) return false;
+
+    if (idTableData[index].pointer != -1) return false;
+
+    idTableData[index].pointer = pointer;
+
+    for (auto it : undefineGTO[index])
+      modifyQFormResult(it, {QUADRUPLE_TABLE, pointer});
+
+    undefineGTO[index].clear();
+    return true;
+  }
+
+  return false;
+}
+
+bool referenceLabel(const string& id, int scope, int pointer) {
+  if (isIDDefined(id, scope)) {
+    int index = getIDIndex(id, scope, true);
+
+    if (!idTableData[index].type == TYPE_LABEL) return false;
+
+    if (idTableData[index].pointer == -1)
+      undefineGTO[index].push_back(pointer);
+    else
+      modifyQFormResult(pointer, {QUADRUPLE_TABLE, idTableData[index].pointer});
+    return true;
+  }
+
+  return false;
+}
+
+bool checkLabel() {
+  for (int i = 0; i < HASHTABLE_SIZE; i++)
+    if (undefineGTO[i].size() != 0) return false;
+
+  return true;
 }
