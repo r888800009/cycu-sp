@@ -468,8 +468,10 @@ go_to_statement: GTO label {
                  cout << "GTO not work!" << endl;
                };
 
-if_statement: IF condition THEN {putIfBeginCode($2);} statement_I ELSE {putIfTrueEndCode();} statement_I {putIfFalseCode();}
-            | IF condition THEN {putIfBeginCode($2);} statement_I {putIfTrueEndCode(); putIfFalseCode();};
+if_statement: IF condition THEN {putIfBeginCode($2);} statement_I if_else;
+
+if_else: ELSE {putIfTrueEndCode();} statement_I {putIfFalseCode();}
+       | %empty {putIfTrueEndCode(); putIfFalseCode();};
 
 condition:condition_variable relations condition_variable
          {
