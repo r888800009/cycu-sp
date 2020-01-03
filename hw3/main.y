@@ -733,7 +733,7 @@ int main ()
   qformTest();
 #endif
   string filename, writeName;
-
+  cout << "input filename:" ;
   while (cin >> filename) {
     cout << "read file: \"" << filename <<
     "\"" << endl;
@@ -745,11 +745,13 @@ int main ()
     FILE* outpt =  fopen(writeName.c_str() ,"w");
     if (!fptr) {
       printf("file read error\n");
+      cout << "input filename:" ;
       continue;
     }
 
     if (!outpt) {
       printf("write file error\n");
+      cout << "input filename:" ;
       continue;
     }
 
@@ -775,6 +777,7 @@ int main ()
     }
 
     fclose(fptr);
+    cout << "input filename:" ;
   }
 
   return 0;
