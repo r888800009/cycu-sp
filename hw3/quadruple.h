@@ -13,7 +13,13 @@ typedef struct QuadrupleForm {
 
 void quadrupleReset();
 int getQFormSize();
+int getQFormNext();
 int addQForm(QuadrupleForm qform);
 void printQForm(FILE *fp);
 
+void modifyQFormOP1(int index, TokenData token);
+void modifyQFormOP2(int index, TokenData token);
+void modifyQFormResult(int index, TokenData token);
+
+void qformTest();
 #endif

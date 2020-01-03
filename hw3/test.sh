@@ -1,6 +1,6 @@
 #!/bin/bash
-
 ./build.sh
+echo |./a.out
 
 rm tmpout -r
 mkdir tmpout

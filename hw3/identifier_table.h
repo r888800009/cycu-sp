@@ -32,5 +32,7 @@ TokenData getID(const string& id, int scope);
 int getPointer(const string& id, int scope);
 
 int hasSubRoutineUndefine();
+string getGTOString(TokenData token);
+bool hasLabel(TokenData token);
 
 #endif

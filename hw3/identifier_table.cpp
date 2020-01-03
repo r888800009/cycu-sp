@@ -3,8 +3,39 @@
 
 #include "identifier_table.h"
 
+#include <sstream>
+
 IDData idTableData[HASHTABLE_SIZE];
 int firstUndefineLine[HASHTABLE_SIZE];
+
+string getGTOString(TokenData token) {
+  stringstream ss;
+  if (token.type != QUADRUPLE_TABLE)
+    cout << "id table GTO String Error!" << endl;
+
+  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+    if (idTableData[i].pointer == token.value &&
+        idTableData[i].type == TYPE_LABEL) {
+      ss << idTableData[i].id;
+      return ss.str();
+    }
+  }
+
+  ss << token.value;
+  return ss.str();
+}
+
+bool hasLabel(TokenData token) {
+  if (token.type != QUADRUPLE_TABLE) return false;
+
+  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+    if (idTableData[i].pointer == token.value &&
+        idTableData[i].type == TYPE_LABEL)
+      return true;
+  }
+
+  return false;
+}
 
 void resetIDTable() {
   fill_n(idTableData, HASHTABLE_SIZE, IDData{"", -1, -1, -1, false});

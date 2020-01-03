@@ -76,6 +76,7 @@ void eqaltion(TokenData op1, TokenData op2, TokenData dest);
 bool isArray(ArrayToken token);
 void defineLabel(const string &id);
 
+#define GTO_TABLE_VALUE 11
 #define must_defined(str) {\
   if (!isIDDefined(str, get_scope())) {\
     yyerror("undefined identifier"); \
@@ -91,6 +92,11 @@ void defineLabel(const string &id);
   YYABORT;\
   }\
 }
+
+int ifBeginIndex, ifTrueBranchIndex;
+void putIfBeginCode(TokenData condition);
+void putIfTrueEndCode();
+void putIfFalseCode();
 
 %}
 
@@ -109,9 +115,9 @@ void defineLabel(const string &id);
   ArrayToken arrayToken;
 }
 
+%token SUBROUTINE THEN VARIABLE
 %token BOOLEAN CALL DIMENSION ELSE PROGRAM ENP ENS GTO
 %token IF INPUT INTEGER LABEL OUTPUT REAL
-%token SUBROUTINE THEN VARIABLE
 
 
 %token <intStr> UNSIGNED_INTEGER
@@ -123,9 +129,12 @@ void defineLabel(const string &id);
 %type <token> relational_operator adding_operator multiplying_operator relations variable_sub_list variable_sub
 %type <arrayToken> variable
 %type <token> expression simple_expression term sign factor unsigned_constant unsigned_number unsigned_real
-%type <token> subroutine_identifier argument_list argument constant constant_identifier
+%type <token> subroutine_identifier argument_list argument constant constant_identifier condition condition_variable
 
 %nonassoc ';'
+
+%nonassoc LOWER_THEN_ELSE
+%nonassoc ELSE
 
 %left OR
 %left AND
@@ -350,11 +359,10 @@ adding_operator:'+' {$$ = {DELIMITER_TABLE, 5};}
                |OR {$$ = {RESERVED_WORD_TABLE, 19};};
 
 term: factor {$$ = $1;}
-    | term multiplying_operator term {
-                  $$ = getDelayReg();
-                  addDelayQForm({$2, $1, $3, $$});
-                 }
-    |term POW term {
+    | term '*' term { $$ = getDelayReg(); addDelayQForm({{DELIMITER_TABLE, 7}, $1, $3, $$});}
+    | term '/' term { $$ = getDelayReg(); addDelayQForm({{DELIMITER_TABLE, 8}, $1, $3, $$});}
+    | term AND term { $$ = getDelayReg(); addDelayQForm({{DELIMITER_TABLE, 1}, $1, $3, $$});}
+    | term POW term {
                   $$ = getDelayReg();
                   addDelayQForm({{DELIMITER_TABLE, 9}, $1, $3, $$});
                  }
@@ -455,14 +463,28 @@ IO_statement: INPUT variable {
             };
 
 number_size: unsigned_integer;
-go_to_statement: GTO label { cout << "GTO not work!" << endl;};
+go_to_statement: GTO label {
+                 addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN });
+                 cout << "GTO not work!" << endl;
+               };
 
-if_statement: IF condition THEN statement_I
-            | IF condition THEN statement_I ELSE statement_I;
+if_statement: IF condition THEN {putIfBeginCode($2);} statement_I ELSE {putIfTrueEndCode();} statement_I {putIfFalseCode();}
+            | IF condition THEN {putIfBeginCode($2);} statement_I {putIfTrueEndCode(); putIfFalseCode();};
 
-condition:condition_variable relations condition_variable;
+condition:condition_variable relations condition_variable
+         {
+            $$ = getTemper();
+            addQForm({$2, $1, $3, $$});
+         };
 
-condition_variable:variable|constant;
+condition_variable:variable {
+                  if (isArray($1)) {
+                   $$ = getTemper();
+                   getArray($1.token, $1.index, $$);
+                  } else if (!isArray($1))
+                    $$ = $1.token;
+                  }
+                  |constant { $$ = $1;};
 
 relations:relational_operator {$$ = $1;}
          |OR {$$ = {RESERVED_WORD_TABLE, 19};}
@@ -536,6 +558,26 @@ void defineVar(const string &id) {
     NULL_TOKEN,
     NULL_TOKEN
    });
+}
+
+void putIfBeginCode(TokenData condition){
+  ifBeginIndex = addQForm({
+    {RESERVED_WORD_TABLE, 12},
+    condition,
+    NULL_TOKEN,
+    NULL_TOKEN
+  });
+
+  modifyQFormOP2(ifBeginIndex, {QUADRUPLE_TABLE, ifBeginIndex + 2}); // start from 0, index + 1, then next = index +2
+}
+
+void putIfTrueEndCode(){
+  ifTrueBranchIndex = addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN});
+  modifyQFormResult(ifBeginIndex, {QUADRUPLE_TABLE, ifTrueBranchIndex + 2});
+}
+
+void putIfFalseCode(){
+  modifyQFormResult(ifTrueBranchIndex, {QUADRUPLE_TABLE, getQFormNext()});
 }
 
 void defineReserved(TokenData token) {
@@ -678,6 +720,9 @@ TokenData getDelayReg() {
 
 int main ()
 {
+#ifdef TTEESSTT
+  qformTest();
+#endif
   string filename, writeName;
 
   while (cin >> filename) {

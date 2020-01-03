@@ -2,6 +2,7 @@
 // must to use -std=c++11 or higher version
 #include "quadruple.h"
 
+#include <cassert>
 #include <cstdio>
 #include <sstream>
 #include <vector>
@@ -28,6 +29,33 @@ int addQForm(QuadrupleForm qform) {
   int index = qfromTable.size();
   qfromTable.push_back(qform);
   return index;
+}
+
+void modifyQFormOP1(int index, TokenData token) {
+  qfromTable.at(index).opd1 = token;
+}
+
+void modifyQFormOP2(int index, TokenData token) {
+  qfromTable.at(index).opd2 = token;
+}
+
+void modifyQFormResult(int index, TokenData token) {
+  qfromTable.at(index).result = token;
+}
+
+int getQFormNext() { return getQFormSize() + 1; }
+
+void qformTest() {
+  cout << "Qform test" << endl;
+  addQForm({NULL_TOKEN, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN});
+  modifyQFormOP1(0, {1, 1});
+  assert(!isTokenEqual(qfromTable[0].opd1, NULL_TOKEN));
+  modifyQFormOP2(0, {1, 1});
+  assert(!isTokenEqual(qfromTable[0].opd2, NULL_TOKEN));
+  modifyQFormResult(0, {1, 1});
+  assert(!isTokenEqual(qfromTable[0].result, NULL_TOKEN));
+  printQForm(stdout);
+  quadrupleReset();
 }
 
 string printToken(TokenData token) {
@@ -91,8 +119,25 @@ string printSource(QuadrupleForm qform) {
       }
       ss << ")";
     } else if (opr.type == RESERVED_WORD_TABLE) {
-      ss << getString(opr);
-      if (!isTokenEqual(result, NULL_TOKEN)) ss << " " << getString(result);
+      if (opr.value == 12) {  // IF
+        ss << getString(opr) << " ";
+        ss << getString(opd1) << " ";
+        ss << "GO TO " << opd2.value;
+        ss << ", ELSE GO TO " << result.value;
+      } else if (opr.value == 11) {  // GTO
+        ss << getString(opr) << " ";
+        ss << getGTOString(result);
+      } else if (opr.value == 6 || opr.value == 7)  // ENP ENS
+        ss << getString(opr);
+      else if (opr.value == 13 || opr.value == 20)  // input output
+        ss << getString(opr) << " " << getString(result);
+      else {
+        ss << getString(result) << " = " << getString(opd1) << " "
+           << getString(opr) << " " << getString(opd2);
+        // ss << getString(opr);
+        // if (!isTokenEqual(result, NULL_TOKEN)) ss << " " <<
+        // getString(result);
+      }
 
     } else if (opr.type == DELIMITER_TABLE)
       ss << getString(result) << " = " << getString(opd1) << getString(opr)
