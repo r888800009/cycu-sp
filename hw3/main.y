@@ -98,6 +98,7 @@ void putIfBeginCode(TokenData condition);
 void putIfTrueEndCode();
 void putIfFalseCode();
 
+int semicolonIndex;
 %}
 
 %code requires {
@@ -532,7 +533,7 @@ parameter_list:
                };
 
 
-semicolon: {check = check_semicolon;} ';' {check = check_disable;};
+semicolon: {check = check_semicolon; semicolonIndex = lineno;} ';' {check = check_disable;};
 
 parameter: identifier {$$ = $1;}| array {$$ = $1;};
 
@@ -773,7 +774,7 @@ void yyerror(char const *s) {
   //fprintf(yyout, "syntax error line %d: '%s'\n", lineno, yylval.intStr); // debug line
   switch (check) {
     case check_semicolon:
-      fprintf(yyout, "%s line %d: ';' not found?\n",s ,lineno - 1);
+      fprintf(yyout, "%s line %d: ';' not found?\n", s, semicolonIndex);
       fprintf(yyout, "(or line %d has some problem)\n", lineno);
       break;
     case check_brackets:
