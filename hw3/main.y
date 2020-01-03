@@ -126,7 +126,7 @@ void putIfFalseCode();
 
 %type <intStr> unsigned_integer
 %type <idStr> identifier label parameter array array_identifier
-%type <token> relational_operator adding_operator multiplying_operator relations variable_sub_list variable_sub
+%type <token> relational_operator adding_operator variable_sub_list variable_sub
 %type <arrayToken> variable
 %type <token> expression simple_expression term sign factor unsigned_constant unsigned_number unsigned_real
 %type <token> subroutine_identifier argument_list argument constant constant_identifier condition condition_variable
@@ -238,7 +238,7 @@ label_declaration_part:
 label_list: label {
             must_undefined($1);
             defineLabel($1);
-          } 
+          }
           | label_list ',' label {
             must_undefined($3);
             defineLabel($3);
@@ -367,10 +367,6 @@ term: factor {$$ = $1;}
                   addDelayQForm({{DELIMITER_TABLE, 9}, $1, $3, $$});
                  }
 
-multiplying_operator:'*' {$$ = {DELIMITER_TABLE, 7};}
-                    |'/' {$$ = {DELIMITER_TABLE, 8};}
-                    |AND {$$ = {RESERVED_WORD_TABLE, 1};}
-
 factor: variable {
                   if (isArray($1)) {
                    $$ = getDelayReg();
@@ -437,7 +433,7 @@ constant:
 
 
 IO_statement: INPUT variable {
-              TokenData t; 
+              TokenData t;
               pop_bracket();
               if (isArray($2)) {
                 t = getTemper();
@@ -449,7 +445,7 @@ IO_statement: INPUT variable {
               addQForm({{RESERVED_WORD_TABLE, 13}, NULL_TOKEN, NULL_TOKEN, t });
             }
             | OUTPUT variable {
-              TokenData t; 
+              TokenData t;
 
               pop_bracket();
               if (isArray($2)) {
@@ -462,7 +458,6 @@ IO_statement: INPUT variable {
               addQForm({{RESERVED_WORD_TABLE, 20}, NULL_TOKEN, NULL_TOKEN, t });
             };
 
-number_size: unsigned_integer;
 go_to_statement: GTO label {
                  addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN });
                  cout << "GTO not work!" << endl;
@@ -473,11 +468,14 @@ if_statement: IF condition THEN {putIfBeginCode($2);} statement_I if_else;
 if_else: ELSE {putIfTrueEndCode();} statement_I {putIfFalseCode();}
        | %empty {putIfTrueEndCode(); putIfFalseCode();};
 
-condition:condition_variable relations condition_variable
-         {
-            $$ = getTemper();
-            addQForm({$2, $1, $3, $$});
-         };
+condition:condition_variable EQ condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 8}, $1, $3, $$});};
+         |condition_variable NE condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 18}, $1, $3, $$});};
+         |condition_variable GT condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 10}, $1, $3, $$});};
+         |condition_variable GE condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 9}, $1, $3, $$});};
+         |condition_variable LT condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 17}, $1, $3, $$});};
+         |condition_variable LE condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 16}, $1, $3, $$});};
+         |condition_variable OR condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 19}, $1, $3, $$});};
+         |condition_variable AND condition_variable {$$ = getTemper(); addQForm({{RESERVED_WORD_TABLE, 1}, $1, $3, $$});};
 
 condition_variable:variable {
                   if (isArray($1)) {
@@ -486,11 +484,8 @@ condition_variable:variable {
                   } else if (!isArray($1))
                     $$ = $1.token;
                   }
-                  |constant { $$ = $1;};
-
-relations:relational_operator {$$ = $1;}
-         |OR {$$ = {RESERVED_WORD_TABLE, 19};}
-         |AND {$$ = {RESERVED_WORD_TABLE, 1};};
+                  |constant { $$ = $1;}
+                  |condition {$$ = $1;};
 
 subroutine_deck: %empty
                |subroutine_declaration_list;
