@@ -577,6 +577,7 @@ void defineVar(const string &id) {
    });
 }
 
+bool hasIfGTO;
 void putIfBeginCode(TokenData condition){
   ifBeginIndex = addQForm({
     {RESERVED_WORD_TABLE, 12},
@@ -589,12 +590,20 @@ void putIfBeginCode(TokenData condition){
 }
 
 void putIfTrueEndCode(){
-  ifTrueBranchIndex = addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN});
-  modifyQFormResult(ifBeginIndex, {QUADRUPLE_TABLE, ifTrueBranchIndex + 2});
+  if (!isTopGoto()) {
+    ifTrueBranchIndex = addQForm({{RESERVED_WORD_TABLE, GTO_TABLE_VALUE}, NULL_TOKEN, NULL_TOKEN, NULL_TOKEN});
+    hasIfGTO = true;
+    modifyQFormResult(ifBeginIndex, {QUADRUPLE_TABLE, ifTrueBranchIndex + 2});
+  } else {
+    ifTrueBranchIndex = getQFormSize();
+    hasIfGTO = false;
+    modifyQFormResult(ifBeginIndex, {QUADRUPLE_TABLE, ifTrueBranchIndex + 1});
+  }
 }
 
 void putIfFalseCode(){
-  modifyQFormResult(ifTrueBranchIndex, {QUADRUPLE_TABLE, getQFormNext()});
+  if (hasIfGTO)
+    modifyQFormResult(ifTrueBranchIndex, {QUADRUPLE_TABLE, getQFormNext()});
 }
 
 void defineReserved(TokenData token) {

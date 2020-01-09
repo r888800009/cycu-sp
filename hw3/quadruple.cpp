@@ -9,11 +9,21 @@
 
 #include "compiler.h"
 #include "identifier_table.h"
+#define GTO_TABLE_VALUE 11
 
 LoadingTable delimiterTable = LoadingTable(DELIMITER_TABLE);
 LoadingTable reservedTable = LoadingTable(RESERVED_WORD_TABLE);
 
 vector<QForm> qfromTable;
+
+bool isTopGoto() {
+  if (qfromTable.size() > 0 &&
+      isTokenEqual(qfromTable.back().opr,
+                   {RESERVED_WORD_TABLE, GTO_TABLE_VALUE}))
+    return true;
+  else
+    return false;
+}
 
 void quadrupleReset() {
   qfromTable.clear();

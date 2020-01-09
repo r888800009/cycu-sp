@@ -15,6 +15,7 @@ void quadrupleReset();
 int getQFormSize();
 int getQFormNext();
 int addQForm(QuadrupleForm qform);
+bool isTopGoto();
 void printQForm(FILE *fp);
 
 void modifyQFormOP1(int index, TokenData token);
