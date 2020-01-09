@@ -23,6 +23,7 @@ extern "C"
 }
 
 enum Check {check_disable, check_semicolon, check_brackets ,check_ens, check_enp} check;
+enum CheckBlock {block_ens, block_enp, block_null} block_flag;
 extern FILE *yyin, *yyout;
 
 vector<int> argRegister;
@@ -99,6 +100,8 @@ void putIfTrueEndCode();
 void putIfFalseCode();
 
 int semicolonIndex;
+
+
 %}
 
 %code requires {
@@ -154,17 +157,33 @@ program:
        main_program subroutine_deck;
 
 main_program:
-            program_heading block {check = check_enp;} enp{check =check_disable;} semicolon{
+            program_heading block {
               defineReserved({RESERVED_WORD_TABLE, 6});
               pop_scope();
             };
 
-error_enp: label ENS | ENS;
-
-enp: label ENP | ENP | error_enp {
-   yyerror("Do you mean ENP?");
-   YYABORT;
- };
+end_statement: {check = check_enp; block_flag = block_enp;} ENP {
+              if (block_flag != block_enp){
+                if (block_flag == block_ens)
+                  yyerror("Do you mean ENP?");
+                else 
+                  yyerror("End error!");
+                  YYABORT;
+              }
+              check = check_disable;
+             }
+             | {check = check_ens; block_flag = block_ens;} ENS {
+              if (block_flag != block_ens){
+                if (block_flag == block_enp)
+                  yyerror("Do you mean ENS?");
+                else 
+                  yyerror("End error!");
+                YYABORT;
+              }
+              check = check_disable;
+              defineReserved({RESERVED_WORD_TABLE, 7});
+              pop_scope();
+             };
 
 program_heading:
                PROGRAM identifier {must_undefined($2);}
@@ -257,7 +276,7 @@ statement: unlabelled_statement semicolon |
          unlabelled_statement semicolon;
 
 unlabelled_statement:
-                    statement_I |if_statement;
+                    statement_I |if_statement | end_statement;
 
 statement_I : empty_statement |
             assign_statement |
@@ -505,18 +524,7 @@ subroutine_deck: %empty
 subroutine_declaration_list:
                            subroutine_declaration|
                            subroutine_declaration_list subroutine_declaration;
-subroutine_declaration: subroutine_heading block {check = check_ens;} ens {
-                        check =check_disable;
-                        defineReserved({RESERVED_WORD_TABLE, 7});
-                        pop_scope();
-                      } semicolon;
-
-error_ens: label ENP| ENP;
-
-ens: ENS | label ENS| error_ens {
-   yyerror("Do you mean ENS?");
-   YYABORT;
- };
+subroutine_declaration: subroutine_heading block ;
 
 subroutine_heading: SUBROUTINE identifier {
                       if (!isSubroutine($2, -1, lineno)) {
@@ -691,6 +699,7 @@ int init()
   yyrestart(fptr);
   resetCompiler();
   delayQFormQueue = priority_queue<DelayQForm> ();
+  block_flag = block_null;
 }
 
 void addDelayQForm(QuadrupleForm qform) {
