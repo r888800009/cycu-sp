@@ -6,6 +6,7 @@ pow ¡ô
 
 %{
 #include "main.tab.hpp"
+#include "lexAdp.h"
 extern int lineno;
 
 %}
@@ -55,6 +56,7 @@ VARIABLE {return VARIABLE;}
 
 {unsigned_integer} {
   yylval.intStr = strdup(yytext);
+  add_integer_c(yytext);
   return UNSIGNED_INTEGER;
 }
 

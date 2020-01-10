@@ -56,8 +56,7 @@ int hasSubRoutineUndefine() {
 }
 
 int hash_fucntion(const string& str, int scope) {
-  // int result = scope;
-  int result = 0;
+  int result = scope;
 
   // idk the hash function
   for (int i = 0; i < str.length(); i++)
@@ -68,8 +67,10 @@ int hash_fucntion(const string& str, int scope) {
 
 int indexStep(int index, int step) { return (index + step) % hashtable_size; }
 
-int getIDIndex(const string& idStr, int scope, bool findDefined) {
+int getIDIndex(const string& idStr, int scope, bool findDefined,
+               bool defineSub) {
   // cout << hashtable_size << endl;
+  if (defineSub == true) scope = 0;
   int index = hash_fucntion(idStr, scope), step = 0;
   // cout << "not check subroutine" << endl;
   int steped;
@@ -98,11 +99,11 @@ string getIDString(TokenData token) {
 }
 
 bool isIDDefined(const string& idStr, int scope) {
-  return getIDIndex(idStr, scope, true) != -1;
+  return getIDIndex(idStr, scope, true, false) != -1;
 }
 
 bool isSubroutine(const string& id, int scope, int lineNum) {
-  int index = getIDIndex(id, scope, true);
+  int index = getIDIndex(id, scope, true, true);
   if (index == -1) {
     // define
     index = defineID(id, scope, -1, SUBROUTINE_UNDEFINE_MARK).value;
@@ -121,7 +122,7 @@ bool isSubroutine(const string& id, int scope, int lineNum) {
 }
 
 TokenData defineSubroutine(const string& id, int scope, int pointer) {
-  int index = getIDIndex(id, -1, false);
+  int index = getIDIndex(id, -1, false, true);
   idTableData[index] = {id, -1, -1, pointer, true};
   firstUndefineLine[index] = -1;
   return {IDENTIFIER_TABLE, index};
@@ -129,7 +130,7 @@ TokenData defineSubroutine(const string& id, int scope, int pointer) {
 
 TokenData defineID(const string& id, int scope, int type, int pointer) {
   if (isIDDefined(id, scope)) cout << "'" << id << "'defined?" << endl;
-  int index = getIDIndex(id, scope, false);
+  int index = getIDIndex(id, scope, false, false);
 
   idTableData[index] = {id, scope, type, pointer, true};
 
@@ -137,18 +138,18 @@ TokenData defineID(const string& id, int scope, int type, int pointer) {
 }
 
 TokenData getID(const string& id, int scope) {
-  int index = getIDIndex(id, scope, true);
+  int index = getIDIndex(id, scope, true, false);
   return {IDENTIFIER_TABLE, index};
 }
 
 int getPointer(const string& id, int scope) {
-  int index = getIDIndex(id, scope, true);
+  int index = getIDIndex(id, scope, true, true);
   return idTableData[index].pointer;
 }
 
 bool defineLabelStatement(const string& id, int scope, int pointer) {
   if (isIDDefined(id, scope)) {
-    int index = getIDIndex(id, scope, true);
+    int index = getIDIndex(id, scope, true, false);
 
     if (idTableData[index].type != TYPE_LABEL) return false;
 
@@ -168,7 +169,7 @@ bool defineLabelStatement(const string& id, int scope, int pointer) {
 
 bool referenceLabel(const string& id, int scope, int pointer) {
   if (isIDDefined(id, scope)) {
-    int index = getIDIndex(id, scope, true);
+    int index = getIDIndex(id, scope, true, false);
 
     if (!idTableData[index].type == TYPE_LABEL) return false;
 

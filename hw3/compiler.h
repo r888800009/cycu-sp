@@ -21,7 +21,8 @@ void resetCompiler();
 int add_integer(const string& intStr);
 int add_real(const string& realStr);
 int add_identifier(const string& idStr);
-
+void enableNumHash(bool hash);
+void printIntTableMode2();
 TokenData getTemper();
 
 int get_scope();

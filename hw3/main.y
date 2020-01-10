@@ -79,6 +79,7 @@ void eqaltion(TokenData op1, TokenData op2, TokenData dest);
 bool isArray(ArrayToken token);
 void defineLabel(const string &id);
 
+bool enableErrorMode = false;
 #define GTO_TABLE_VALUE 11
 #define must_defined(str) {\
   if (!isIDDefined(str, get_scope())) {\
@@ -89,7 +90,7 @@ void defineLabel(const string &id);
 }
 
 #define must_undefined(str) {\
-  if (isIDDefined(str, get_scope())) {\
+  if (enableErrorMode && isIDDefined(str, get_scope())) {\
   yyerror("duplicate identifier"); \
   fprintf(yyout,"duplicate: '%s'\n", str);\
   YYABORT;\
@@ -756,20 +757,22 @@ int main ()
   cout << "use \"set_mode1\" or \"set_mode2\" use different hash" << endl;
   cout << "use \"error_mode\" check error" << endl;
   cout << "input filename:" ;
-
+  enableErrorMode = false;
   while (cin >> filename) {
     if (filename == "set_mode1") {
       cout << "use mode1" << endl;
       hashtable_size = 100;
+      enableNumHash(true);
       continue;
     } else if (filename == "set_mode2") {
       cout << "use mode2" << endl;
       hashtable_size = 64;
+      enableNumHash(false);
       continue;
     }
 
     if (filename == "error_mode") {
-
+      enableErrorMode = true;
     }
 
     cout << "read file: \"" << filename <<
@@ -796,6 +799,16 @@ int main ()
     yyin = fptr;
     yyout = outpt;
 
+    // lex first
+    while (yylex())
+      ;
+    yyrestart(fptr);
+    lineno = 1;
+    // reopen
+    fclose(yyin);
+    fptr = fopen(filename.c_str() ,"r");
+    yyin = fptr;
+
     if(yyparse() == 0) {
       printQForm(yyout);
       int undefine_line = hasSubRoutineUndefine();
@@ -812,6 +825,7 @@ int main ()
     while (fgets(buf, sizeof(buf), fptr) != NULL) {
         cout << buf;
     }
+    //printIntTableMode2() ;
 
     fclose(fptr);
     cout << "input filename:" ;
