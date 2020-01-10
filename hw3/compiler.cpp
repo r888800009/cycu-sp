@@ -22,7 +22,7 @@ int tmpCounter;
 
 vector<int>& getInfoTable() { return infoTable; }
 
-TokenData getTemper() { return {TEMP_TABLE, ++tmpCounter}; }
+TokenData getTemper() { return {TEMP_TABLE, tmpCounter++}; }
 void resetCompiler() {
   cout << " resetTables() not work" << endl;
 

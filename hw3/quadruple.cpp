@@ -78,7 +78,7 @@ string printToken(TokenData token) {
 string getString(TokenData token) {
   switch (token.type) {
     case TEMP_TABLE:
-      return "T" + to_string(token.value);
+      return "T" + to_string(token.value + 1);
     case RESERVED_WORD_TABLE:
       return reservedTable.get(token);
     case DELIMITER_TABLE:
@@ -157,10 +157,10 @@ string printSource(QuadrupleForm qform) {
 void printQForm(FILE *fp) {
   int i = 0;
   for (auto form : qfromTable) {
-    i++;
     fprintf(fp, "%-7d(%-7s,%-7s,%-7s,%-7s)%10c%s\n", i,
             printToken(form.opr).c_str(), printToken(form.opd1).c_str(),
             printToken(form.opd2).c_str(), printToken(form.result).c_str(), ' ',
             printSource(form).c_str());
+    i++;
   }
 }
