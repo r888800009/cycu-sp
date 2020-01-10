@@ -38,6 +38,8 @@ int delayTmpRegIndex;
 int delayTmpIndex;
 map<int, TokenData> delayTmpMap;
 
+int hashtable_size = 100;
+
 typedef struct DelayQForm {
   QuadrupleForm qform;
   int bracketDeep;
@@ -751,8 +753,25 @@ int main ()
   qformTest();
 #endif
   string filename, writeName;
+  cout << "use \"set_mode1\" or \"set_mode2\" use different hash" << endl;
+  cout << "use \"error_mode\" check error" << endl;
   cout << "input filename:" ;
+
   while (cin >> filename) {
+    if (filename == "set_mode1") {
+      cout << "use mode1" << endl;
+      hashtable_size = 100;
+      continue;
+    } else if (filename == "set_mode2") {
+      cout << "use mode2" << endl;
+      hashtable_size = 64;
+      continue;
+    }
+
+    if (filename == "error_mode") {
+
+    }
+
     cout << "read file: \"" << filename <<
     "\"" << endl;
     writeName = filename + ".output";

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "quadruple.h"
+extern int hashtable_size;
 
 IDData idTableData[HASHTABLE_SIZE];
 int firstUndefineLine[HASHTABLE_SIZE];
@@ -17,7 +18,7 @@ string getGTOString(TokenData token) {
   if (token.type != QUADRUPLE_TABLE)
     cout << "id table GTO String Error!" << endl;
 
-  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+  for (int i = 0; i < hashtable_size; i++) {
     if (idTableData[i].pointer == token.value &&
         idTableData[i].type == TYPE_LABEL) {
       ss << idTableData[i].id;
@@ -32,7 +33,7 @@ string getGTOString(TokenData token) {
 bool hasLabel(TokenData token) {
   if (token.type != QUADRUPLE_TABLE) return false;
 
-  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+  for (int i = 0; i < hashtable_size; i++) {
     if (idTableData[i].pointer == token.value &&
         idTableData[i].type == TYPE_LABEL)
       return true;
@@ -42,15 +43,16 @@ bool hasLabel(TokenData token) {
 }
 
 void resetIDTable() {
-  fill_n(idTableData, HASHTABLE_SIZE, IDData{"", -1, -1, -1, false});
-  fill_n(firstUndefineLine, HASHTABLE_SIZE, -1);
-  for (int i = 0; i < HASHTABLE_SIZE; i++) undefineGTO[i].clear();
+  fill_n(idTableData, hashtable_size, IDData{"", -1, -1, -1, false});
+  fill_n(firstUndefineLine, hashtable_size, -1);
+  for (int i = 0; i < hashtable_size; i++) undefineGTO[i].clear();
 }
 
 int hasSubRoutineUndefine() {
-  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+  for (int i = 0; i < hashtable_size; i++) {
     if (firstUndefineLine[i] != -1) return firstUndefineLine[i];
   }
+  return -1;
 }
 
 int hash_fucntion(const string& str, int scope) {
@@ -59,19 +61,20 @@ int hash_fucntion(const string& str, int scope) {
 
   // idk the hash function
   for (int i = 0; i < str.length(); i++)
-    result = (result + str.at(i)) % HASHTABLE_SIZE;
+    result = (result + str.at(i)) % hashtable_size;
 
   return result;
 }
 
-int indexStep(int index, int step) { return (index + step) % HASHTABLE_SIZE; }
+int indexStep(int index, int step) { return (index + step) % hashtable_size; }
 
 int getIDIndex(const string& idStr, int scope, bool findDefined) {
+  // cout << hashtable_size << endl;
   int index = hash_fucntion(idStr, scope), step = 0;
   // cout << "not check subroutine" << endl;
   int steped;
   while (idTableData[steped = indexStep(index, step)].defined == true) {
-    if (step >= HASHTABLE_SIZE) break;
+    if (step >= hashtable_size) break;
     if (idTableData[steped].id == idStr && idTableData[steped].scope == scope)
       return steped;
     step++;
@@ -81,14 +84,14 @@ int getIDIndex(const string& idStr, int scope, bool findDefined) {
 }
 
 bool isIDArray(TokenData token) {
-  if (token.type == IDENTIFIER_TABLE && HASHTABLE_SIZE > token.value &&
+  if (token.type == IDENTIFIER_TABLE && hashtable_size > token.value &&
       token.value >= 0 && idTableData[token.value].defined == true)
     return idTableData[token.value].type == TYPE_ARRAY;
   return false;
 }
 
 string getIDString(TokenData token) {
-  if (token.type == IDENTIFIER_TABLE && HASHTABLE_SIZE > token.value &&
+  if (token.type == IDENTIFIER_TABLE && hashtable_size > token.value &&
       token.value >= 0 && idTableData[token.value].defined == true)
     return idTableData[token.value].id;
   return "";
@@ -180,7 +183,7 @@ bool referenceLabel(const string& id, int scope, int pointer) {
 }
 
 bool checkLabel() {
-  for (int i = 0; i < HASHTABLE_SIZE; i++)
+  for (int i = 0; i < hashtable_size; i++)
     if (undefineGTO[i].size() != 0) return false;
 
   return true;

@@ -1,6 +1,7 @@
 // 資工三甲 林詠翔
 // must to use -std=c++11 or higher version
 #include "table.h"
+extern int hashtable_size;
 
 #include <algorithm>
 #include <cassert>
@@ -30,7 +31,7 @@ HashTable::HashTable(int tableID) {
 }
 
 void HashTable::reset() {
-  for (int i = 0; i < HASHTABLE_SIZE; i++) {
+  for (int i = 0; i < hashtable_size; i++) {
     tableData[i].empty = true;
     tableData[i].value = "";
   }
@@ -98,20 +99,20 @@ int HashTable::hash_fucntion(const string& str) {
   int result = 0;
 
   for (int i = 0; i < str.length(); i++)
-    result = (result + str.at(i)) % HASHTABLE_SIZE;
+    result = (result + str.at(i)) % hashtable_size;
 
   return result;
 }
 
 int HashTable::indexStep(int index, int step) {
-  return (index + step) % HASHTABLE_SIZE;
+  return (index + step) % hashtable_size;
 }
 
 TokenData HashTable::put(const string& token) {
   int index = hash_fucntion(token), step = 0;
 
   while (tableData[indexStep(index, step)].empty == false) {
-    if (step >= HASHTABLE_SIZE) throw "Full table";
+    if (step >= hashtable_size) throw "Full table";
     if (tableData[indexStep(index, step)].value == token) {
 #ifdef DEEBUG
       cout << "hash:" << indexStep(index, step) << " value: " << token;
@@ -137,7 +138,7 @@ string LoadingTable::get(TokenData data) {
 }
 
 string HashTable::get(TokenData data) {
-  if (data.type == tableID && HASHTABLE_SIZE > data.value && data.value >= 0)
+  if (data.type == tableID && hashtable_size > data.value && data.value >= 0)
     return tableData[data.value].value;
   return "";
 }
@@ -150,7 +151,7 @@ TokenData HashTable::get(const string& token) {
   int index = hash_fucntion(token), step = 0;
 
   while (tableData[indexStep(index, step)].empty == false) {
-    if (step >= HASHTABLE_SIZE) break;
+    if (step >= hashtable_size) break;
     if (tableData[indexStep(index, step)].value == token)
       return {this->tableID, indexStep(index, step)};
     step++;
